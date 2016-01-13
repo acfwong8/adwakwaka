@@ -24,6 +24,12 @@ var app = express();
 // var config = require('./config.js');
 // var funct = require('./functions.js');
 
+app.use(cookieParser());
+app.use(logger('combined'));
+app.use(methodOverride('X-HTTP-Method-Override'));
+app.use(passport.initialize());
+app.use(passport.session());
+
 var cn = {
     host:'localhost',
     port:'5432',
@@ -34,20 +40,22 @@ var cn = {
 
 var cns = 'postgres://'+cn.user+':'+cn.password+'@'+cn.host+':'+cn.port+'/'+cn.database;
 console.log(cns);
-// app.get('/database',function(req,res,next){
-    pg.connect(cns,function(err,client,done){
+
+var userdata = [];
+pg.connect(cns,function(err,client,done){
+    if(err){
+        return console.error('error fetching',err);
+    }
+    client.query('SELECT * from login',function(err,result){
+        done();
         if(err){
-            return console.error('error fetching',err);
+            return console.error('error runnin query',err);
         }
-        client.query('SELECT * from login',function(err,result){
-            done();
-            if(err){
-                return console.error('error runnin query',err);
-            }
-            console.log(result.rows[0].username);
-        });
+        console.log(result.rows[0].username);
+        userdata.push(result.rows[1].username);
     });
-// })
+});
+
 var db = pgp(cn);
 
 // var db = pgp('postgres://anguswong:yEwuKt61@localhost:3000/database/');
@@ -60,7 +68,8 @@ app.use(bodyParser.urlencoded({
 
 db.query("SELECT * from login")
     .then(function(data){
-        console.log("Data:",data.value);
+        console.log("Data:",data);
+        return(data);
     })
     .catch(function(error){
         console.log("ERROR:",error);
@@ -82,7 +91,8 @@ app.set('view engine','jade');
 app.use(express.static(path.join(__dirname,'public')));
 
 app.get('/', function(req,res,next){
-    var name = 'company';
+    var name = userdata;
+    console.log(name);
     res.render('index',{companyname: name});
 
 });
@@ -98,12 +108,39 @@ app.post('/logon', passport.authenticate('signIn', {
 app.get('/new',function(req,res,next){
     res.render('new');
 });
+
+// category creation
+
 app.get('/new/category',function(req,res,next){
     res.render('newCat');
 });
-app.get('/new/category/success',function(req,res,next){
-    res.end('Category created');
-})
+
+app.post('/new/category/success',function(req,res,next){
+    console.log('body: '+JSON.stringify(req.body));
+    var catData = (req.body);
+    console.log(catData);
+    db.none('INSERT into categoriesmain("catname","catdesc") values(${catName},${catDesc})', catData)
+        .then(function(){
+            console.log('logged '+catData);
+        })
+        .catch(function(error){
+            console.log('logging failed:'+error);
+        })
+    // pg.connect(cns,function(err,client,done){
+    //     if(err){
+    //         return console.error('error fetching',err);
+    //     }
+    //     client.query('INSERT into categoriesmain(catname,catdesc) values('+catData.catName+','+catData.catDesc+')',function(err,result){
+    //         done();
+    //         if(err){
+    //             return console.error('error running query',err);
+    //         }
+            
+    //     });
+    // });
+    res.send(req.body);
+    // res.end('Category created');
+});
 app.get('/new/item',function(req,res,next){
     res.render('newItem');
 });

@@ -1,8 +1,38 @@
 body
   h1 Create New Category
-  form(action="success",method="post",enctype="multipart/form-data")
-    input(type="text",name="catName")
+  form(class="newCat",action="category/success",method="post",enctype="multipart/form-data")
+    div
+      p New Category Name
+      input(class="newCatName",type="text",name="catName")
+      
+    div
+      p Category Description
+      input(class="newCatDesc",type="text",name="catDesc")
+      
     input(type="submit",value="Create Category",name="submit")
 
   script(src='/jquery-1.11.3.js')
-  script(src='/home.js')  
+
+  script.
+    var catItem = {};
+    $('.newCat').on('submit',function(e){
+      e.preventDefault();
+      var catName = $('.newCatName').val();
+      var catDesc = $('.newCatDesc').val();
+      catItem.catName = catName;
+      catItem.catDesc = catDesc;
+      var test = {'hello':'hellothere'};
+      $.ajax({
+        type:'POST',
+        data:JSON.stringify(catItem),
+        contentType: 'application/json',
+        url:'http://localhost:3000/new/category/success',
+        success: function(res){
+          console.log('success');
+          console.log(JSON.stringify(res));
+        }
+      })
+    })
+  
+
+  script(src='/views/js/newCat.js')  
