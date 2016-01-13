@@ -1,0 +1,8 @@
+body
+  h1 Log in
+  form(class='signinform' action='logon' method='post')
+    div
+      label Username:
+      input(type='text' name='username')
+      label Password:
+      input(type='password)

@@ -1,0 +1,8 @@
+body
+  h1 Create New Category
+  form(action="category/success",method="post",enctype="multipart/form-data")
+    input(type="text",name="catName")
+    input(type="submit",value="Create Category",name="submit")
+
+  script(src='/jquery-1.11.3.js')
+  script(src='/home.js')  

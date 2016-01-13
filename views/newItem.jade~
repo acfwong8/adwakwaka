@@ -1,0 +1,6 @@
+body
+  h1 Create New Item
+  form(action="itemAdded",method="post",enctype="multipart/formdata")
+    input(type="text",name="itemName")
+    input(type="file",name="itemPhoto")
+    input(type="submit",value="Create Item",name="submitItem")

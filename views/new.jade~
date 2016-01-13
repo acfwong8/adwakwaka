@@ -1,0 +1,6 @@
+body
+  h1 Create new...
+  p
+    a(href='/category') Category
+  p
+    a(href='/item') Item
