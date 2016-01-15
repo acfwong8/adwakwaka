@@ -11,6 +11,9 @@ body
       
     input(type="submit",value="Create Category",name="submit")
 
+    div(class="completion")
+      p  Hit create to complete
+
   script(src='/jquery-1.11.3.js')
 
   script.
@@ -21,7 +24,6 @@ body
       var catDesc = $('.newCatDesc').val();
       catItem.catName = catName;
       catItem.catDesc = catDesc;
-      var test = {'hello':'hellothere'};
       $.ajax({
         type:'POST',
         data:JSON.stringify(catItem),
@@ -30,8 +32,11 @@ body
         success: function(res){
           console.log('success');
           console.log(JSON.stringify(res));
+          var $p = $("<p>").text("Categories updated!");
+          $(".completion").append($p);
         }
       })
+
     })
   
 

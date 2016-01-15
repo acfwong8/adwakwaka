@@ -11,9 +11,29 @@ body
   p  
     a(href='/category') categories
 
-  form(action="success",method="post",enctype="multipart/form-data")
-    input(type="file",name="userPhoto")
-    input(type="submit",value="Upload Image",name="submit")
+  div(class='catList') Category List
     
   script(src='/jquery-1.11.3.js')
-  script(src='/home.js')
+
+  script.
+    var categories = [];
+    $.ajax({
+      type:'GET',
+      url:'http://localhost:3000/getcategories',
+      dataType:'JSON',
+      success: function(res){
+        console.log(res);
+        for(var i = 0; i < res.length; i++){
+          appendp(res[i].catname,res[i].catnumb);
+          console.log(i);
+        }
+      }
+    })
+    
+    function appendp(name, numb){
+      var $a = $("<a>").text(name).attr("href","/category/"+numb);
+      var $p = $("<p>").append($a);
+      $(".catList").append($p);
+    }
+
+  script(src='/js/home.js')

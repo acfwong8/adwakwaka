@@ -1,3 +1,5 @@
+var z = 0;
+
 var express = require('express');
 var multer = require('multer');
 var storage = multer.diskStorage({
@@ -5,10 +7,11 @@ var storage = multer.diskStorage({
         callback(null,'./uploads');
     },
     filename: function(req,file,callback){
-        callback(null,file.fieldname + '-' + Date.now());
+        z = file.fieldname + '-' + Date.now();
+        callback(null,z);
     }
 });
-var upload = multer({ storage : storage}).single('userPhoto');
+var upload = multer({ storage : storage}).single('itemPic');
 var path = require('path');
 var bodyParser = require('body-parser');
 var passport = require('passport');
@@ -23,7 +26,6 @@ var pgp = require('pg-promise')(/*options*/);
 var app = express();
 // var config = require('./config.js');
 // var funct = require('./functions.js');
-
 app.use(cookieParser());
 app.use(logger('combined'));
 app.use(methodOverride('X-HTTP-Method-Override'));
@@ -96,6 +98,28 @@ app.get('/', function(req,res,next){
     res.render('index',{companyname: name});
 
 });
+
+
+
+app.get('/getcategories',function(req,res,next){
+    var categories = {};
+    pg.connect(cns,function(err,client,done){
+        if(err){
+            return console.error('error fetching',err);
+        }
+        client.query('SELECT * from categoriesmain where catname is not null',function(err,result){
+            done();
+            if(err){
+                return console.error('error runnin query',err);
+            }
+            console.log(result.rows);
+            categories = result.rows;
+            res.send(categories);
+        });
+    });
+    // res.send(categories);
+});
+
 app.get('/login', function(req,res,next){
     res.render('login');
 });
@@ -119,41 +143,75 @@ app.post('/new/category/success',function(req,res,next){
     console.log('body: '+JSON.stringify(req.body));
     var catData = (req.body);
     console.log(catData);
-    db.none('INSERT into categoriesmain("catname","catdesc") values(${catName},${catDesc})', catData)
-        .then(function(){
-            console.log('logged '+catData);
+    db.query('SELECT catnumb from categoriesmain where catnumb = (select max(catnumb) from categoriesmain)')
+        .then(function(res){
+            console.log(res[0].catnumb);
+            catData.catNumb = res[0].catnumb + 1;
+            db.none('INSERT into categoriesmain("catname","catdesc","catnumb") values(${catName},${catDesc},${catNumb})', catData)
+                .then(function(){
+                    console.log('logged '+catData);
+                })
+                .catch(function(error){
+                    console.log('logging failed:'+error);
+                });
         })
-        .catch(function(error){
-            console.log('logging failed:'+error);
-        })
-    // pg.connect(cns,function(err,client,done){
-    //     if(err){
-    //         return console.error('error fetching',err);
-    //     }
-    //     client.query('INSERT into categoriesmain(catname,catdesc) values('+catData.catName+','+catData.catDesc+')',function(err,result){
-    //         done();
-    //         if(err){
-    //             return console.error('error running query',err);
-    //         }
-            
-    //     });
-    // });
+        .catch(function(err){
+            console.log(err);
+        });
+
     res.send(req.body);
     // res.end('Category created');
 });
+
 app.get('/new/item',function(req,res,next){
     res.render('newItem');
 });
+app.post('/new/item/success', function(req,res,next){
+    // console.log('body: '+JSON.stringify(req.body));
+    var itemData = req.body;
+    console.log(itemData);
+    db.query('SELECT itemnumb from products where itemnumb = (select max(itemnumb) from products)')
+        .then(function(res){
+            console.log(res[0].itemnumb);
+            itemData.itemNumb = res[0].itemnumb+1;
+            db.none('INSERT into Products("itemname","itemdesc","itemcat","itemnumb") values(${itemName},${itemDesc},${itemCat},${itemNumb})',itemData)
+                .then(function(){
+                    console.log('logged '+itemData);
+                })
+                .catch(function(error){
+                    console.log('logging failed:'+error);
+                });
+        })
+        .catch(function(err){
+            console.log("query failed: "+err);
+        });
+});
 
-app.post('/success',function(req,res,next){
+app.post('/new/picupload',function(req,res,next){
+
     upload(req,res,function(err){
         if(err){
             return res.end("Error uploading");
         }
+        var date = new Date();
+        console.log(z);
+        // db.query('SELECT itempicture1 from products where '+)
+        console.log(date.getUTCFullYear()+'-'+(date.getUTCMonth()+1)+'-'+date.getUTCDate()+' '+date.getUTCHours()+'-'+date.getUTCMinutes()+'-'+date.getUTCSeconds());
         res.end("File is uploaded");
     });
     // console.log(req.files);
 });
+
+
+// app.post('/success',function(req,res,next){
+//     upload(req,res,function(err){
+//         if(err){
+//             return res.end("Error uploading");
+//         }
+//         res.end("File is uploaded");
+//     });
+//     // console.log(req.files);
+// });
 
 
 

@@ -1,9 +1,75 @@
 body
   h1 Create New Item
-  form(action="itemAdded",method="post",enctype="multipart/formdata")
-    input(type="text",name="itemName")
-    input(type="file",name="itemPhoto")
-    input(type="submit",value="Create Item",name="submitItem")
+  form(class="newItem",action="itemAdded",method="post",enctype="multipart/formdata")
+    div
+      p New Item Name
+      input(class="newItemName",type="text",name="itemName")
+    div
+      p Item Description
+      input(class="newItemDesc",type="text",name="itemDesc")
+    div
+      p In category:
+      select(class="newItemCat")
+    input(type="submit",value="Save Fields",name="saveFields")
+
+    div(class="completion")
+      span Hit 'Save Fields' to save and create this item.
+    
+  form(class="itemPic",action="picupload",method="post",enctype="multipart/form-data")
+    input(type="file",name="itemPic")
+    input(type="submit",value="Create Item",name="submit" disabled)
 
   script(src='/jquery-1.11.3.js')
+
+  script.
+    var categories = [];
+    $.ajax({
+      type:'GET',
+      url:'http://localhost:3000/getcategories',
+      dataType:'JSON',
+      success: function(res){
+        console.log(res);
+        for(var i = 0; i < res.length; i++){
+          appendList(res[i].catname);
+          console.log(i);
+        }
+      }
+    })
+    function appendList(name){
+      var $o = $("<option>").text(name).attr({value: name});
+      $(".newItemCat").append($o);
+    }
+    var newItem = {};
+    $('.newItem').on('submit',function(e){
+      e.preventDefault();
+      var itemName = $(".newItemName").val();
+      var itemDesc = $(".newItemDesc").val();
+      var itemCat = $(".newItemCat").val();
+      newItem.itemName = itemName;
+      newItem.itemDesc = itemDesc;
+      newItem.itemCat = itemCat;
+      
+      $.ajax({
+        type:'POST',
+        data:JSON.stringify(newItem),
+        contentType:'application/json',
+        url:'http://localhost:3000/new/item/success',
+        success: function(res){
+          console.log('success '+newItem)
+          complete();
+        }
+      })
+      $(".itemPic submit").prop("disabled", false)
+    })
+
+    $(".itemPic").on("click",function(){
+    
+    })
+
+    function complete(){
+      var $span = $("<span>").text("Saved!");
+      completion.append($span);
+    }
+    
+
   script(src='/home.js')
