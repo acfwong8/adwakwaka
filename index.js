@@ -7,8 +7,8 @@ var storage = multer.diskStorage({
         callback(null,'./uploads');
     },
     filename: function(req,file,callback){
-        z = file.fieldname + '-' + Date.now();
-        callback(null,z);
+        var filename = file.fieldname + '-' + z;
+        callback(null,filename);
     }
 });
 var upload = multer({ storage : storage}).single('itemPic');
@@ -164,42 +164,74 @@ app.post('/new/category/success',function(req,res,next){
 });
 
 app.get('/new/item',function(req,res,next){
-    res.render('newItem');
+    var newItemNumb = 0;
+    db.query('SELECT itemnumb from products where itemnumb = (select max(itemnumb) from products)')
+        .then(function(response){
+            newItemNumb = response[0].itemnumb+1;
+            console.log(response);
+            res.render('newItem',{ itemnumb: newItemNumb});
+        })
+        .catch(function(err){
+            console.log('help' + err);
+        })
+
 });
 app.post('/new/item/success', function(req,res,next){
     // console.log('body: '+JSON.stringify(req.body));
     var itemData = req.body;
     console.log(itemData);
-    db.query('SELECT itemnumb from products where itemnumb = (select max(itemnumb) from products)')
-        .then(function(res){
-            console.log(res[0].itemnumb);
-            itemData.itemNumb = res[0].itemnumb+1;
-            db.none('INSERT into Products("itemname","itemdesc","itemcat","itemnumb") values(${itemName},${itemDesc},${itemCat},${itemNumb})',itemData)
-                .then(function(){
-                    console.log('logged '+itemData);
-                })
-                .catch(function(error){
-                    console.log('logging failed:'+error);
-                });
+    console.log(3);
+    itemData.picture = 'none';
+    db.none('INSERT into products("itemname","itemdesc","itemcat","itemnumb","itempicture1") values(${itemName},${itemDesc},${itemCat},${itemNumb},${picture})',itemData)
+        .then(function(){
+            console.log('logged '+itemData);
+
+            // res.send('uploaded');
         })
-        .catch(function(err){
-            console.log("query failed: "+err);
+        .catch(function(error){
+            console.log('logging failed:'+error);
         });
 });
 
 app.post('/new/picupload',function(req,res,next){
-
     upload(req,res,function(err){
         if(err){
             return res.end("Error uploading");
         }
-        var date = new Date();
-        console.log(z);
-        // db.query('SELECT itempicture1 from products where '+)
-        console.log(date.getUTCFullYear()+'-'+(date.getUTCMonth()+1)+'-'+date.getUTCDate()+' '+date.getUTCHours()+'-'+date.getUTCMinutes()+'-'+date.getUTCSeconds());
-        res.end("File is uploaded");
     });
-    // console.log(req.files);
+    res.send('<FORM><INPUT Type="button" VALUE="Back" onClick="history.go(-1);return true;"></FORM>')
+    // res.send("File is uploaded");
+})
+
+app.post('/new/picupload/picname',function(req,res,next){
+    console.log(req.body);
+    var itemData = {itemNumb: req.body.itemNumb};
+    console.log(itemData);
+    var filename = 'itemPic-'
+    // var date = new Date();
+    // console.log(z);
+    z = Date.now();
+    console.log(z);
+    db.one('SELECT itempicture1 from products where itemnumb = ${itemNumb}', itemData)
+        .then(function(res){
+            var picList = res.itempicture1;
+            if(picList === 'none'){
+                itemData.newPicList = filename + z;
+            } else {
+                itemData.newPicList = picList + '-' + filename + z;
+            }
+            db.none('UPDATE products SET itempicture1 = ${newPicList} where itemnumb = ${itemNumb}', itemData)
+                .then(function(){
+                    console.log('uploading');
+                })
+                .catch(function(err){
+                    res.end('Upload failed column: ' + err);
+                });              
+        })
+        .catch(function(err){
+            console.log('query failed: '+ err);
+            res.end('Upload failed: ' + err);
+        });
 });
 
 

@@ -1,6 +1,9 @@
+link(rel="stylesheet", href="/style.css")
+
 body
   h1 Create New Item
-  form(class="newItem",action="itemAdded",method="post",enctype="multipart/formdata")
+  form(class="newItem",enctype="multipart/form-data")
+  
     div
       p New Item Name
       input(class="newItemName",type="text",name="itemName")
@@ -14,10 +17,16 @@ body
 
     div(class="completion")
       span Hit 'Save Fields' to save and create this item.
+
+  form(class="upload",enctype="multipart/form-data")
+    span Upload picture? 
+    input(type="submit",value="Open picture selection",name="select" disabled)
     
   form(class="itemPic",action="picupload",method="post",enctype="multipart/form-data")
-    input(type="file",name="itemPic")
-    input(type="submit",value="Create Item",name="submit" disabled)
+    p
+      input(type="file",name="itemPic")
+    p  
+      input(type="submit",value="Upload Picture",name="submit" disabled)
 
   script(src='/jquery-1.11.3.js')
 
@@ -45,10 +54,11 @@ body
       var itemName = $(".newItemName").val();
       var itemDesc = $(".newItemDesc").val();
       var itemCat = $(".newItemCat").val();
+      var itemNumb = #{itemnumb}
       newItem.itemName = itemName;
       newItem.itemDesc = itemDesc;
       newItem.itemCat = itemCat;
-      
+      newItem.itemNumb = itemNumb;
       $.ajax({
         type:'POST',
         data:JSON.stringify(newItem),
@@ -56,19 +66,34 @@ body
         url:'http://localhost:3000/new/item/success',
         success: function(res){
           console.log('success '+newItem)
+          console.log(newItem);
           complete();
         }
-      })
-      $(".itemPic submit").prop("disabled", false)
+      });
+      $(".upload input[type=submit]").prop("disabled", false);
+      $(".newItem input[type=text]").prop("disabled",true);
+      $(".newItem input[type=submit]").prop("disabled",true);
     })
 
-    $(".itemPic").on("click",function(){
-    
-    })
+    $(".upload").on("submit",function(e){
+    e.preventDefault();
+    console.log(newItem);
+      $.ajax({
+        type:'POST',
+        data:JSON.stringify(newItem),
+        contentType:'application/json',
+        url:'http://localhost:3000/new/picupload/picname',
+        success: function(res){
+          console.log('picture data up success: ' + newItem);
+          console.log(newItem);
+        }
+      });
+      $(".itemPic input[type=submit]").prop("disabled", false);
+    });
 
     function complete(){
       var $span = $("<span>").text("Saved!");
-      completion.append($span);
+      $(".completion").append($span);
     }
     
 
