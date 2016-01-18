@@ -1,0 +1,45 @@
+link(rel="stylesheet",href="/style.css")
+
+body
+
+  section(class="sidebar")
+    p
+      a(href="../..") Home
+
+  section(class="main")
+    h1 #{catname}
+
+    div(class="itemspace")
+      h2 Listing all #{catname} items
+
+
+
+  script(src="/jquery-1.11.3.js")
+
+  script.
+    var categories = [];
+    var items = [];
+    $.ajax({
+      type:'GET',
+      url:'http://localhost:3000/getitems/#{catnumb}',
+      dataType:'JSON',
+      success: function(res){
+        console.log(res);
+        items = res;
+        for(var i = 0; i < items.length; i++){
+          appendItem(i,items[i].itemname,items[i].itempicture1,items[i].itemnumb);
+        }
+      }
+    })
+
+    function appendItem(number,title,picture,itemNumb){
+      var $div = $("<div>").attr('class','item'+number);
+      var $h3 = $("<h3>").text(title);
+      var $img = $("<img>").attr('src',"../../uploads/"+picture+".jpg");
+      var $atitle = $("<a>").attr('href',"/category/#{catnumb}/products/"+itemNumb);
+      var $apic = $("<a>").attr('href',"/category/#{catnumb}/products/"+itemNumb);
+      $atitle.append($h3);
+      $apic.append($img);
+      $div.append($atitle,$apic);
+      $(".itemspace").append($div);
+    }

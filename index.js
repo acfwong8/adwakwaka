@@ -7,7 +7,7 @@ var storage = multer.diskStorage({
         callback(null,'./uploads');
     },
     filename: function(req,file,callback){
-        var filename = file.fieldname + '-' + z;
+        var filename = file.fieldname + '-' + z + '.jpg';
         callback(null,filename);
     }
 });
@@ -31,6 +31,7 @@ app.use(logger('combined'));
 app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use('/uploads', express.static('uploads'));
 
 var cn = {
     host:'localhost',
@@ -163,6 +164,8 @@ app.post('/new/category/success',function(req,res,next){
     // res.end('Category created');
 });
 
+// item creation
+
 app.get('/new/item',function(req,res,next){
     var newItemNumb = 0;
     db.query('SELECT itemnumb from products where itemnumb = (select max(itemnumb) from products)')
@@ -245,11 +248,44 @@ app.post('/new/picupload/picname',function(req,res,next){
 //     // console.log(req.files);
 // });
 
-
+// categories and items listing
 
 app.get('/category', function(req,res,next){
     var catName = 'laptop';
     res.render('categories',{category: catName});
 });
+
+app.get('/category/:id/products',function(req,res,next){
+    var id = req.params.id;
+    var dbParam = {};
+    dbParam.id = id;
+    db.one('SELECT * from categoriesmain where catnumb = ${id}',dbParam)
+        .then(function(response){
+            console.log(response);
+            res.render('listItem',{catname: response.catname, catnumb: response.catnumb});
+        })
+        .catch(function(err){
+            res.end('failed loading: '+err);
+        });
+})
+
+app.get('/getitems/:id',function(req,res,next){
+    var id = req.params.id;
+    var dbParam = {};
+    dbParam.id = id;
+    db.many('select * from products where itemcatnumb = ${id}',dbParam)
+        .then(function(response){
+            console.log(response);
+            res.send(response);
+        })
+        .catch(function(err){
+            console.log("item query failed: "+err);
+            res.end("item query failed:" + err);
+        });
+})
+
+// item display
+
+app.get('/')
 
 app.listen(3000);

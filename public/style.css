@@ -9,3 +9,32 @@ body{
 h1{
     color:purple;
 }
+
+section.main{
+    width:80%;
+    float:left;
+}
+
+section.sidebar{
+    width:20%;
+    float:left;
+}
+
+/* for items*/
+
+h3 {
+    
+}
+
+.itemspace div{
+    width: 25%;
+    height:20vh;
+    float:left;
+    margin-left:1%;
+    margin-right:1%;
+}
+
+.itemspace img{
+    width:100%;
+    height:auto;
+}
