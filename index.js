@@ -182,7 +182,7 @@ app.post('/new/item/success', function(req,res,next){
     console.log(itemData);
     console.log(3);
     itemData.picture = 'none';
-    db.none('INSERT into products("itemname","itemdesc","itemcat","itemnumb","itempicture1") values(${itemName},${itemDesc},${itemCat},${itemNumb},${picture})',itemData)
+    db.none('INSERT into products("itemname","itemdesc","itemcat","itemcatnumb","itemnumb","itempicture1") values(${itemName},${itemDesc},${itemCatName},${itemCatNumb},${itemNumb},${picture})',itemData)
         .then(function(){
             console.log('logged '+itemData);
 

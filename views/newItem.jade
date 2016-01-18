@@ -39,13 +39,13 @@ body
       success: function(res){
         console.log(res);
         for(var i = 0; i < res.length; i++){
-          appendList(res[i].catname);
+          appendList(res[i]);
           console.log(i);
         }
       }
     })
     function appendList(name){
-      var $o = $("<option>").text(name).attr({value: name});
+      var $o = $("<option>").text(name.catname).attr('value',JSON.stringify({catname: name.catname, catnumb: name.catnumb }));
       $(".newItemCat").append($o);
     }
     var newItem = {};
@@ -53,12 +53,15 @@ body
       e.preventDefault();
       var itemName = $(".newItemName").val();
       var itemDesc = $(".newItemDesc").val();
-      var itemCat = $(".newItemCat").val();
+      var itemCatName = JSON.parse(($(".newItemCat").val())).catname;
+      var itemCatNumb = JSON.parse(($(".newItemCat").val())).catnumb;
       var itemNumb = #{itemnumb}
       newItem.itemName = itemName;
       newItem.itemDesc = itemDesc;
-      newItem.itemCat = itemCat;
+      newItem.itemCatName = itemCatName;
+      newItem.itemCatNumb = itemCatNumb;
       newItem.itemNumb = itemNumb;
+      console.log((newItem));
       $.ajax({
         type:'POST',
         data:JSON.stringify(newItem),
