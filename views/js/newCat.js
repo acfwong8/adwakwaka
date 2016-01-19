@@ -8,7 +8,7 @@ $('.newCat').on('submit',function(){
     var test = {'hello':'hellothere'};
     $.ajax({
         type:'POST',
-        data:JSON.stringify(catItem)
+        data:JSON.stringify(catItem),
         contentType: 'application/json',
         url:'http://localhost:3000/new/category/success',
         success: function(res){

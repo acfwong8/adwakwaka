@@ -1,5 +1,7 @@
+link(rel="stylesheet",href="https://fonts.googleapis.com/css?family=Archivo+Narrow|News+Cycle|Oswald",type="text/css")
 link(rel="stylesheet",href="/style.css")
 link(rel="stylesheet",href="/clearfix.css")
+
 
 body
 
@@ -7,6 +9,9 @@ body
     div(class="logo")
       a(href="/")
         img(src="../../uploads/staticpics/logo.png")
+
+    p(class="login")
+      a(href="/login") Log in as user
     div(class="toolbar")
       ul
         li
@@ -57,19 +62,20 @@ body
         console.log(res);
         items = res;
         for(var i = 0; i < items.length; i++){
-          appendItem(i,items[i].itemname,items[i].itempicture1,items[i].itemnumb);
+          appendItem(i,items[i].itemname,items[i].itempicture1,items[i].itemnumb,items[i].itemdesc);
         }
       }
     })
 
-    function appendItem(number,title,picture,itemNumb){
+    function appendItem(number,title,picture,itemNumb,itemDesc){
       var $div = $("<div>").attr('class','item'+number);
       var $h3 = $("<h3>").text(title);
       var $img = $("<img>").attr('src',"../../uploads/"+picture+".jpg");
       var $atitle = $("<a>").attr('href',"/category/#{catnumb}/products/"+itemNumb);
       var $apic = $("<a>").attr('href',"/category/#{catnumb}/products/"+itemNumb);
+      var $pDesc = $("<p>").text(itemDesc);
       $atitle.append($h3);
       $apic.append($img);
-      $div.append($atitle,$apic);
+      $div.append($apic,$atitle,$pDesc);
       $(".itemspace").append($div);
     }

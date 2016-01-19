@@ -286,6 +286,8 @@ app.get('/getitems/:id',function(req,res,next){
 
 // item display
 
-app.get('/')
+app.get('/category/:catid/products/:itemid',function(req,res,next){
+    var itemId = req.params.itemid;
+})
 
 app.listen(3000);
