@@ -3,21 +3,65 @@
 }
 
 body{
-    
+    margin:0;
+    padding:0;
+    background-color:rgb(76,109,156);
 }
 
 h1{
     color:purple;
 }
 
-section.main{
-    width:80%;
+section.main{    
+    width:auto;
+    float:left;
+    background-color:white;
+    border-top-left-radius:10px;
+    height:100vh;
+    padding-left:1%;
+    margin-left:200px;
+}
+header{
+    position:relative;
+}
+header .logo {
     float:left;
 }
 
-section.sidebar{
-    width:20%;
+header .toolbar {
     float:left;
+}
+
+header .toolbar ul{
+    width:50%;
+    margin:auto;
+    position:absolute;
+    bottom:0;
+}
+
+header .toolbar ul li{
+    text-decoration:none;
+    display: block;
+    float:left;
+    padding-left:1%;
+    padding-right:1%;
+    text-decoration:none;
+}
+
+header a{
+    text-decoration:none;
+}
+
+section.sidebar{
+    width:200px;
+    float:left;
+    position:fixed;
+    text-align:right;
+    padding-right:1%;
+}
+
+section.sidebar a{
+    text-decoration: none;
 }
 
 /* for items*/
