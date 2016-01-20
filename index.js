@@ -15,7 +15,7 @@ var upload = multer({ storage : storage}).single('itemPic');
 var path = require('path');
 var bodyParser = require('body-parser');
 var passport = require('passport');
-var pplocal = require('passport-local');
+var localStrategy = require('passport-local').Strategy;
 var session = require('express-session');
 var logger = require('morgan');
 var methodOverride = require('method-override');
@@ -121,14 +121,49 @@ app.get('/getcategories',function(req,res,next){
     // res.send(categories);
 });
 
+var auth = {};
+passport.use(new localStrategy(
+    function(username,password,done){
+        var credentials = {};
+        credentials.user = username;
+        credentials.pass = password;
+        db.one('SELECT * from login where username = ${user}',credentials)
+            .then(function(response){
+                var User = response;
+                console.log(User);
+                if (User){
+                    success(User);
+                }
+
+                function success(user){
+                    if (!user){
+                        return done (null,false,{message: 'wrong user'});
+                    }
+                    if (user.password !== password){
+                        return done(null,false,{message: 'wrong password'});
+                    }
+                    return done(null,{username: user.username})
+                }
+                
+            })
+            .catch(function(err){
+                console.log('login fetch failed' + err);
+            });
+    }));
+passport.serializeUser(function(user,done){
+    done(null, user);
+});
+passport.deserializeUser(function(user,done){
+    done(null, user);
+});
+
 app.get('/login', function(req,res,next){
     res.render('login');
 });
-app.post('/logon', passport.authenticate('signIn', {
+app.post('/logon', passport.authenticate('local', {
     successRedirect:'/',
     failureRedirect:'/login'
-})
-        );
+}));
 
 app.get('/new',function(req,res,next){
     res.render('new');
@@ -211,8 +246,6 @@ app.post('/new/picupload/picname',function(req,res,next){
     var itemData = {itemNumb: req.body.itemNumb};
     console.log(itemData);
     var filename = 'itemPic-'
-    // var date = new Date();
-    // console.log(z);
     z = Date.now();
     console.log(z);
     db.one('SELECT itempicture1 from products where itemnumb = ${itemNumb}', itemData)
@@ -236,17 +269,6 @@ app.post('/new/picupload/picname',function(req,res,next){
             res.end('Upload failed: ' + err);
         });
 });
-
-
-// app.post('/success',function(req,res,next){
-//     upload(req,res,function(err){
-//         if(err){
-//             return res.end("Error uploading");
-//         }
-//         res.end("File is uploaded");
-//     });
-//     // console.log(req.files);
-// });
 
 // categories and items listing
 
