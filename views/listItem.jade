@@ -56,6 +56,11 @@ body
     
     var user = "#{username}";
     var permissions = "#{permissions}"
+
+    function cPanel(){
+      var $ul = $("<ul>");
+      var $a = $("<a>").text("Admin Panel").attr("href","/admin");
+    }
     
     if(creds.getPermissions() == ''){
       var $a = $("<a>").attr("href","/login").text("Login as user");
