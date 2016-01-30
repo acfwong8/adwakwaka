@@ -69,15 +69,6 @@ app.use(bodyParser.urlencoded({
     extended:true
 }));
 
-db.query("SELECT * from login")
-    .then(function(data){
-        console.log("Data:",data);
-        return(data);
-    })
-    .catch(function(error){
-        console.log("ERROR:",error);
-    });
-
 var saveCategory = function(){
     var categories = [];
     return {
@@ -95,7 +86,7 @@ app.use(express.static(path.join(__dirname,'public')));
 
 app.get('/', function(req,res,next){
     var name = userdata;
-    console.log(name);
+    console.log(auth);
     res.render('index',{companyname: name});
 
 });
@@ -113,7 +104,6 @@ app.get('/getcategories',function(req,res,next){
             if(err){
                 return console.error('error runnin query',err);
             }
-            console.log(result.rows);
             categories = result.rows;
             res.send(categories);
         });
@@ -127,6 +117,7 @@ passport.use(new localStrategy(
         var credentials = {};
         credentials.user = username;
         credentials.pass = password;
+
         db.one('SELECT * from login where username = ${user}',credentials)
             .then(function(response){
                 var User = response;
@@ -142,7 +133,10 @@ passport.use(new localStrategy(
                     if (user.password !== password){
                         return done(null,false,{message: 'wrong password'});
                     }
+                    auth.user = username;
+                    auth.permissions = user.permissions
                     return done(null,{username: user.username})
+
                 }
                 
             })
@@ -164,6 +158,11 @@ app.post('/logon', passport.authenticate('local', {
     successRedirect:'/',
     failureRedirect:'/login'
 }));
+app.get('/logout',function(req,res){
+    req.logout();
+    auth = {};
+    res.redirect('/')
+});
 
 app.get('/new',function(req,res,next){
     res.render('new');
@@ -283,8 +282,7 @@ app.get('/category/:id/products',function(req,res,next){
     dbParam.id = id;
     db.one('SELECT * from categoriesmain where catnumb = ${id}',dbParam)
         .then(function(response){
-            console.log(response);
-            res.render('listItem',{catname: response.catname, catnumb: response.catnumb});
+            res.render('listItem',{catname: response.catname, catnumb: response.catnumb, username: auth.user, permissions: auth.permissions});
         })
         .catch(function(err){
             res.end('failed loading: '+err);

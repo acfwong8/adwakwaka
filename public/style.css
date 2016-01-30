@@ -9,6 +9,13 @@ body{
     background-color:rgb(76,109,156);
 }
 
+.hidden{
+    display:hidden;
+}
+.invisible{
+    opacity:0;
+}
+
 h1{
     color:purple;
 }
@@ -19,7 +26,7 @@ section.main{
     background-color:white;
     border-top-left-radius:10px;
     height:100vh;
-    padding-left:1%;
+    padding-left:10px;
     margin-left:200px;
 }
 header{
@@ -68,7 +75,7 @@ section.sidebar{
     float:left;
     position:fixed;
     text-align:right;
-    padding-right:1%;
+    padding-right:15px;
     background-color:rgba(255,255,255,0.5)
 }
 
@@ -77,7 +84,7 @@ section.sidebar a{
     color:rgba(100,100,100,1);
 }
 
-/* for items*/
+/* for items listing in specific Category*/
 
 h3 {
     
@@ -99,4 +106,8 @@ h3 {
 .itemspace img{
     width:100%;
     height:auto;
+}
+
+.itemspace p {
+    margin:0;
 }
