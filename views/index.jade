@@ -1,22 +1,73 @@
 link(rel='stylesheet', href='/style.css')
-
+link(rel="stylesheet",href="/clearfix.css")
 
 body
+  header(class="cf")
+    div(class="logo")
+      a(href="/")
+        img(src="../../uploads/staticpics/logo.png")
 
-  p(class='login')
-    a(href='/login') Log in as user
-  h1 #{companyname}
-  p this is my page
-  p
-    a(href='/new') New updates
-  p  
-    a(href='/category') categories
+    p(class="login")
+      
+    div(class="toolbar")
+      ul
+        li
+          a(href="/") Home
+        li
+          a(href="/business") Our business
+        li
+          a(href="/contact") Contact
+        li
+          a(href="/support") RMA/Support
 
-  div(class='catList') Category List
+  section(class="sidebar")
+
+  section(class="main")
+    h1 #{catname}
+
+    div(class="itemspace")
+      h2 Welcome to mantronic
     
   script(src='/jquery-1.11.3.js')
 
   script.
+
+    function cred(){
+      var auth = {};
+      return {
+        setCred: function(){
+          auth.user = "#{username}";
+          auth.permissions = "#{permissions}";
+          return auth;
+        },
+        getUser: function(){
+          return auth.user;
+        },
+        getPermissions: function(){
+          return auth.permissions
+        }
+      }
+    }
+    var creds = cred();
+    creds.setCred();
+    
+    var user = "#{username}";
+    var permissions = "#{permissions}"
+
+    function cPanel(){
+      var $ul = $("<ul>");
+      var $a = $("<a>").text("Admin Panel").attr("href","/admin");
+    }
+    
+    if(creds.getPermissions() == ''){
+      var $a = $("<a>").attr("href","/login").text("Login as user");
+      $(".login").append($a);
+    } else {
+      var $span = $("<span>").text("Welcome, " + creds.getUser());
+      var $a = $("<a>").attr("href","/logout").text("Log out");
+      $(".login").append($span, $a);
+    }
+
     var categories = [];
     $.ajax({
       type:'GET',
@@ -26,7 +77,6 @@ body
         console.log(res);
         for(var i = 0; i < res.length; i++){
           appendp(res[i].catname,res[i].catnumb);
-          console.log(i);
         }
       }
     })
@@ -34,7 +84,7 @@ body
     function appendp(name, numb){
       var $a = $("<a>").text(name).attr("href","/category/"+numb+"/products");
       var $p = $("<p>").append($a);
-      $(".catList").append($p);
+      $(".sidebar").append($p);
     }
 
   script(src='/js/home.js')

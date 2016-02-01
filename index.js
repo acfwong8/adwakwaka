@@ -87,7 +87,7 @@ app.use(express.static(path.join(__dirname,'public')));
 app.get('/', function(req,res,next){
     var name = userdata;
     console.log(auth);
-    res.render('index',{companyname: name});
+    res.render('index',{companyname: name, username: auth.user, permissions: auth.permissions});
 
 });
 
