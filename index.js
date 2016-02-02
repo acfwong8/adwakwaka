@@ -87,7 +87,7 @@ app.use(express.static(path.join(__dirname,'public')));
 app.get('/', function(req,res,next){
     var name = userdata;
     console.log(auth);
-    res.render('index',{companyname: name, username: auth.user, permissions: auth.permissions});
+    res.render('index',{companyname: name, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 
 });
 
@@ -112,6 +112,20 @@ app.get('/getcategories',function(req,res,next){
 });
 
 var auth = {};
+var timestamps = [{user:'',permissions:'',sessionStart:''}];
+var current = currentAuth();
+function currentAuth(){
+    var currentAuth = {};
+    return {
+        setCurrentAuth: function(authn){
+            currentAuth = authn;
+            return currentAuth;
+        },
+        getCurrentAuth: function(){
+            return currentAuth;
+        }
+    }
+}
 passport.use(new localStrategy(
     function(username,password,done){
         var credentials = {};
@@ -133,8 +147,17 @@ passport.use(new localStrategy(
                     if (user.password !== password){
                         return done(null,false,{message: 'wrong password'});
                     }
+                    for(var i = 0; i < timestamps.length; i++){
+                        if(timestamps[i].user = user.username && timestamps[i].sessionStart){
+                            return done(null,false,{message: 'User already logged on'})
+                        }
+                    }
                     auth.user = username;
-                    auth.permissions = user.permissions
+                    auth.permissions = user.permissions;
+                    auth.sessionStart = Date.now();
+                    timestamps.push(auth);
+                    current.setCurrentAuth(auth);
+                    console.log(timestamps);
                     return done(null,{username: user.username})
 
                 }
@@ -160,9 +183,25 @@ app.post('/logon', passport.authenticate('local', {
 }));
 app.get('/logout',function(req,res){
     req.logout();
-    auth = {};
+    var currentId = current.getCurrentAuth();
+    for(var i = 0; i < timestamps.length; i++){
+        console.log(timestamps[i]);
+        console.log(currentId);
+        if(timestamps[i].user == currentId.user && timestamps[i].sessionStart == currentId.sessionStart){
+            console.log("splice "+timestamps[i]);
+            timestamps.splice(i,1);
+            current.setCurrentAuth(timestamps[0]);
+        } else {
+            console.log("notsplicing")
+        }
+    }
     res.redirect('/')
 });
+app.post('/userstat',function(req,res){
+    console.log('hellohello');
+    var id = req.body;
+    current.setCurrentAuth(id);
+})
 
 app.get('/new',function(req,res,next){
     res.render('new');
@@ -216,8 +255,6 @@ app.get('/new/item',function(req,res,next){
 app.post('/new/item/success', function(req,res,next){
     // console.log('body: '+JSON.stringify(req.body));
     var itemData = req.body;
-    console.log(itemData);
-    console.log(3);
     itemData.picture = 'none';
     db.none('INSERT into products("itemname","itemdesc","itemcat","itemcatnumb","itemnumb","itempicture1") values(${itemName},${itemDesc},${itemCatName},${itemCatNumb},${itemNumb},${picture})',itemData)
         .then(function(){
@@ -282,7 +319,7 @@ app.get('/category/:id/products',function(req,res,next){
     dbParam.id = id;
     db.one('SELECT * from categoriesmain where catnumb = ${id}',dbParam)
         .then(function(response){
-            res.render('listItem',{catname: response.catname, catnumb: response.catnumb, username: auth.user, permissions: auth.permissions});
+            res.render('listItem',{catname: response.catname, catnumb: response.catnumb, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
         })
         .catch(function(err){
             res.end('failed loading: '+err);
