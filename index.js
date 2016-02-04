@@ -86,8 +86,12 @@ app.use(express.static(path.join(__dirname,'public')));
 
 app.get('/', function(req,res,next){
     var name = userdata;
-    console.log(auth);
+    console.log("first");
+    console.log(current.getCurrentAuth());
     res.render('index',{companyname: name, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+    current.setCurrentAuth(timestamps[0]);
+    console.log("then");
+    console.log(current.getCurrentAuth());
 
 });
 
@@ -194,12 +198,14 @@ app.get('/logout',function(req,res){
         } else {
             console.log("notsplicing")
         }
+        current.setCurrentAuth(timestamps[0]);
     }
     res.redirect('/')
 });
 app.post('/userstat',function(req,res){
-    console.log('hellohello');
+    console.log('userstat');
     var id = req.body;
+    console.log(id);
     current.setCurrentAuth(id);
 })
 
@@ -317,6 +323,7 @@ app.get('/category/:id/products',function(req,res,next){
     var id = req.params.id;
     var dbParam = {};
     dbParam.id = id;
+    console.log(current.getCurrentAuth());
     db.one('SELECT * from categoriesmain where catnumb = ${id}',dbParam)
         .then(function(response){
             res.render('listItem',{catname: response.catname, catnumb: response.catnumb, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});

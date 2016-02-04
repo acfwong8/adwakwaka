@@ -40,6 +40,7 @@ body
         setCred: function(){
           auth.user = "#{username}";
           auth.permissions = "#{permissions}";
+          auth.timestamp = "#{sessionStart}"
           return auth;
         },
         getUser: function(){
@@ -47,6 +48,9 @@ body
         },
         getPermissions: function(){
           return auth.permissions
+        },
+        getTimestamp: function(){
+          return auth.timestamp;
         }
       }
     }
@@ -69,6 +73,24 @@ body
       var $a = $("<a>").attr("href","/logout").text("Log out");
       $(".login").append($span, $a);
     }
+
+    $(window).bind("beforeunload",function(){
+      var currentAuth = {};
+      currentAuth.user = creds.getUser();
+      currentAuth.permissions = creds.getPermissions();
+      currentAuth.sessionStart = creds.getTimestamp();
+      $.ajax({
+        type:'POST',
+        url:"http://localhost:3000/userstat",
+        data:JSON.stringify(currentAuth),
+        contentType:"application/json",
+        success: function(res){
+          console.log(res);
+          complete();
+        }
+      });
+    });
+
     var categories = [];
     $.ajax({
       type:'GET',

@@ -21,7 +21,7 @@ body
           a(href="/support") RMA/Support
 
   section(class="sidebar")
-
+    p
   section(class="main")
     h1 #{catname}
 
@@ -31,7 +31,6 @@ body
   script(src='/jquery-1.11.3.js')
 
   script.
-
     function cred(){
       var auth = {};
       return {
@@ -71,7 +70,7 @@ body
       var $a = $("<a>").attr("href","/logout").attr("class","logout").text("Log out");
       $(".login").append($span, $a);
     }
-    $("a").on("click",function(){
+    $(window).bind("beforeunload",function(){
       var currentAuth = {};
       currentAuth.user = creds.getUser();
       currentAuth.permissions = creds.getPermissions();
@@ -84,6 +83,9 @@ body
         success: function(res){
           console.log(res);
           complete();
+        },
+        fail: function(fail){
+          console.log(fail);
         }
       });
     });
