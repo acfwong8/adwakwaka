@@ -33,6 +33,7 @@ body
 
 
   script(src="/jquery-1.11.3.js")
+  script(src="/config.js")
   script.
     function cred(){
       var auth = {};
@@ -81,7 +82,7 @@ body
       currentAuth.sessionStart = creds.getTimestamp();
       $.ajax({
         type:'POST',
-        url:"http://localhost:3000/userstat",
+        url:"http://"+serverIP+"/userstat",
         data:JSON.stringify(currentAuth),
         contentType:"application/json",
         success: function(res){
@@ -94,7 +95,7 @@ body
     var categories = [];
     $.ajax({
       type:'GET',
-      url:'http://localhost:3000/getcategories',
+      url:'http://'+serverIP+'/getcategories',
       dataType:'JSON',
       success: function(res){
         for(var i = 0; i< res.length; i++){
@@ -111,7 +112,7 @@ body
     var items = [];
     $.ajax({
       type:'GET',
-      url:'http://localhost:3000/getitems/#{catnumb}',
+      url:'http://'+serverIP+'/getitems/#{catnumb}',
       dataType:'JSON',
       success: function(res){
         console.log(res);
