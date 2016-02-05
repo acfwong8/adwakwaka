@@ -45,8 +45,6 @@ h1{
 }
 
 section.main{    
-    width:auto;
-    float:left;
     background-color:white;
     border-top-left-radius:10px;
     height:100vh;
@@ -95,6 +93,7 @@ header a{
 }
 
 section.sidebar{
+    margin-top:0;
     width:210px;
     float:left;
     position:fixed;
@@ -109,12 +108,16 @@ section.sidebar a{
 }
 
 /* for items listing in specific Category*/
+.main h1, .main h2{
+    margin-top:0;
+}
 
 h3 {
     
 }
 
 .itemspace {
+    width:100%;
     font-family:'News Cycle', sans-serif;
 }
 
