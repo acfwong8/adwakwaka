@@ -83,36 +83,6 @@ app.set('view engine','jade');
 
 app.use(express.static(path.join(__dirname,'public')));
 
-app.get('/', function(req,res,next){
-    var name = userdata;
-    console.log("first");
-    console.log(current.getCurrentAuth());
-    res.render('index',{companyname: name, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
-    current.setCurrentAuth(timestamps[0]);
-    console.log("then");
-    console.log(current.getCurrentAuth());
-
-});
-
-
-
-app.get('/getcategories',function(req,res,next){
-    var categories = {};
-    pg.connect(cns,function(err,client,done){
-        if(err){
-            return console.error('error fetching',err);
-        }
-        client.query('SELECT * from categoriesmain where catname is not null',function(err,result){
-            done();
-            if(err){
-                return console.error('error runnin query',err);
-            }
-            categories = result.rows;
-            res.send(categories);
-        });
-    });
-    // res.send(categories);
-});
 
 var auth = {};
 var timestamps = [{user:'',permissions:'',sessionStart:''}];
@@ -144,23 +114,30 @@ passport.use(new localStrategy(
                 }
 
                 function success(user){
+                    console.log(1);
                     if (!user){
+                        console.log(2);
                         return done (null,false,{message: 'wrong user'});
                     }
-                    if (user.password !== password){
+                    if (user.password !== password){;
+                        console.log(3)
                         return done(null,false,{message: 'wrong password'});
                     }
                     for(var i = 0; i < timestamps.length; i++){
-                        if(timestamps[i].user = user.username && timestamps[i].sessionStart){
-                            return done(null,false,{message: 'User already logged on'})
-                        }
+                        console.log(4);
+                        // if(timestamps[i].user = user.username && timestamps[i].sessionStart){
+                        //     console.log(5);
+                        //     return done(null,false,{message: 'User already logged on'})
+                        // }
                     }
+
                     auth.user = username;
                     auth.permissions = user.permissions;
                     auth.sessionStart = Date.now();
                     timestamps.push(auth);
                     current.setCurrentAuth(auth);
-                    console.log(timestamps);
+                    // console.log(timestamps);
+                    // console.log(auth)
                     return done(null,{username: user.username})
 
                 }
@@ -171,19 +148,62 @@ passport.use(new localStrategy(
             });
     }));
 passport.serializeUser(function(user,done){
-    done(null, user);
+    console.log('serial');
+    return done(null, user);
 });
-passport.deserializeUser(function(user,done){
-    done(null, user);
+passport.deserializeUser(function(id,done){
+    console.log('des');
+    return done(err,user);
 });
 
+app.get('/', function(req,res,next){
+    var name = userdata;
+    console.log("first");
+    console.log(current.getCurrentAuth());
+    res.render('index',{companyname: name, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+    current.setCurrentAuth(timestamps[0]);
+    console.log("then");
+    console.log(current.getCurrentAuth());
+});
+
+
+
+app.get('/getcategories',function(req,res,next){
+    var categories = {};
+    pg.connect(cns,function(err,client,done){
+        if(err){
+            return console.error('error fetching',err);
+        }
+        client.query('SELECT * from categoriesmain where catname is not null',function(err,result){
+            done();
+            if(err){
+                return console.error('error runnin query',err);
+            }
+            categories = result.rows;
+            res.send(categories);
+        });
+    });
+    // res.send(categories);
+});
+
+
 app.get('/login', function(req,res,next){
+    console.log(timestamps);
     res.render('login');
 });
 app.post('/logon', passport.authenticate('local', {
     successRedirect:'/',
-    failureRedirect:'/login'
+    failureRedirect:'/loginfail'
 }));
+app.get('/loginfail',function(rex,res,next){
+    // console.log(timestamps);
+    // console.log(auth);
+    res.end('failed to login');
+})
+// app.post('/logon', function(req,res,next){
+    
+// });
+
 app.get('/logout',function(req,res){
     req.logout();
     var currentId = current.getCurrentAuth();
