@@ -1,0 +1,7 @@
+{
+    "dev": {
+        "driver":"pg"
+    },
+    "other": "postgres://anguswong:yEwuKt61@localhost:5432/siteinfo"
+    
+}
