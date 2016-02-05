@@ -15,7 +15,7 @@ body
       p  Hit create to complete
 
   script(src='/jquery-1.11.3.js')
-
+  script(src='/config.js')
   script.
     var catItem = {};
     $('.newCat').on('submit',function(e){
@@ -28,7 +28,7 @@ body
         type:'POST',
         data:JSON.stringify(catItem),
         contentType: 'application/json',
-        url:'http://localhost:3000/new/category/success',
+        url:'http://'+serverIP+'/new/category/success',
         success: function(res){
           console.log('success');
           console.log(JSON.stringify(res));

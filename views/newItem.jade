@@ -32,12 +32,12 @@ body
       input(type="submit",value="Upload Picture",name="submit" disabled)
 
   script(src='/jquery-1.11.3.js')
-
+  script(src='/config.js')
   script.
     var categories = [];
     $.ajax({
       type:'GET',
-      url:'http://localhost:3000/getcategories',
+      url:'http://'+serverIP+'/getcategories',
       dataType:'JSON',
       success: function(res){
         console.log(res);
@@ -89,7 +89,7 @@ body
         type:'POST',
         data:JSON.stringify(newItem),
         contentType:'application/json',
-        url:'http://localhost:3000/new/picupload/picname',
+        url:'http://'+serverIP+'/new/picupload/picname',
         success: function(res){
           console.log('picture data up success: ' + newItem);
           console.log(newItem);
