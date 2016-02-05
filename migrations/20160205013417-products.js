@@ -8,7 +8,7 @@ exports.up = function(db, callback) {
         itemcat:'varchar(80)',
         itempicture1:'varchar(80)',
         itemnumb:'real',
-        itemcatnumg:'real',
+        itemcatnumb:'real',
         price:'real',
         itemdesclong:'varchar(400)',
         currency:'varchar(10)'

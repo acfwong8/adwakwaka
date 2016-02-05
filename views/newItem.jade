@@ -11,6 +11,9 @@ body
       p Item Description
       input(class="newItemDesc",type="text",name="itemDesc")
     div
+      p Item Price
+      input(class="newItemPrice",type="text",name="itemPrice")
+    div
       p In category:
       select(class="newItemCat")
     input(type="submit",value="Save Fields",name="saveFields")
@@ -55,9 +58,11 @@ body
       var itemDesc = $(".newItemDesc").val();
       var itemCatName = JSON.parse(($(".newItemCat").val())).catname;
       var itemCatNumb = JSON.parse(($(".newItemCat").val())).catnumb;
+      var itemPrice = $(".newItemPrice").val();
       var itemNumb = #{itemnumb}
       newItem.itemName = itemName;
       newItem.itemDesc = itemDesc;
+      newItem.itemPrice = itemPrice;
       newItem.itemCatName = itemCatName;
       newItem.itemCatNumb = itemCatNumb;
       newItem.itemNumb = itemNumb;

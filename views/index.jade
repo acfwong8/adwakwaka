@@ -69,6 +69,9 @@ body
       var $span = $("<span>").text("Welcome, " + creds.getUser());
       var $a = $("<a>").attr("href","/logout").attr("class","logout").text("Log out");
       $(".login").append($span, $a);
+      var $toola = $("<a>").attr("href","/new").text("Create new...");
+      var $li = $("<li>").append($toola);
+      $(".toolbar ul").append($li)
     }
     $(window).bind("beforeunload",function(){
       var currentAuth = {};
