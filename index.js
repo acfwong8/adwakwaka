@@ -282,7 +282,7 @@ app.post('/new/item/success', function(req,res,next){
     // console.log('body: '+JSON.stringify(req.body));
     var itemData = req.body;
     itemData.picture = 'none';
-    db.none('INSERT into products("itemname","itemdesc","itemcat","itemcatnumb","itemnumb","itempicture1","price") values(${itemName},${itemDesc},${itemCatName},${itemCatNumb},${itemNumb},${picture},${itemPrice})',itemData)
+    db.none('INSERT into products("itemname","itemdesc","itemdesclong","itemcat","itemcatnumb","itemnumb","itempicture1","price") values(${itemName},${itemDesc},${itemDescLong},${itemCatName},${itemCatNumb},${itemNumb},${picture},${itemPrice})',itemData)
         .then(function(){
             console.log('logged '+itemData);
 
@@ -361,6 +361,7 @@ app.get('/getitems/:id',function(req,res,next){
     db.many('select * from products where itemcatnumb = ${id}',dbParam)
         .then(function(response){
             console.log(response);
+
             res.send(response);
         })
         .catch(function(err){
@@ -373,6 +374,32 @@ app.get('/getitems/:id',function(req,res,next){
 
 app.get('/category/:catid/products/:itemid',function(req,res,next){
     var itemId = req.params.itemid;
-})
+    var dbParam = {};
+    dbParam.itemId = itemId;
+    db.one('SELECT * from products where itemnumb = ${itemId}',dbParam)
+        .then(function(response){
+            res.render('theItem',{itemname: response.itemname, itemnumb: response.itemnumb, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+        })
+        .catch(function(err){
+            res.end('failed loading: '+ err);
+        });
+});
+
+app.get('/getitem/:itemid',function(req,res,next){
+    var itemId = req.params.itemid;
+    var dbParam = {};
+    dbParam.itemId = itemId;
+    db.one('SELECT * from products where itemnumb = ${itemId}',dbParam)
+        .then(function(response){
+            console.log(response);
+            // response.newdesclong = response.itemdesclong.replace("\n","<br/>");
+            console.log(response.itemdesclong);
+            // console.log(response.newdesclong);
+            res.send(response);
+        })
+        .catch(function(err){
+            res.end('item query failed: ' + err);
+        });
+});
 
 app.listen(3000);

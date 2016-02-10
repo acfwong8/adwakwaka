@@ -8,8 +8,11 @@ body
       p New Item Name
       input(class="newItemName",type="text",name="itemName")
     div
-      p Item Description
+      p Short Item Description
       input(class="newItemDesc",type="text",name="itemDesc")
+    div
+      p Long item Description
+      textarea(rows="4",cols="60")
     div
       p Item Price
       input(class="newItemPrice",type="text",name="itemPrice")
@@ -56,12 +59,14 @@ body
       e.preventDefault();
       var itemName = $(".newItemName").val();
       var itemDesc = $(".newItemDesc").val();
+      var itemDescLong = $("textarea").val();
       var itemCatName = JSON.parse(($(".newItemCat").val())).catname;
       var itemCatNumb = JSON.parse(($(".newItemCat").val())).catnumb;
       var itemPrice = $(".newItemPrice").val();
       var itemNumb = #{itemnumb}
       newItem.itemName = itemName;
       newItem.itemDesc = itemDesc;
+      newItem.itemDescLong = itemDescLong;
       newItem.itemPrice = itemPrice;
       newItem.itemCatName = itemCatName;
       newItem.itemCatNumb = itemCatNumb;

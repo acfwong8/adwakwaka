@@ -137,3 +137,15 @@ h3 {
 .itemspace p {
     margin:0;
 }
+
+/*single item display*/
+
+.singleItem img{
+    width: 50%;
+    padding: 0 2%;
+    float:left;
+}
+
+.longDesc {
+    white-space:pre-wrap;
+}
