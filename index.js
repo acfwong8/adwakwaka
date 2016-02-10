@@ -31,6 +31,7 @@ app.use(logger('combined'));
 app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(passport.initialize());
 app.use(passport.session());
+
 app.use('/uploads', express.static('uploads'));
 
 var cn = {
@@ -297,8 +298,9 @@ app.post('/new/picupload',function(req,res,next){
         if(err){
             return res.end("Error uploading");
         }
+        res.send('<a href="/../..">Back to Create New<a>')
     });
-    res.send('<FORM><INPUT Type="button" VALUE="Back" onClick="history.go(-1);return true;"></FORM>')
+
     // res.send("File is uploaded");
 })
 
