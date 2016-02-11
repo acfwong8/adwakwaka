@@ -409,7 +409,7 @@ app.get('/support',function(req,res,next){
 })
 
 app.post('/support/submit',function(req,res,next){
-    
+    console.log(req.body);
 })
 
 app.listen(3000);

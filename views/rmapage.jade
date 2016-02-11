@@ -115,21 +115,22 @@ body
         }
       }
     })
+    var ent = 1;
     appendForm();
     function appendForm(){
-      var $itemName = $("<input>").attr("type","text").attr("class","itemName");
+      var $itemName = $("<input>").attr("type","text").attr("class","itemName" + ent);
       var $pName = $("<p>").text("Name of Item");
       
-      var $serialNumber = $("<input>").attr("type","text").attr("class","serialNumber");
+      var $serialNumber = $("<input>").attr("type","text").attr("class","serialNumber" + ent);
       var $pSerialNumber = $("<p>").text("Serial Number");
       
-      var $invoiceNumber = $("<input>").attr("type","text").attr("class","invoiceNumber");
+      var $invoiceNumber = $("<input>").attr("type","text").attr("class","invoiceNumber" + ent);
       var $pInvoiceNumber = $("<p>").text("Invoice Number");
 
-      var $quantity = $("<input>").attr("type","text").attr("class","quantity");
+      var $quantity = $("<input>").attr("type","text").attr("class","quantity" + ent);
       var $pQuantity = $("<p>").text("Qty");
       
-      var $invoiceMonth = $("<select>").attr("class","invoiceMonth");
+      var $invoiceMonth = $("<select>").attr("class","invoiceMonth" + ent);
       var monthNames= ["January","February","March","April","May","June","July","August","September","October","November","December"];
       for(var i = 0; i < 12; i++){
         var currentMonth = monthNames[i];
@@ -138,10 +139,10 @@ body
       }
       var $pMonth = $("<p>").text("Invoice Month");
       
-      var $invoiceDay = $("<select>").attr("class","invoiceDay");
+      var $invoiceDay = $("<select>").attr("class","invoiceDay" + ent);
       var $pDay = $("<p>").text("Day");
 
-      var $invoiceYear = $("<select>").attr("class","invoiceYear");
+      var $invoiceYear = $("<select>").attr("class","invoiceYear" + ent);
       var currentYear = new Date().getFullYear();
       var howManyYears = 3;
       for(var i = currentYear; i > currentYear - howManyYears; i--){
@@ -151,7 +152,7 @@ body
       }
       var $pYear = $("<p>").text("Year");
 
-      var $rmaDesc = $("<textarea>").attr("class","rmadesc");
+      var $rmaDesc = $("<textarea>").attr("class","rmaDesc" + ent);
       var $pRmaDesc = $("<p>").text("Please describe the reason(s) for RMA");
       
       var $namediv = $("<div>").attr("class","namediv");
@@ -179,21 +180,73 @@ body
       $descdiv.append($pRmaDesc,$rmaDesc);
 
       var $details = $("<div>").attr("class","details").addClass("cf");
+
+      var $buttons = $("<div>").attr("class","buttons");
+      var $submit = $("<button>").attr("class","submitform" + ent).attr("type","button").text("Submit");
+      var $submitAdd = $("<button>").attr("class","submitanother" + ent).attr("type","button").text("Submit and Add Another");
+      $buttons.append($submit,$submitAdd);
       
       $details.append($namediv,$numberdiv,$invoicenodiv,$quantitydiv,$monthdiv,$daydiv,$yeardiv);
-      $(".rmaform").append($details,$descdiv);
+      $(".rmaform").append($details,$descdiv,$buttons);
     };
+    
+    function storeData(){
+      var fullForm = {};
+      var rma = {};
+      var personal = {};
+      fullForm.rma = [];
+
+      personal.name = $(".clientname").val();
+      personal.company = $(".companyname").val();
+      personal.email = $(".email").val();
+      personal.street = $(".street").val();
+      personal.city = $(".city").val();
+      personal.prov = $(".province").val();
+
+      rma.item = $(".itemName" + ent).val();
+      rma.number = $(".serialNumber" + ent).val();
+      rma.invoice = $(".invoiceNumber" + ent).val();
+      rma.invDay = $(".invoiceDay" + ent).val();
+      rma.invMonth = $(".invoiceMonth" + ent).val();
+      rma.invYear = $(".invoiceYear" + ent).val();
+      rma.description = $(".rmaDesc" + ent).val();
+      
+      fullForm.rma.push(rma);
+      fullForm.personal = personal;
+      console.log(fullForm);
+      $.ajax({
+        type:"POST",
+        data:JSON.stringify(fullForm),
+        contentType:"application/json",
+        url:"http://"+serverIP+"/support/submit",
+        success:function(res){
+          console.log('stored');
+          console.log(res);
+          complete();
+        }
+      })
+
+    };
+    $(".submitform" + ent).on("click",function(){
+      var store = storeData();
+    });
+
+    $(".submitanother" + ent).on("click",function(){
+      var store = storeData();
+      ent++;
+      var append = appendForm();
+    });
     
     function monthDays(days){
       for(var i = days; i > 0; i--){
         var $option = $("<option>").text(i).val(i);
-        $(".invoiceDay").prepend($option);
+        $(".invoiceDay" + ent).prepend($option);
       }
     }
     monthDays(31);
-    $(".invoiceMonth").on("change",function(){
-      $(".invoiceDay").children("option").remove();
-      var mo = $(".invoiceMonth").val();
+    $(".invoiceMonth" + ent).on("change",function(){
+      $(".invoiceDay" + ent).children("option").remove();
+      var mo = $(".invoiceMonth" + ent).val();
       if(mo == 1 || mo == 3 || mo == 5 || mo == 7 || mo == 8 || mo == 10 || mo == 12){
         monthDays(31);
       } else if(mo == 4 || mo == 6 || mo == 9 || mo == 11){
@@ -202,3 +255,7 @@ body
         monthDays(29);
       }
     });
+
+    function sendData(){
+    
+    }
