@@ -233,6 +233,8 @@ app.get('/new',function(req,res,next){
     res.render('new');
 });
 
+// user panel
+
 // category creation
 
 app.get('/new/category',function(req,res,next){
@@ -410,6 +412,51 @@ app.get('/support',function(req,res,next){
 
 app.post('/support/submit',function(req,res,next){
     console.log(req.body);
-})
+    var rmaForm = req.body;
+    var rmaVar = rmaForm.rma[0];
+    var persVar = rmaForm.personal;
+    var currentTicket = 0;
+    var newTicket = 0;
+    var today = new Date();
+    var year = today.getFullYear();
+    var month = today.getMonth() + 1;
+    var day = today.getDay();
+    var hour = today.getHours();
+    var minutes = today.getMinutes();
+    var seconds = today.getSeconds();
+    var dash = "-";
+    var col = ":";
+    var theDate = year + dash + month + dash + day + " " + hour + col + minutes + col + seconds;
+    persVar.date = theDate;
+    var invDate = rmaVar.invYear + dash + rmaVar.invMonth + dash + rmaVar.invDay;
+    rmaVar.invDate = invDate
+    db.one('SELECT max(supportticket) from ticket')
+        .then(function(response){
+            currentTicket = Math.max(100,response.max);
+            newTicket = currentTicket+1;
+            rmaVar.newTicket = newTicket;
+            persVar.newTicket = newTicket;
+            db.none('INSERT INTO ticket("supportticket","itemname","serialnumber","invoicenumber","invoicedate","quantity","rmadesc") values(${newTicket},${item},${number},${invoice},${invDate},${quantity},${description})',rmaVar)
+                .then(function(){
+                    console.log('logged');
+                    console.log(rmaVar);
+                })
+                .catch(function(err){
+                    console.log('rma err ' + err);
+                });
+            db.none('INSERT INTO support("name","company","date","email","addressstreet","addresscity","addressprovince","supportticket") values(${name},${company},${date},${email},${street},${city},${prov},${newTicket})',persVar)
+                .then(function(){
+                    console.log('logged');
+                    console.log(persVar);
+                })
+                .catch(function(err){
+                    console.log('personal err ' + err)
+                });
+        })
+        .catch(function(err){
+            console.log("fetch failed "+err);
+        });
+
+});
 
 app.listen(3000);

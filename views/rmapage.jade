@@ -49,6 +49,9 @@ body
             p Province
             input(type="text",name="province",class="province")
         div(class="rmaform")
+        div(class="buttons")
+          button(class="submitform",type="button") Submit
+          button(class="submitanother",type="button") Submit and Add Another
 
 
   script(src="/jquery-1.11.3.js")
@@ -181,13 +184,10 @@ body
 
       var $details = $("<div>").attr("class","details").addClass("cf");
 
-      var $buttons = $("<div>").attr("class","buttons");
-      var $submit = $("<button>").attr("class","submitform" + ent).attr("type","button").text("Submit");
-      var $submitAdd = $("<button>").attr("class","submitanother" + ent).attr("type","button").text("Submit and Add Another");
-      $buttons.append($submit,$submitAdd);
+
       
       $details.append($namediv,$numberdiv,$invoicenodiv,$quantitydiv,$monthdiv,$daydiv,$yeardiv);
-      $(".rmaform").append($details,$descdiv,$buttons);
+      $(".rmaform").append($details,$descdiv);
     };
     
     function storeData(){
@@ -209,6 +209,7 @@ body
       rma.invDay = $(".invoiceDay" + ent).val();
       rma.invMonth = $(".invoiceMonth" + ent).val();
       rma.invYear = $(".invoiceYear" + ent).val();
+      rma.quantity = $(".quantity" + ent).val();
       rma.description = $(".rmaDesc" + ent).val();
       
       fullForm.rma.push(rma);
@@ -227,14 +228,18 @@ body
       })
 
     };
-    $(".submitform" + ent).on("click",function(){
+    $(".submitform").on("click",function(){
       var store = storeData();
     });
 
-    $(".submitanother" + ent).on("click",function(){
+    $(".submitanother").on("click",function(){
       var store = storeData();
+      $("input").attr("disabled","true");
+      $("select").attr("disabled","true");
+      $("textarea").attr("disabled","true");
       ent++;
       var append = appendForm();
+      monthChange();
     });
     
     function monthDays(days){
@@ -244,7 +249,23 @@ body
       }
     }
     monthDays(31);
+    function monthChange(){
+      $(".invoiceMonth" + ent).on("change",function(){
+        console.log("Changing");
+        $(".invoiceDay" + ent).children("option").remove();
+        var mo = $(".invoiceMonth" + ent).val();
+        if(mo == 1 || mo == 3 || mo == 5 || mo == 7 || mo == 8 || mo == 10 || mo == 12){
+          monthDays(31);
+        } else if(mo == 4 || mo == 6 || mo == 9 || mo == 11){
+          monthDays(30);
+        } else {
+          monthDays(29);
+        }
+      });
+    }
+    
     $(".invoiceMonth" + ent).on("change",function(){
+      console.log("Changing");
       $(".invoiceDay" + ent).children("option").remove();
       var mo = $(".invoiceMonth" + ent).val();
       if(mo == 1 || mo == 3 || mo == 5 || mo == 7 || mo == 8 || mo == 10 || mo == 12){
@@ -255,7 +276,3 @@ body
         monthDays(29);
       }
     });
-
-    function sendData(){
-    
-    }
