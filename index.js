@@ -402,4 +402,14 @@ app.get('/getitem/:itemid',function(req,res,next){
         });
 });
 
+// RMA Support
+
+app.get('/support',function(req,res,next){
+    res.render('rmapage',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+})
+
+app.post('/support/submit',function(req,res,next){
+    
+})
+
 app.listen(3000);

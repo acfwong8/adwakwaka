@@ -149,3 +149,20 @@ h3 {
 .longDesc {
     white-space:pre-wrap;
 }
+
+
+/*RMA support*/
+.rmaspace{
+    font-family:'News Cycle',sans-serif;
+}
+
+.addressblock {
+    margin-top:20px;
+    margin-right: 20px;
+    float:left;
+    text-align:left;
+}
+
+.rmaform div{
+    float:left;
+}
