@@ -235,6 +235,14 @@ app.get('/new',function(req,res,next){
 
 // user panel
 
+app.get('/user',function(req,res,next){
+    res.render('userpanel', {username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart})
+});
+
+app.get('/user/view',function(req,res,next){
+    res.render('rmaview', {username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart})
+})
+
 // category creation
 
 app.get('/new/category',function(req,res,next){
@@ -458,5 +466,26 @@ app.post('/support/submit',function(req,res,next){
         });
 
 });
+
+app.get('/support/gettickets', function(req,res,next){
+    var data = {};
+    db.many('SELECT * from ticket')
+        .then(function(response){
+            data.ticket = response;
+            db.many('SELECT * from support')
+                .then(function(resp){
+                    data.personal = resp;
+                    console.log(data);
+                    res.send(data);
+                })
+                .catch(function(err){
+                    console.log('err with support: '+ err);
+                });
+        })
+        .catch(function(err){
+            console.log('failed '+ err);
+        });
+    
+})
 
 app.listen(3000);

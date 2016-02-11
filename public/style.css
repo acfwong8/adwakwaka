@@ -166,3 +166,12 @@ h3 {
 .details div{
     float:left;
 }
+
+/*viewing RMA*/
+
+.rma p {
+    font-family:'News Cycle',sans-serif;
+    float:left;
+    width: 9%;
+    margin:1%;
+}

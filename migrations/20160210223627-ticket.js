@@ -9,7 +9,8 @@ exports.up = function(db, callback) {
         invoicenumber:'varchar(30)',
         invoicedate:'varchar(10)',
         quantity:'real',
-        rmadesc:'varchar(250)'
+        rmadesc:'varchar(250)',
+        status:'varchar(20)'
     },callback);
 };
 
