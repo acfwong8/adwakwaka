@@ -184,7 +184,6 @@ app.get('/getcategories',function(req,res,next){
             res.send(categories);
         });
     });
-    // res.send(categories);
 });
 
 
@@ -253,24 +252,76 @@ app.post('/new/category/success',function(req,res,next){
     console.log('body: '+JSON.stringify(req.body));
     var catData = (req.body);
     console.log(catData);
-    db.query('SELECT catnumb from categoriesmain where catnumb = (select max(catnumb) from categoriesmain)')
-        .then(function(res){
-            console.log(res[0].catnumb);
-            catData.catNumb = res[0].catnumb + 1;
-            db.none('INSERT into categoriesmain("catname","catdesc","catnumb") values(${catName},${catDesc},${catNumb})', catData)
-                .then(function(){
-                    console.log('logged '+catData);
-                })
-                .catch(function(error){
-                    console.log('logging failed:'+error);
-                });
-        })
-        .catch(function(err){
-            console.log(err);
-        });
-
-    res.send(req.body);
-    // res.end('Category created');
+    if(catData.catParent == ""){
+        catData.depth = 0;
+        db.none('INSERT into parentcat("catname","catdesc","hasParent","depth") values(${catName},${catDesc},${catParent},${depth})',catData)
+            .then(function(){
+                console.log('logged '+ catData);
+            })
+            .catch(function(err){
+                console.log('error loggin parentcat '+ err);
+            });
+    } else if (catData.catParent !== "" && catData.children == "yes"){
+        db.query('SELECT * from parentcat where catname = ${catParent}')
+            .then(function(response){
+                if(response.children == "" || response.children == null){
+                    catData.newChildren = catName + "-";
+                } else {
+                    catData.newChildren = catName + response.children + "-";
+                }
+                catData.depth = response.depth;
+                db.none('UPDATE parentcat SET children = ${newChildren} where catname = ${hasParent}',catData)
+                    .then(function(){
+                        db.none('INSERT into parentcat("catname","catdesc","hasParent","depth") values(${catName},${catDesc},${catParent},${depth})',catData)
+                            .then(function(){
+                                console.log('logged '+ catData);
+                            })
+                            .catch(function(err){
+                                console.log('error logging parentcat '+ err);
+                            });                
+                    })
+                    .catch(function(err){
+                        console.log('failed updating children: '+err);
+                    });
+            })
+            .catch(function(err){
+                console.log('failed fetching children from parent: '+ err);
+            });
+    } else if(catData.catParent !== "" && catData.children == "no"){
+        db.query('SELECT children from parentcat where catname = ${catParent}')
+            .then(function(response){
+                if(response == "" || response == null){
+                    catData.newChildren = catName + "-";
+                } else {
+                    catData.newChildren = catName + response + "-";
+                }
+                db.none('UPDATE parentcat SET children = ${newChildren} where catname = ${hasParent}',catData)
+                    .then(function(){
+                        db.query('SELECT catnumb from categoriesmain where catnumb = (select max(catnumb) from categoriesmain)')
+                            .then(function(res){
+                                console.log(res[0].catnumb);
+                                catData.catNumb = res[0].catnumb + 1;
+                                db.none('INSERT into categoriesmain("catname","catdesc","catnumb") values(${catName},${catDesc},${catNumb})', catData)
+                                    .then(function(){
+                                        console.log('logged '+catData);
+                                    })
+                                    .catch(function(error){
+                                        console.log('logging failed:'+error);
+                                    });
+                            })
+                            .catch(function(err){
+                                console.log(err);
+                            });
+                    })
+                    .catch(function(err){
+                        console.log('failed updating children: '+err);
+                    });
+            })
+            .catch(function(err){
+                console.log('failed fetching children from parent: '+ err);
+            });
+        res.send(req.body);
+    }
 });
 
 // item creation
@@ -437,29 +488,31 @@ app.post('/support/submit',function(req,res,next){
     var theDate = year + dash + month + dash + day + " " + hour + col + minutes + col + seconds;
     persVar.date = theDate;
     var invDate = rmaVar.invYear + dash + rmaVar.invMonth + dash + rmaVar.invDay;
-    rmaVar.invDate = invDate
+    rmaVar.invDate = invDate;
+    rmaVar.defaultstatus = "pending";
     db.one('SELECT max(supportticket) from ticket')
         .then(function(response){
             currentTicket = Math.max(100,response.max);
             newTicket = currentTicket+1;
             rmaVar.newTicket = newTicket;
             persVar.newTicket = newTicket;
-            db.none('INSERT INTO ticket("supportticket","itemname","serialnumber","invoicenumber","invoicedate","quantity","rmadesc") values(${newTicket},${item},${number},${invoice},${invDate},${quantity},${description})',rmaVar)
+            db.none('INSERT INTO ticket("supportticket","itemname","serialnumber","invoicenumber","invoicedate","quantity","rmadesc","status") values(${newTicket},${item},${number},${invoice},${invDate},${quantity},${description},${defaultstatus})',rmaVar)
                 .then(function(){
                     console.log('logged');
                     console.log(rmaVar);
+                    db.none('INSERT INTO support("name","company","date","email","addressstreet","addresscity","addressprovince","supportticket") values(${name},${company},${date},${email},${street},${city},${prov},${newTicket})',persVar)
+                        .then(function(){
+                            console.log('logged');
+                            console.log(persVar);
+                        })
+                        .catch(function(err){
+                            console.log('personal err ' + err)
+                        });
                 })
                 .catch(function(err){
                     console.log('rma err ' + err);
                 });
-            db.none('INSERT INTO support("name","company","date","email","addressstreet","addresscity","addressprovince","supportticket") values(${name},${company},${date},${email},${street},${city},${prov},${newTicket})',persVar)
-                .then(function(){
-                    console.log('logged');
-                    console.log(persVar);
-                })
-                .catch(function(err){
-                    console.log('personal err ' + err)
-                });
+
         })
         .catch(function(err){
             console.log("fetch failed "+err);
