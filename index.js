@@ -171,19 +171,21 @@ app.get('/', function(req,res,next){
 
 app.get('/getcategories',function(req,res,next){
     var categories = {};
-    pg.connect(cns,function(err,client,done){
-        if(err){
-            return console.error('error fetching',err);
-        }
-        client.query('SELECT * from categoriesmain where catname is not null',function(err,result){
-            done();
-            if(err){
-                return console.error('error runnin query',err);
-            }
-            categories = result.rows;
-            res.send(categories);
+    db.query('SELECT * from categoriesmain where catname is not null')
+        .then(function(response){
+            categories.children = response;
+            db.query('SELECT * from parentcat')
+                .then(function(resp){
+                    categories.parents = resp;
+                    res.send(categories);
+                })
+                .catch(function(error){
+                    console.log('error in parentcat: '+error);
+                });
+        })
+        .catch(function(err){
+            console.log('error in main cat: '+err);
         });
-    });
 });
 
 
@@ -229,7 +231,7 @@ app.post('/userstat',function(req,res){
 })
 
 app.get('/new',function(req,res,next){
-    res.render('new');
+    res.render('new',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 });
 
 // user panel
@@ -245,7 +247,7 @@ app.get('/user/view',function(req,res,next){
 // category creation
 
 app.get('/new/category',function(req,res,next){
-    res.render('newCat');
+    res.render('newCat', {username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 });
 
 app.post('/new/category/success',function(req,res,next){
@@ -254,24 +256,30 @@ app.post('/new/category/success',function(req,res,next){
     console.log(catData);
     if(catData.catParent == ""){
         catData.depth = 0;
-        db.none('INSERT into parentcat("catname","catdesc","hasParent","depth") values(${catName},${catDesc},${catParent},${depth})',catData)
+        db.none('INSERT into parentcat("catname","catdesc","hasparent","depth") values(${catName},${catDesc},${catParent},${depth})',catData)
             .then(function(){
                 console.log('logged '+ catData);
             })
             .catch(function(err){
                 console.log('error loggin parentcat '+ err);
             });
-    } else if (catData.catParent !== "" && catData.children == "yes"){
-        db.query('SELECT * from parentcat where catname = ${catParent}')
+    } else if (catData.catParent !== "" && catData.catChildren == "yes"){
+        console.log('logging empty parent, has children')
+        db.query('SELECT * from parentcat where catname = ${catParent}',catData)
             .then(function(response){
-                if(response.children == "" || response.children == null){
-                    catData.newChildren = catName + "-";
+                var data = response
+                console.log(data);
+                if(data.children == "" || data.children == null){
+                    catData.newChildren = data.catname + "-";
+                    console.log(catData.newChildren);
                 } else {
-                    catData.newChildren = catName + response.children + "-";
+                    catData.newChildren = data.catname + data.children + "-";
                 }
-                catData.depth = response.depth;
-                db.none('UPDATE parentcat SET children = ${newChildren} where catname = ${hasParent}',catData)
+                // console.log(catData.newChildren);
+                catData.depth = data.depth + 1;
+                db.none('UPDATE parentcat SET children = ${newChildren} where catname = ${catParent}',catData)
                     .then(function(){
+                        console.log('updated parent')
                         db.none('INSERT into parentcat("catname","catdesc","hasParent","depth") values(${catName},${catDesc},${catParent},${depth})',catData)
                             .then(function(){
                                 console.log('logged '+ catData);
@@ -287,7 +295,7 @@ app.post('/new/category/success',function(req,res,next){
             .catch(function(err){
                 console.log('failed fetching children from parent: '+ err);
             });
-    } else if(catData.catParent !== "" && catData.children == "no"){
+    } else if(catData.catParent !== "" && catData.catChildren == "no"){
         db.query('SELECT children from parentcat where catname = ${catParent}')
             .then(function(response){
                 if(response == "" || response == null){
@@ -295,13 +303,13 @@ app.post('/new/category/success',function(req,res,next){
                 } else {
                     catData.newChildren = catName + response + "-";
                 }
-                db.none('UPDATE parentcat SET children = ${newChildren} where catname = ${hasParent}',catData)
+                db.none('UPDATE parentcat SET children = ${newChildren} where catname = ${catParent}',catData)
                     .then(function(){
                         db.query('SELECT catnumb from categoriesmain where catnumb = (select max(catnumb) from categoriesmain)')
                             .then(function(res){
                                 console.log(res[0].catnumb);
                                 catData.catNumb = res[0].catnumb + 1;
-                                db.none('INSERT into categoriesmain("catname","catdesc","catnumb") values(${catName},${catDesc},${catNumb})', catData)
+                                db.none('INSERT into categoriesmain("catname","catdesc","catnumb","subcat") values(${catName},${catDesc},${catNumb},${catParent})', catData)
                                     .then(function(){
                                         console.log('logged '+catData);
                                     })

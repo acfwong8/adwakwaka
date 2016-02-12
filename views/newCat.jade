@@ -80,7 +80,12 @@ body
     
   script(src='/build.js')
   script(src='/categories.js')
-  script.  
+  script.
+    for(var i = 0; i < parentCat.length; i++){
+      var $option = $("<option>").val(parentCat[i].name).text(parentCat[i].name);
+      $(".parent").append($option);
+      console.log(1);
+    }
     var catItem = {};
     $('.newCat').on('submit',function(e){
       e.preventDefault();

@@ -102,9 +102,15 @@ section.sidebar{
     background-color:rgba(255,255,255,0.5)
 }
 
-section.sidebar a{
+section.sidebar button{
+    font-family:'Oswald',sans-serif;
+    font-size:16px;
     text-decoration: none;
+    border:none;
+    background:none;
     color:rgba(100,100,100,1);
+    padding:none;
+    margin:none;
 }
 
 /* for items listing in specific Category*/
