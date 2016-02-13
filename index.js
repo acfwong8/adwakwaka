@@ -267,20 +267,21 @@ app.post('/new/category/success',function(req,res,next){
         console.log('logging empty parent, has children')
         db.query('SELECT * from parentcat where catname = ${catParent}',catData)
             .then(function(response){
-                var data = response
+                var data = response[0];
                 console.log(data);
+                console.log(data.children + 'this is the child');
                 if(data.children == "" || data.children == null){
-                    catData.newChildren = data.catname + "-";
+                    catData.newChildren = catData.catName + "-";
                     console.log(catData.newChildren);
                 } else {
-                    catData.newChildren = data.catname + data.children + "-";
+                    catData.newChildren = data.children + catData.catName + "-";
                 }
                 // console.log(catData.newChildren);
                 catData.depth = data.depth + 1;
                 db.none('UPDATE parentcat SET children = ${newChildren} where catname = ${catParent}',catData)
                     .then(function(){
                         console.log('updated parent')
-                        db.none('INSERT into parentcat("catname","catdesc","hasParent","depth") values(${catName},${catDesc},${catParent},${depth})',catData)
+                        db.none('INSERT into parentcat("catname","catdesc","hasparent","depth") values(${catName},${catDesc},${catParent},${depth})',catData)
                             .then(function(){
                                 console.log('logged '+ catData);
                             })
@@ -296,13 +297,19 @@ app.post('/new/category/success',function(req,res,next){
                 console.log('failed fetching children from parent: '+ err);
             });
     } else if(catData.catParent !== "" && catData.catChildren == "no"){
-        db.query('SELECT children from parentcat where catname = ${catParent}')
+        db.query('SELECT children from parentcat where catname = ${catParent}',catData)
             .then(function(response){
-                if(response == "" || response == null){
-                    catData.newChildren = catName + "-";
+                var data = response[0];
+                console.log(data);
+                console.log(data.children + 'this is the child');
+                if(data.children == "" || data.children == null){
+                    catData.newChildren = catData.catName + "-";
+                    console.log(catData.newChildren);
                 } else {
-                    catData.newChildren = catName + response + "-";
+                    catData.newChildren = data.children + catData.catName + "-";
                 }
+                // console.log(catData.newChildren);
+                catData.depth = data.depth + 1;
                 db.none('UPDATE parentcat SET children = ${newChildren} where catname = ${catParent}',catData)
                     .then(function(){
                         db.query('SELECT catnumb from categoriesmain where catnumb = (select max(catnumb) from categoriesmain)')

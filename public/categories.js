@@ -13,7 +13,9 @@ $.ajax({
             parent.parent = res.parents[i].hasParent;
             parentCat.push(parent);
             if(parent.depth == 0){
-                appendp(parent.name)
+                appendmain(parent.name);
+            } else {
+                appendsub(parent.name);
             }
         }
         if($(".parent")){
@@ -28,8 +30,14 @@ $.ajax({
         console.log(parentCat);
     }
 })
-function appendp(name){
+function appendmain(name){
     var $button = $("<button>").text(name);
     var $p = $("<p>").append($button);
     $(".sidebar").append($p);
+}
+
+function appendsub(name){
+    var $button = $("<button>").text(name).attr("class","subcat");
+    var $p = $("<p>").append($button).attr("class","subcatp").addClass("hidden");
+    $(".sidebar").append($p);    
 }
