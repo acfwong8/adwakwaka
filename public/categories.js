@@ -1,10 +1,15 @@
 var parentCat = [];
+var childrenCat = [];
 $.ajax({
     type:'GET',
     url:'http://'+serverIP+'/getcategories',
     dataType:'JSON',
     success: function(res){
-        console.log(res);
+        // res.parents.sort(function(a,b){
+        //     var textA = a.catname.toUpperCase();
+        //     var textB = b.catname.toUpperCase();
+        //     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+        // });
         res.parents.sort(function(a,b){
             if(a.depth > b.depth){
                 return 1;
@@ -12,11 +17,18 @@ $.ajax({
             if(a.depth < b.depth){
                 return -1;
             }
-            return 0;
+            var textA = a.catname.toUpperCase();
+            var textB = b.catname.toUpperCase();
+            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
         });
-        console.log(res);
         var maxDepth = 0;
         var appendCat = res.parents;
+        for(var i = 0; i < res.children.length; i++){
+            var child = {};
+            child.name = res.children[i].catname;
+            child.numb = res.children[i].catnumb;
+            childrenCat.push(child);
+        }
         for(var i = 0; i < res.parents.length; i++){
             var parent = {};
             parent.name = res.parents[i].catname;
@@ -51,6 +63,12 @@ $.ajax({
                 $(".parent").append($option);
             }
         }
+        if($(".newItemCat")){
+            for(var i = 0; i < childrenCat.length; i++){
+                var $option = $("<option>").val(childrenCat[i].catnumb).text(childrenCat[i].name);
+                $(".newItemCat").append($option);
+            }            
+        }
         // for(var i = 0; i< res.length; i++){
         //     appendp(res[i].catname,res[i].catnumb);
         // }
@@ -62,7 +80,6 @@ function appendmain(name){
     var $button = $("<button>").text(name).addClass("mainCat cat").attr("id","cat"+newName);
     var $p = $("<p>").append($button).addClass("catp");
     var $div = $("<div>").append($p).attr("id","div"+newName);
-    console.log(newName);
     $(".sidebar").append($div);
 }
 
@@ -73,7 +90,6 @@ function appendsub(name,parent,depth){
     var $p = $("<p>").append($button).attr("class","subCatp" + depth).addClass("hidden subCatp catp").attr("id","catp"+newName);
     var $div = $("<div>").append($p).attr("id","div"+newName);
     $("#div"+newParent).append($div);
-    console.log(newName);
     var nextDepth = depth + 1
 
 }

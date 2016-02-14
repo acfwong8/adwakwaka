@@ -186,6 +186,7 @@ h3 {
 
 /* creating new*/
 
-.newspace{
+.newspace, .newitemspace{
     font-family:'News Cycle',sans-serif;
 }
+

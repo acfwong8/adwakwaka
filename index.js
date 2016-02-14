@@ -259,6 +259,7 @@ app.post('/new/category/success',function(req,res,next){
         db.none('INSERT into parentcat("catname","catdesc","hasparent","depth") values(${catName},${catDesc},${catParent},${depth})',catData)
             .then(function(){
                 console.log('logged '+ catData);
+                res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
             })
             .catch(function(err){
                 console.log('error loggin parentcat '+ err);
@@ -284,6 +285,7 @@ app.post('/new/category/success',function(req,res,next){
                         db.none('INSERT into parentcat("catname","catdesc","hasparent","depth") values(${catName},${catDesc},${catParent},${depth})',catData)
                             .then(function(){
                                 console.log('logged '+ catData);
+                                res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
                             })
                             .catch(function(err){
                                 console.log('error logging parentcat '+ err);
@@ -316,6 +318,7 @@ app.post('/new/category/success',function(req,res,next){
                                 db.none('INSERT into categoriesmain("catname","catdesc","catnumb","subcat") values(${catName},${catDesc},${catNumb},${catParent})', catData)
                                     .then(function(){
                                         console.log('logged '+catData);
+                                        res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
                                     })
                                     .catch(function(error){
                                         console.log('logging failed:'+error);
@@ -344,7 +347,7 @@ app.get('/new/item',function(req,res,next){
         .then(function(response){
             newItemNumb = response[0].itemnumb+1;
             console.log(response);
-            res.render('newItem',{ itemnumb: newItemNumb});
+            res.render('newItem',{ itemnumb: newItemNumb, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
         })
         .catch(function(err){
             console.log('help' + err);

@@ -1,59 +1,91 @@
 link(rel="stylesheet", href="/style.css")
-
+link(rel="stylesheet",href="/clearfix.css")
 body
-  h1 Create New Item
-  form(class="newItem",enctype="multipart/form-data")
-  
-    div
-      p New Item Name
-      input(class="newItemName",type="text",name="itemName")
-    div
-      p Short Item Description
-      input(class="newItemDesc",type="text",name="itemDesc")
-    div
-      p Long item Description
-      textarea(rows="4",cols="60")
-    div
-      p Item Price
-      input(class="newItemPrice",type="text",name="itemPrice")
-    div
-      p In category:
-      select(class="newItemCat")
-    input(type="submit",value="Save Fields",name="saveFields")
+  header(class="cf")
+    div(class="logo")
+      a(href="/")
+        img(src="../../uploads/staticpics/logo.png")
 
-    div(class="completion")
-      span Hit 'Save Fields' to save and create this item.
+    p(class="login")
+      
+    div(class="toolbar")
+      ul
+        li
+          a(href="/") Home
+        li
+          a(href="/business") Our business
+        li
+          a(href="/contact") Contact
+        li
+          a(href="/support") RMA/Support
 
-  form(class="upload",enctype="multipart/form-data")
-    span Upload picture? 
-    input(type="submit",value="Open picture selection",name="select" disabled)
-    
-  form(class="itemPic",action="picupload",method="post",enctype="multipart/form-data")
+  section(class="sidebar")
     p
-      input(type="file",name="itemPic")
-    p  
-      input(type="submit",value="Upload Picture",name="submit" disabled)
+    
+  section(class="main")
+    div(class="newitemspace")
+      h1 Create New Item
+      form(class="newItem",enctype="multipart/form-data")
+  
+        div
+          p New Item Name
+          input(class="newItemName",type="text",name="itemName")
+        div
+          p Short Item Description
+          input(class="newItemDesc",type="text",name="itemDesc")
+        div
+          p Long item Description
+          textarea(rows="4",cols="60")
+        div
+          p Item Price
+          input(class="newItemPrice",type="text",name="itemPrice")
+        div
+          p In category:
+          select(class="newItemCat")
+        input(type="submit",value="Save Fields",name="saveFields")
+
+        div(class="completion")
+          span Hit 'Save Fields' to save and create this item.
+
+      form(class="upload",enctype="multipart/form-data")
+        span Upload picture? 
+        input(type="submit",value="Open picture selection",name="select" disabled)
+    
+      form(class="itemPic",action="picupload",method="post",enctype="multipart/form-data")
+        p
+          input(type="file",name="itemPic")
+        p  
+          input(type="submit",value="Upload Picture",name="submit" disabled)
 
   script(src='/jquery-1.11.3.js')
   script(src='/config.js')
   script.
-    var categories = [];
-    $.ajax({
-      type:'GET',
-      url:'http://'+serverIP+'/getcategories',
-      dataType:'JSON',
-      success: function(res){
-        console.log(res);
-        for(var i = 0; i < res.length; i++){
-          appendList(res[i]);
-          console.log(i);
+    function cred(){
+      var auth = {};
+      return {
+        setCred: function(){
+          auth.user = "#{username}";
+          auth.permissions = "#{permissions}";
+          auth.timestamp = "#{sessionStart}";
+          return auth;
+        },
+        getUser: function(){
+          return auth.user;
+        },
+        getPermissions: function(){
+          return auth.permissions;
+        },
+        getTimestamp: function(){
+          return auth.timestamp;
         }
       }
-    })
-    function appendList(name){
-      var $o = $("<option>").text(name.catname).attr('value',JSON.stringify({catname: name.catname, catnumb: name.catnumb }));
-      $(".newItemCat").append($o);
     }
+    var creds = cred();
+    creds.setCred();    
+  script(src="/build.js")
+  script(src="/categories.js")
+  
+  script.
     var newItem = {};
     $('.newItem').on('submit',function(e){
       e.preventDefault();
@@ -107,6 +139,3 @@ body
       var $span = $("<span>").text("Saved!");
       $(".completion").append($span);
     }
-    
-
-  script(src='/home.js')
