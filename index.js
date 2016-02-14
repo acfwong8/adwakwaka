@@ -358,10 +358,10 @@ app.post('/new/item/success', function(req,res,next){
     // console.log('body: '+JSON.stringify(req.body));
     var itemData = req.body;
     itemData.picture = 'none';
+    console.log(itemData);
     db.none('INSERT into products("itemname","itemdesc","itemdesclong","itemcat","itemcatnumb","itemnumb","itempicture1","price") values(${itemName},${itemDesc},${itemDescLong},${itemCatName},${itemCatNumb},${itemNumb},${picture},${itemPrice})',itemData)
         .then(function(){
             console.log('logged '+itemData);
-
             // res.send('uploaded');
         })
         .catch(function(error){
@@ -374,7 +374,7 @@ app.post('/new/picupload',function(req,res,next){
         if(err){
             return res.end("Error uploading");
         }
-        res.send('<a href="/../..">Back to Create New<a>')
+        res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
     });
 
     // res.send("File is uploaded");

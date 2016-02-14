@@ -65,7 +65,8 @@ $.ajax({
         }
         if($(".newItemCat")){
             for(var i = 0; i < childrenCat.length; i++){
-                var $option = $("<option>").val(childrenCat[i].catnumb).text(childrenCat[i].name);
+                console.log(childrenCat[i]);
+                var $option = $("<option>").val(JSON.stringify({numb: childrenCat[i].numb,name: childrenCat[i].name})).text(childrenCat[i].name);
                 $(".newItemCat").append($option);
             }            
         }

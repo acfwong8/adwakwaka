@@ -92,10 +92,10 @@ body
       var itemName = $(".newItemName").val();
       var itemDesc = $(".newItemDesc").val();
       var itemDescLong = $("textarea").val();
-      var itemCatName = JSON.parse(($(".newItemCat").val())).catname;
-      var itemCatNumb = JSON.parse(($(".newItemCat").val())).catnumb;
+      var itemCatName = JSON.parse(($(".newItemCat").val())).name;
+      var itemCatNumb = JSON.parse(($(".newItemCat").val())).numb;
       var itemPrice = $(".newItemPrice").val();
-      var itemNumb = #{itemnumb}
+      var itemNumb = #{itemnumb};
       newItem.itemName = itemName;
       newItem.itemDesc = itemDesc;
       newItem.itemDescLong = itemDescLong;
@@ -117,7 +117,7 @@ body
       $(".upload input[type=submit]").prop("disabled", false);
       $(".newItem input[type=text]").prop("disabled",true);
       $(".newItem input[type=submit]").prop("disabled",true);
-    })
+    });
 
     $(".upload").on("submit",function(e){
     e.preventDefault();
