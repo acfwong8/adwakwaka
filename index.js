@@ -300,11 +300,11 @@ app.post('/new/category/success',function(req,res,next){
         db.query('SELECT children from parentcat where catname = ${catParent}',catData)
             .then(function(response){
                 var data = response[0];
-                console.log(data);
-                console.log(data.children + 'this is the child');
+                // console.log(data);
+                // console.log(data.children + 'this is the child');
                 if(data.children == "" || data.children == null){
                     catData.newChildren = catData.catName + "-";
-                    console.log(catData.newChildren);
+                    // console.log(catData.newChildren);
                 } else {
                     catData.newChildren = data.children + catData.catName + "-";
                 }

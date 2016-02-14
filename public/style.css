@@ -34,7 +34,8 @@ body{
 }
 
 .hidden{
-    display:hidden;
+    display:none;
+    height:0;
 }
 .invisible{
     opacity:0;
@@ -112,6 +113,7 @@ section.sidebar button{
     padding:none;
     margin:none;
 }
+
 
 /* for items listing in specific Category*/
 .main h1, .main h2{
