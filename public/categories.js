@@ -36,6 +36,15 @@ $.ajax({
                 catClick(parentCat);
             }
         }
+        for(var i = 0; i < res.children.length; i++){
+            var child = {};
+            child.name = res.children[i].catname.replace(/\s/g,'');
+            child.numb = res.children[i].catnumb
+            if(res.children[i].subcat){
+                child.parent = res.children[i].subcat.replace(/\s/g,'');
+                appendchild(child.name,child.parent,child.numb);
+            }
+        }
         if($(".parent")){
             for(var i = 0; i < parentCat.length; i++){
                 var $option = $("<option>").val(parentCat[i].name).text(parentCat[i].name);
@@ -67,6 +76,13 @@ function appendsub(name,parent,depth){
     console.log(newName);
     var nextDepth = depth + 1
 
+}
+
+function appendchild(name,parent,numb){
+    var $a = $("<a>").text(name).attr("href","/category/"+numb+"/products");
+    var $p = $("<p>").addClass("hidden").attr("id","catp"+name+numb).append($a);
+    var $div = $("<div>").append($p);
+    $("#div"+parent).append($div);
 }
 
 function catClick(catArray){

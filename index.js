@@ -300,22 +300,19 @@ app.post('/new/category/success',function(req,res,next){
         db.query('SELECT children from parentcat where catname = ${catParent}',catData)
             .then(function(response){
                 var data = response[0];
-                // console.log(data);
-                // console.log(data.children + 'this is the child');
-                if(data.children == "" || data.children == null){
-                    catData.newChildren = catData.catName + "-";
-                    // console.log(catData.newChildren);
-                } else {
-                    catData.newChildren = data.children + catData.catName + "-";
-                }
-                // console.log(catData.newChildren);
                 catData.depth = data.depth + 1;
-                db.none('UPDATE parentcat SET children = ${newChildren} where catname = ${catParent}',catData)
-                    .then(function(){
-                        db.query('SELECT catnumb from categoriesmain where catnumb = (select max(catnumb) from categoriesmain)')
-                            .then(function(res){
-                                console.log(res[0].catnumb);
-                                catData.catNumb = res[0].catnumb + 1;
+                db.query('SELECT catnumb from categoriesmain where catnumb = (select max(catnumb) from categoriesmain)')
+                    .then(function(res){
+                        console.log(res[0].catnumb);
+                        catData.catNumb = res[0].catnumb + 1;
+                        if(data.children == "" || data.children == null){
+                            catData.newChildren = catData.catName + catData.catNumb + "-";
+                            // console.log(catData.newChildren);
+                        } else {
+                            catData.newChildren = data.children + catData.catName + catData.catNumb+ "-";
+                        }
+                        db.none('UPDATE parentcat SET children = ${newChildren} where catname = ${catParent}',catData)
+                            .then(function(){
                                 db.none('INSERT into categoriesmain("catname","catdesc","catnumb","subcat") values(${catName},${catDesc},${catNumb},${catParent})', catData)
                                     .then(function(){
                                         console.log('logged '+catData);
