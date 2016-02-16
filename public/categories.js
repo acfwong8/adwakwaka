@@ -7,11 +7,6 @@ $.ajax({
     url:'http://'+serverIP+'/getcategories',
     dataType:'JSON',
     success: function(res){
-        // res.parents.sort(function(a,b){
-        //     var textA = a.catname.toUpperCase();
-        //     var textB = b.catname.toUpperCase();
-        //     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-        // });
         res.parents.sort(function(a,b){
             if(a.depth > b.depth){
                 return 1;
@@ -181,6 +176,7 @@ function appendchild(name,parent,numb,desc){
     var $a = $("<a>").text(name).attr("href","/category/"+numb+"/products");
     var $p = $("<p>").addClass("hidden").attr("id","catp"+name+numb).append($a);
     var $div = $("<div>").append($p);
+    console.log(parent);
     $("#div"+parent).append($div);
 }
 
@@ -190,7 +186,9 @@ function catClick(catArray){
         for(var i = 0; i < catArray.length; i++){
             var aName = "cat"+catArray[i].name.replace(/\s/g,'');
             if(name == aName){
+                console.log(name + aName);
                 var child = catArray[i].children;
+                console.log(child);
                 for(var j = 0; j < catArray[i].children.length; j++){
                     if($("#catp"+child[j]).hasClass("hidden")){
                         $("#catp"+child[j]).removeClass("hidden");
