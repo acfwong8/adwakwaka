@@ -88,6 +88,7 @@ body
     }
     var catItem = {};
     $('.newCat').on('submit',function(e){
+    e.preventDefault();
       var catName = $('.newCatName').val();
       var catDesc = $('.newCatDesc').val();
       var catParent = $('.parent').val();
@@ -110,7 +111,4 @@ body
         }
       })
 
-    })
-  
-
-  script(src='/views/js/newCat.js')  
+    });

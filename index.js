@@ -409,6 +409,104 @@ app.post('/new/picupload/picname',function(req,res,next){
         });
 });
 
+// modify categories
+
+app.get('/user/modify',function(req,res,next){
+    res.render('modify',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+})
+
+app.get('/user/modify/category',function(req,res,next){
+    res.render('modCat',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+
+app.post('/user/modify/category/success',function(req,res,next){
+    var changes = req.body;
+    console.log('log');
+    console.log(changes);
+    changes.oldName = changes.oldCat.name;
+    changes.oldNumb = changes.oldCat.numb;
+    if(changes.oldCat.numb == 0){
+        db.one('SELECT * from parentcat where catname = ${oldName}',changes)
+            .then(function(response){
+                console.log(response);
+                changes.oldParent = response.hasparent;
+                changes.children = response.children;
+                db.one('SELECT * from parentcat where catname = ${oldParent}',changes)
+                    .then(function(resp){
+                        var children = resp.children.split("-");
+                        for(var i = 0; i < children.length; i++){
+                            if(children[i] == changes.oldName){
+                                children.splice(i,1);
+                            }
+                        }
+                        changes.oldParentChildren = children.join("-");
+                        db.one('SELECT * from parentcat where catname = ${catParent}',changes)
+                            .then(function(respo){
+                                console.log("newparent");
+                                console.log(respo);
+                                changes.depth = respo.depth + 1;
+                                if(respo.children == null || respo.children == ""){
+                                    changes.newParentChildren = changes.catName + "-";
+                                } else {
+                                    changes.newParentChildren = respo.children + changes.catName + "-";
+                                }
+                                db.none('UPDATE parentcat SET children = ${newParentChildren} where catname = ${catParent}',changes)
+                                    .then(function(){
+                                        db.none('INSERT into parentcat("catname","catdesc","hasparent","children","depth") values(${catName},${catDesc},${catParent},${children},${depth})',changes)
+                                            .then(function(){
+                                                db.none('UPDATE parentcat SET children = ${oldParentChildren} where catname = ${oldParent}',changes)
+                                                    .then(function(){
+                                                        db.none('DELETE from parentcat where catname = ${oldName}',changes)
+                                                            .then(function(){
+                                                                var childArray = changes.children.split("-")
+                                                                for(var j = 0; j < childArray.length; j++){
+                                                                    if(childArray[j] !== ""){
+                                                                        changes.updateParent = childArray[j];
+                                                                        db.none('UPDATE parentcat SET hasparent = ${catName} where catname = ${updateParent}',changes)
+                                                                            .catch(function(errore){
+                                                                                console.log("failed updating children parentcat: "+errore);
+                                                                            });
+                                                                        db.none('UPDATE categoriesmain SET subcat = ${catName} where catname = ${updateParent}',changes)
+                                                                            .catch(function(errore){
+                                                                                console.log("failed updating children catmain: "+errore);
+                                                                            });
+                                                                    }
+                                                                }
+                                                            })
+                                                            .catch(function(erro){
+                                                                console.log("failed deleting: "+erro);
+                                                            });
+                                                    })
+                                                    .catch(function(er){
+                                                        console.log("updating fail old parent: "+ er) ;
+                                                    });
+                                            })
+                                            .catch(function(e){
+                                                console.log("error with inserting new: "+ e) 
+                                            });
+                                        
+                                    })
+                                    .catch(function(iss){
+                                        console.log("cannot update new parent: "+iss);
+                                    });
+                            })
+                            .catch(function(issue){
+                                console.log("cannot query new parent: "+issue);
+                            });
+                    })
+                    .catch(function(error){
+                        console.log("not getting depth from new parent: "+error);
+                    });
+            })
+            .catch(function(err){
+                console.log('parentcat does not exist: '+err);
+            });
+    } else {
+        
+    }
+    res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+})
+
 // categories and items listing
 
 app.get('/category', function(req,res,next){
