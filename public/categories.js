@@ -183,17 +183,26 @@ function appendchild(name,parent,numb,desc){
 function catClick(catArray){
     $(".cat").on("click",function(){
         var name = this.id;
+        var maxDepth = catArray[catArray.length - 1].depth
         for(var i = 0; i < catArray.length; i++){
             var aName = "cat"+catArray[i].name.replace(/\s/g,'');
             if(name == aName){
                 console.log(name + aName);
                 var child = catArray[i].children;
-                console.log(child);
                 for(var j = 0; j < catArray[i].children.length; j++){
                     if($("#catp"+child[j]).hasClass("hidden")){
                         $("#catp"+child[j]).removeClass("hidden");
                     } else{
-                        $("#catp"+child[j]).addClass("hidden");                        
+                        // $("#catp"+child[j]).addClass("hidden");
+                        for(var k = maxDepth; k >= catArray[i].depth; k--){
+                            // console.log($($(this).parent().parent())[0].children[j]);
+                            var $parent = $($(this).parent().parent())[0].children[j+1];
+                            if($parent){
+                                var id = $parent.getAttribute('id');
+                                console.log($parent, id);
+                                $("#"+id+" .subCatp"+k).addClass("hidden");
+                            }
+                        }
                     }
                 }
             }

@@ -418,6 +418,15 @@ app.get('/new/user',function(req,res,next){
 app.post('/new/user/success',function(req,res,next){
     var newUser = req.body;
     console.log(newUser);
+    if(newUser.password === newUser.confirm){
+        db.none('INSERT into login("username","password","permissions") values(${username},${password},${type})',newUser)
+            .then(function(){
+                res.render('logged',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart})
+            })
+            .catch(function(err){
+                console.log("error logging user: "+err);
+            });
+    }
 });
 
 // modify categories
