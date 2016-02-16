@@ -409,6 +409,17 @@ app.post('/new/picupload/picname',function(req,res,next){
         });
 });
 
+// user creation
+
+app.get('/new/user',function(req,res,next){
+    res.render('newUser',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart})
+});
+
+app.post('/new/user/success',function(req,res,next){
+    var newUser = req.body;
+    console.log(newUser);
+});
+
 // modify categories
 
 app.get('/user/modify',function(req,res,next){
@@ -533,20 +544,6 @@ app.post('/user/modify/category/success',function(req,res,next){
                                                     .then(function(){
                                                         db.none('DELETE from categoriesmain where catname = ${oldName}',changes)
                                                             .then(function(){
-                                                                // var childArray = changes.children.split("-")
-                                                                // for(var j = 0; j < childArray.length; j++){
-                                                                //     if(childArray[j] !== ""){
-                                                                //         changes.updateParent = childArray[j];
-                                                                //         db.none('UPDATE parentcat SET hasparent = ${catName} where catname = ${updateParent}',changes)
-                                                                //             .catch(function(errore){
-                                                                //                 console.log("failed updating children parentcat: "+errore);
-                                                                //             });
-                                                                //         db.none('UPDATE categoriesmain SET subcat = ${catName} where catname = ${updateParent}',changes)
-                                                                //             .catch(function(errore){
-                                                                //                 console.log("failed updating children catmain: "+errore);
-                                                                //             });
-                                                                //     }
-                                                                // }
                                                             })
                                                             .catch(function(erro){
                                                                 console.log("failed deleting: "+erro);

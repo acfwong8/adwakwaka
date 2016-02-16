@@ -1,0 +1,115 @@
+link(rel="stylesheet",href="/style.css")
+link(rel="stylesheet",href="/clearfix.css")
+
+body
+  header(class="cf")
+    div(class="logo")
+      a(href="/")
+        img(src="../../uploads/staticpics/logo.png")
+
+    p(class="login")
+      
+    div(class="toolbar")
+      ul
+        li
+          a(href="/") Home
+        li
+          a(href="/business") Our business
+        li
+          a(href="/contact") Contact
+        li
+          a(href="/support") RMA/Support
+
+  section(class="sidebar")
+  
+  section(class="main")
+    h1 Modify existing Category
+
+    div(class="newspace")
+
+      form(class="newCat",enctype="multipart/form-data")
+        div
+          p Modify parent or child
+          select(class="PorC")
+            option(value="parent") Parent
+            option(value="child") Child
+        div
+          p Select category to modify
+          select(class="modClass")
+        div
+          p Edit category name
+          input(class="newCatName",type="text",name="catName")
+      
+        div
+          p Edit category description
+          input(class="newCatDesc",type="text",name="catDesc")
+
+        div(class="hasParent")
+          p Change parent
+          select(class="parent",id="whichParent")
+            option(value="",text="")
+      
+        input(type="submit",value="Edit Category",name="submit")
+
+        div(class="completion")
+          p  Hit create to complete
+
+    a(href="/../user") Go back
+
+  script(src='/jquery-1.11.3.js')
+  script(src='/config.js')
+  script.
+    function cred(){
+      var auth = {};
+      return {
+        setCred: function(){
+          auth.user = "#{username}";
+          auth.permissions = "#{permissions}";
+          auth.timestamp = "#{sessionStart}"
+          return auth;
+        },
+        getUser: function(){
+          return auth.user;
+        },
+        getPermissions: function(){
+          return auth.permissions
+        },
+        getTimestamp: function(){
+          return auth.timestamp;
+        }
+      }
+    }
+    var creds = cred();
+    creds.setCred();
+    
+  script(src='/build.js')
+  script(src='/categories.js')
+  script.
+    for(var i = 0; i < parentCat.length; i++){
+      var $option = $("<option>").val(parentCat[i].name).text(parentCat[i].name);
+      $(".parent").append($option);
+      console.log(1);
+    }
+    var catItem = {};
+    $('.newCat').on('submit',function(e){
+      var catName = $('.newCatName').val();
+      var catDesc = $('.newCatDesc').val();
+      var catParent = $('.parent').val();
+      catItem.catName = catName;
+      catItem.catDesc = catDesc;
+      catItem.catParent = catParent;
+      catItem.oldCat = oldCat;
+      $.ajax({
+        type:'POST',
+        data:JSON.stringify(catItem),
+        contentType: 'application/json',
+        url:'http://'+serverIP+'/user/modify/category/success',
+        success: function(res){
+          console.log('success');
+          var $p = $("<p>").text("Categories updated!");
+          $(".completion").append($p);
+          document.location.reload(true);
+        }
+      })
+
+    });

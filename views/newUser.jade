@@ -1,0 +1,88 @@
+link(rel="stylesheet",href="/style.css")
+link(rel="stylesheet",href="/clearfix.css")
+body
+  header(class="cf")
+    div(class="logo")
+      a(href="/")
+        img(src="../../uploads/staticpics/logo.png")
+
+    p(class="login")
+      
+    div(class="toolbar")
+      ul
+        li
+          a(href="/") Home
+        li
+          a(href="/business") Our business
+        li
+          a(href="/contact") Contact
+        li
+          a(href="/support") RMA/Support
+
+  section(class="sidebar")
+  
+  section(class="main")
+    h1 Create New User
+
+    div(class="newspace")
+      form(class="newUser",enctype = "multipart/form-data")
+        p Create user type
+          select(class="userType")
+            option(value="superuser") Admin - Create/Delete/Modify everything
+            option(value="support") Moderator - Create/Delete/Modify items
+            option(value="client") Client - View prices and current RMA requests
+        p Create new username 
+          input(type="text",class="newName")
+        p Create new password 
+          input(type="password",class="newPassword")
+        p Confirm password 
+          input(type="password",class="confirmPassword")
+        input(type="submit",value="Create new user",name="user")
+
+  script(src='/jquery-1.11.3.js')
+  script(src='/config.js')
+  script.
+    function cred(){
+      var auth = {};
+      return {
+        setCred: function(){
+          auth.user = "#{username}";
+          auth.permissions = "#{permissions}";
+          auth.timestamp = "#{sessionStart}"
+          return auth;
+        },
+        getUser: function(){
+          return auth.user;
+        },
+        getPermissions: function(){
+          return auth.permissions
+        },
+        getTimestamp: function(){
+          return auth.timestamp;
+        }
+      }
+    }
+    var creds = cred();
+    creds.setCred();
+    
+  script(src='/build.js')
+  script(src='/categories.js')
+  script(src='/verify.js')
+  script.
+    var newUser = {};
+    $(".newUser").on("submit",function(){
+      newUser.username = $(".newName").val();
+      newUser.password = $(".newPassword").val();
+      newUser.confirm = $(".confirmPassword").val();
+      newUser.type = $(".userType").val();
+      $.ajax({
+        type:"POST",
+        data:JSON.stringify(newUser),
+        contentType:"application/json",
+        url:"http://"+serverIP+"/new/user/success",
+        success: function(res){
+          complete();
+        }
+      });
+    });
+    

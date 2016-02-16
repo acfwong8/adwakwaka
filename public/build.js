@@ -17,6 +17,7 @@ if(creds.getPermissions() == '' || creds.getPermissions() == undefined){
     var $toola = $("<a>").attr("href","/user").text("User Panel");
     var $li = $("<li>").append($toola);
     $(".toolbar ul").append($li)
+    
 } else if(creds.getPermissions() == 'client'){
     var $span = $("<span>").text("Welcome, " + creds.getUser());
     var $a = $("<a>").attr("href","/logout").attr("class","logout").text("Log out");
