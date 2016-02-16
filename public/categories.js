@@ -60,7 +60,12 @@ $.ajax({
             child.desc = res.children[i].catdesc;
             if(res.children[i].subcat){
                 child.parent = res.children[i].subcat.replace(/\s/g,'');
-                appendchild(child.name,child.parent,child.numb,child.desc);
+                for(var j = 0; j < parentCat.length; j++){
+                    if(res.children[i].subcat == parentCat[j].name){
+                        child.depth = parentCat[j].depth + 1;
+                    }
+                }
+                appendchild(child.name,child.parent,child.numb,child.desc,child.depth);
             }
         }
         if($(".parent")){
@@ -172,10 +177,10 @@ function appendsub(name,parent,depth){
 
 }
 
-function appendchild(name,parent,numb,desc){
+function appendchild(name,parent,numb,desc,depth){
     var $a = $("<a>").text(name).attr("href","/category/"+numb+"/products");
-    var $p = $("<p>").addClass("hidden").attr("id","catp"+name+numb).append($a);
-    var $div = $("<div>").append($p);
+    var $p = $("<p>").addClass("hidden subCatp" + depth).attr("id","catp"+name+numb).append($a);
+    var $div = $("<div>").append($p).attr("id","div"+name);
     console.log(parent);
     $("#div"+parent).append($div);
 }
@@ -199,9 +204,19 @@ function catClick(catArray){
                             var $parent = $($(this).parent().parent())[0].children[j+1];
                             if($parent){
                                 var id = $parent.getAttribute('id');
-                                console.log($parent, id);
+                                console.log('hiding');
                                 $("#"+id+" .subCatp"+k).addClass("hidden");
                             }
+                            // if(k == catArray[i].depth){
+                            //     var length = $(this).parent().parent()[0].children.length - 1;
+                            //     for(var n = 0; n < length; n++){
+                            //         // console.log($(this).parent().parent()[0].children[n+1].children[0]);
+                            //         var $child = $(this).parent().parent()[0].children[n+1].children[0]
+                            //         var Id = $child.getAttribute('id');
+                            //         console.log('hiding');
+                            //         $("#"+Id).addClass("hidden");
+                            //     }
+                            // }
                         }
                     }
                 }
