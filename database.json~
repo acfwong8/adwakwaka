@@ -1,0 +1,10 @@
+{
+    "pg": {
+        "driver":"pg",
+        "database":"info",
+        "host":"localhost:5432",
+        "user":"anguswong",
+        "password":"yEwuKt61",
+        "schema":"my_schema"
+    }
+}

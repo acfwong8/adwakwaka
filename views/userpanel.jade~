@@ -1,0 +1,84 @@
+link(rel='stylesheet', href='/style.css')
+link(rel="stylesheet",href="/clearfix.css")
+
+body
+  header(class="cf")
+    div(class="logo")
+      a(href="/")
+        img(src="../../uploads/staticpics/logo.png")
+
+    p(class="login")
+      
+    div(class="toolbar")
+      ul
+        li
+          a(href="/") Home
+        li
+          a(href="/business") Our business
+        li
+          a(href="/contact") Contact
+        li
+          a(href="/support") RMA/Support
+
+  section(class="sidebar")
+    p
+  section(class="main")
+    h1 User Panel
+
+    div(class="panelspace")
+    
+  script(src='/jquery-1.11.3.js')
+  script(src='/config.js')
+  script.
+    function cred(){
+      var auth = {};
+      return {
+        setCred: function(){
+          auth.user = "#{username}";
+          auth.permissions = "#{permissions}";
+          auth.timestamp = "#{sessionStart}";
+          return auth;
+        },
+        getUser: function(){
+          return auth.user;
+        },
+        getPermissions: function(){
+          return auth.permissions;
+        },
+        getTimestamp: function(){
+          return auth.timestamp;
+        }
+      }
+    }
+    var creds = cred();
+    creds.setCred();
+    
+  script(src='/build.js')
+
+  script.
+    var categories = [];
+    $.ajax({
+      type:'GET',
+      url:'http://'+serverIP+'/getcategories',
+      dataType:'JSON',
+      success: function(res){
+        console.log(res);
+        for(var i = 0; i < res.length; i++){
+          appendp(res[i].catname,res[i].catnumb);
+        }
+      }
+    })
+    
+    function appendp(name, numb){
+      var $a = $("<a>").text(name).attr("href","/category/"+numb+"/products");
+      var $p = $("<p>").append($a);
+      $(".sidebar").append($p);
+    }
+
+    if(creds.getPermissions() == "superuser"){
+      var $aNew = $("<a>").attr("href","../new").text("Create New");
+      var $aView = $("<a>").attr("href","/view").text("View RMA requests, user data/activity")
+      var $aModify = $("<a>").attr("href","/modify").text("Modify an existing Item/Category/User")
+      var $aRemove = $("<a>").attr("href","/remove").text("Remove an Item/Category/User")
+      $(".panelspace").append($aNew, $aView, $aModify, $aRemove);
+}

@@ -159,6 +159,7 @@ passport.deserializeUser(function(id,done){
 
 app.get('/', function(req,res,next){
     var name = userdata;
+    console.log(req.cookies);
     console.log("first");
     console.log(current.getCurrentAuth());
     res.render('index',{companyname: name, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
