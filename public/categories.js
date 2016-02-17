@@ -40,7 +40,7 @@ $.ajax({
             parent.desc = res.parents[i].catdesc;
             if(res.parents[i].children){
                 var childArray = res.parents[i].children.replace(/\s/g,'');
-                parent.children = childArray.split("-");
+                parent.children = childArray.split(";");
             }
             parentCat.push(parent);
             if(parent.depth == 0){

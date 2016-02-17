@@ -54,6 +54,7 @@ body
 
   script(src='/jquery-1.11.3.js')
   script(src='/config.js')
+  script(src='/encode.js')
   script.
     function cred(){
       var auth = {};
@@ -89,7 +90,7 @@ body
     var catItem = {};
     $('.newCat').on('submit',function(e){
     e.preventDefault();
-      var catName = $('.newCatName').val();
+      var catName = unescape(encodeURIComponent($('.newCatName').val()));
       var catDesc = $('.newCatDesc').val();
       var catParent = $('.parent').val();
       var catChildren = $('.children').val();
@@ -107,7 +108,7 @@ body
           console.log(JSON.stringify(res));
           var $p = $("<p>").text("Categories updated!");
           $(".completion").append($p);
-          document.location.reload(true);
+          // document.location.reload(true);
         }
       })
 

@@ -273,10 +273,10 @@ app.post('/new/category/success',function(req,res,next){
                 console.log(data);
                 console.log(data.children + 'this is the child');
                 if(data.children == "" || data.children == null){
-                    catData.newChildren = catData.catName + "-";
+                    catData.newChildren = catData.catName + ";";
                     console.log(catData.newChildren);
                 } else {
-                    catData.newChildren = data.children + catData.catName + "-";
+                    catData.newChildren = data.children + catData.catName + ";";
                 }
                 // console.log(catData.newChildren);
                 catData.depth = data.depth + 1;
@@ -309,10 +309,10 @@ app.post('/new/category/success',function(req,res,next){
                         console.log(res[0].catnumb);
                         catData.catNumb = res[0].catnumb + 1;
                         if(data.children == "" || data.children == null){
-                            catData.newChildren = catData.catName + catData.catNumb + "-";
+                            catData.newChildren = catData.catName + catData.catNumb + ";";
                             // console.log(catData.newChildren);
                         } else {
-                            catData.newChildren = data.children + catData.catName + catData.catNumb+ "-";
+                            catData.newChildren = data.children + catData.catName + catData.catNumb+ ";";
                         }
                         db.none('UPDATE parentcat SET children = ${newChildren} where catname = ${catParent}',catData)
                             .then(function(){
@@ -394,7 +394,7 @@ app.post('/new/picupload/picname',function(req,res,next){
             if(picList === 'none'){
                 itemData.newPicList = filename + z;
             } else {
-                itemData.newPicList = picList + '-' + filename + z;
+                itemData.newPicList = picList + ';' + filename + z;
             }
             db.none('UPDATE products SET itempicture1 = ${newPicList} where itemnumb = ${itemNumb}', itemData)
                 .then(function(){
@@ -454,22 +454,22 @@ app.post('/user/modify/category/success',function(req,res,next){
                 changes.children = response.children;
                 db.one('SELECT * from parentcat where catname = ${oldParent}',changes)
                     .then(function(resp){
-                        var children = resp.children.split("-");
+                        var children = resp.children.split(";");
                         for(var i = 0; i < children.length; i++){
                             if(children[i] == changes.oldName){
                                 children.splice(i,1);
                             }
                         }
-                        changes.oldParentChildren = children.join("-");
+                        changes.oldParentChildren = children.join(";");
                         db.one('SELECT * from parentcat where catname = ${catParent}',changes)
                             .then(function(respo){
                                 console.log("newparent");
                                 console.log(respo);
                                 changes.depth = respo.depth + 1;
                                 if(respo.children == null || respo.children == ""){
-                                    changes.newParentChildren = changes.catName + "-";
+                                    changes.newParentChildren = changes.catName + ";";
                                 } else {
-                                    changes.newParentChildren = respo.children + changes.catName + "-";
+                                    changes.newParentChildren = respo.children + changes.catName + ";";
                                 }
                                 db.none('UPDATE parentcat SET children = ${newParentChildren} where catname = ${catParent}',changes)
                                     .then(function(){
@@ -479,7 +479,7 @@ app.post('/user/modify/category/success',function(req,res,next){
                                                     .then(function(){
                                                         db.none('DELETE from parentcat where catname = ${oldName}',changes)
                                                             .then(function(){
-                                                                var childArray = changes.children.split("-")
+                                                                var childArray = changes.children.split(";")
                                                                 for(var j = 0; j < childArray.length; j++){
                                                                     if(childArray[j] !== ""){
                                                                         changes.updateParent = childArray[j];
@@ -529,22 +529,22 @@ app.post('/user/modify/category/success',function(req,res,next){
                 changes.oldParent = response.subcat;
                 db.one('SELECT * from parentcat where catname = ${oldParent}',changes)
                     .then(function(resp){
-                        var children = resp.children.split("-");
+                        var children = resp.children.split(";");
                         for(var i = 0; i < children.length; i++){
                             if(children[i] == changes.oldName+changes.oldNumb){
                                 children.splice(i,1);
                             }
                         }
-                        changes.oldParentChildren = children.join("-");
+                        changes.oldParentChildren = children.join(";");
                         db.one('SELECT * from parentcat where catname = ${catParent}',changes)
                             .then(function(respo){
                                 console.log("newparent");
                                 console.log(respo);
                                 changes.depth = respo.depth + 1;
                                 if(respo.children == null || respo.children == ""){
-                                    changes.newParentChildren = changes.catName + changes.oldNumb + "-";
+                                    changes.newParentChildren = changes.catName + changes.oldNumb + ";";
                                 } else {
-                                    changes.newParentChildren = respo.children + changes.catName + changes.oldNumb + "-";
+                                    changes.newParentChildren = respo.children + changes.catName + changes.oldNumb + ";";
                                 }
                                 db.none('UPDATE parentcat SET children = ${newParentChildren} where catname = ${catParent}',changes)
                                     .then(function(){
