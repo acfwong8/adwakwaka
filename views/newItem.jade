@@ -31,6 +31,9 @@ body
           p New Item Name
           input(class="newItemName",type="text",name="itemName")
         div
+          p Item Code / Catalogue Number / ID number
+          input(class="newItemId",type="text",name="itemId")
+        div
           p Short Item Description
           input(class="newItemDesc",type="text",name="itemDesc")
         div
@@ -90,6 +93,7 @@ body
     $('.newItem').on('submit',function(e){
       e.preventDefault();
       var itemName = $(".newItemName").val();
+      var itemId = $(".newItemId").val();
       var itemDesc = $(".newItemDesc").val();
       var itemDescLong = $("textarea").val();
       var itemCatName = JSON.parse(($(".newItemCat").val())).name;
@@ -97,6 +101,7 @@ body
       var itemPrice = $(".newItemPrice").val();
       var itemNumb = #{itemnumb};
       newItem.itemName = itemName;
+      newItem.itemId = itemId;
       newItem.itemDesc = itemDesc;
       newItem.itemDescLong = itemDescLong;
       newItem.itemPrice = itemPrice;

@@ -4,6 +4,7 @@ var type = dbm.dataType;
 exports.up = function(db, callback) {
     db.createTable('products',{
         itemname:'varchar(80)',
+        itemid:'varchar(80)',
         itemdesc:'varchar(255)',
         itemcat:'varchar(80)',
         itempicture1:'varchar(80)',
