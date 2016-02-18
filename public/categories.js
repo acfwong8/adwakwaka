@@ -219,7 +219,7 @@ function catClick(catArray){
                         console.log('unhide');
                     } else{
                         // $("#catp"+child[j]).addClass("hidden");
-                        for(var k = maxDepth; k >= catArray[i].depth; k--){
+                        for(var k = maxDepth+1; k >= catArray[i].depth; k--){
                             // console.log($($(this).parent().parent())[0].children[j+1]);
                             var $parent = $($(this).parent().parent())[0].children[j];
                             console.log( $($(this).parent().parent())[0].children)
