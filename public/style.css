@@ -33,12 +33,38 @@ body{
     background-color:rgb(76,109,156);
 }
 
-.hidden{
-    display:none;
-    height:0;
+
+.hidden, .hidden p, .hidden p button{
+    /* display:none; */
+    /* transition: all 0.5s ease-in; */
 }
+
+.appear{
+    font-size: 16px;
+    border-bottom:1px dashed rgba(255,150,100,1);
+    border-left:1px dotted rgba(255,100,100,1);
+    /* border-right:1px solid black; */
+}
+.appear button{
+    padding-left:3%;
+    padding-top:5%;
+    padding-bottom:5%;
+}
+
 .invisible{
+    border-bottom:none;
+    border-left:none;
+    border-right:none;
     opacity:0;
+    /* height:0; */
+    font-size:0px;
+    margin:0;
+    /* transition: all 0.5s ease-in; */
+}
+.invisible button{
+    padding-top:0;
+    padding-bottom:0;
+    margin:0;
 }
 
 h1{
@@ -91,6 +117,11 @@ header .toolbar ul li{
 header a{
     text-decoration:none;
     color:white;
+    transition: all 0.25s ease;
+}
+header a:hover{
+    color: rgba(255,200,200,1);
+    transition: all 0.25s ease;
 }
 
 section.sidebar{
@@ -103,21 +134,75 @@ section.sidebar{
     background-color:rgba(255,255,255,0.5)
 }
 
-section.sidebar button{
+section.sidebar button {
     font-family:'Oswald',sans-serif;
-    font-size:16px;
+    font-size:inherit;
+    width: 98%;
     text-decoration: none;
     border:none;
+    /* background-color: rgba(100,100,200,1); */
     background:none;
     color:rgba(100,100,100,1);
-    padding:none;
-    margin:none;
+    margin-top:0;
+    margin-bottom:0;
+    padding-bottom:0;
+    text-align: left;
+    /* transition: all 0.25s ease; */
 }
 
-.subcatp {
-    background-color:rgba(255,255,255,0.2);
-    margin:0;
+section.sidebar .mainCat{
+    margin-left:1%;
+    margin-right:1%;
+    padding-top:10%;
+    padding-right:0;
+    border-bottom: 2px solid rgba(200,150,100,1);
+    border-top:none;
+    border-right:none;
+    border-left:none;
 }
+.childp{
+    text-align:left;
+    padding-left:3%;
+}
+
+.subCatp {margin:0;}
+.catp{margin:0;}
+
+
+.catdiv:hover .mainCat{
+    color:white;
+    background:(255,255,255,0.9);
+    transition: all 0.25s ease;
+}
+
+button.subcat:hover{
+    color:white;
+}
+
+.subCatp:hover a {
+    color:white;
+}
+
+.catp {
+    margin-top:0;
+    text-align:right;
+}
+
+.subCatp {
+    /* background-color:rgba(255,255,255,0.2); */
+    margin:0;
+    float:right;
+    text-align:left;   
+    /* opacity:1; */
+    /* height:auto; */
+    transition: all 0.25s ease;
+}
+.catdiv{
+    text-align:right;
+}
+.subCatp1{background-color:rgba(255,255,255,0.2);width:90%}
+.subCatp2{background-color:rgba(255,255,255,0.5);width:80%;}
+.subCatp3{background-color:rgba(255,255,255,0.7);width:70%;;}
 
 /* for items listing in specific Category*/
 .main h1, .main h2{

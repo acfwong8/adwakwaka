@@ -41,6 +41,24 @@ $.ajax({
             if(res.parents[i].children){
                 var childArray = res.parents[i].children.replace(/\s/g,'');
                 parent.children = childArray.split(";");
+                parent.children.sort(function(a,b){
+                    var textA = a.toUpperCase();
+                    var textB = b.toUpperCase();
+                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                });
+                var children = [];
+                for(var j = 0; j < parent.children.length; j++){
+                    var child = parent.children[j];
+                    for(var k = 0; k < childrenCat.length; k++){
+                        if(childrenCat[k].name + childrenCat[k].numb == child){
+                            children.push(child);
+                            parent.children.splice(j,1);
+                        }
+                    }
+                }
+                for(var j = 0; j < children.length; j++) {
+                    parent.children.push(children[j]);
+                }
             }
             parentCat.push(parent);
             if(parent.depth == 0){
@@ -49,12 +67,13 @@ $.ajax({
                 appendsub(parent.name,parent.parent,parent.depth);
             }
             if (i == res.parents.length - 1){
-                catClick(parentCat);
+                // catClick(parentCat);
             }
         }
         for(var i = 0; i < res.children.length; i++){
             var child = {};
             child.name = res.children[i].catname.replace(/\s/g,'');
+            child.nameSpaces = res.children[i].catname
             child.catname = res.children[i].catname
             child.numb = res.children[i].catnumb;
             child.desc = res.children[i].catdesc;
@@ -65,7 +84,7 @@ $.ajax({
                         child.depth = parentCat[j].depth + 1;
                     }
                 }
-                appendchild(child.name,child.parent,child.numb,child.desc,child.depth);
+                appendchild(child.name,child.nameSpaces,child.parent,child.numb,child.desc,child.depth);
             }
         }
         if($(".parent")){
@@ -155,14 +174,15 @@ $.ajax({
         // for(var i = 0; i< res.length; i++){
         //     appendp(res[i].catname,res[i].catnumb);
         // }
+        catClick(parentCat);
         console.log(parentCat);
     }
 })
 function appendmain(name){
     var newName = name.replace(/\s/g,'');
-    var $button = $("<button>").text(name).addClass("mainCat cat").attr("id","cat"+newName);
+    var $button = $("<button>").text(name).addClass("mainCat cat appear").attr("id","cat"+newName);
     var $p = $("<p>").append($button).addClass("catp");
-    var $div = $("<div>").append($p).attr("id","div"+newName);
+    var $div = $("<div>").append($p).attr("id","div"+newName).addClass('catdiv');
     $(".sidebar").append($div);
 }
 
@@ -170,18 +190,17 @@ function appendsub(name,parent,depth){
     var newName = name.replace(/\s/g,'');
     var newParent = parent.replace(/\s/g,'');
     var $button = $("<button>").text(name).attr("class","subCat"+ depth).addClass("subCat cat").attr("id","cat"+newName);
-    var $p = $("<p>").append($button).attr("class","subCatp" + depth).addClass("hidden subCatp catp").attr("id","catp"+newName);
-    var $div = $("<div>").append($p).attr("id","div"+newName);
+    var $p = $("<p>").append($button).attr("class","subCatp" + depth).addClass("hidden subCatp catp invisible").attr("id","catp"+newName);
+    var $div = $("<div>").append($p).attr("id","div"+newName).addClass('catdiv');
     $("#div"+newParent).append($div);
     var nextDepth = depth + 1
 
 }
 
-function appendchild(name,parent,numb,desc,depth){
-    var $a = $("<a>").text(name).attr("href","/category/"+numb+"/products");
-    var $p = $("<p>").addClass("hidden subCatp" + depth).attr("id","catp"+name+numb).append($a);
+function appendchild(name,nameSpaces,parent,numb,desc,depth){
+    var $a = $("<a>").text(nameSpaces).attr("href","/category/"+numb+"/products");
+    var $p = $("<p>").addClass("hidden invisible childp subCatp subCatp" + depth).attr("id","catp"+name+numb).append($a);
     var $div = $("<div>").append($p).attr("id","div"+name);
-    console.log(parent);
     $("#div"+parent).append($div);
 }
 
@@ -192,20 +211,31 @@ function catClick(catArray){
         for(var i = 0; i < catArray.length; i++){
             var aName = "cat"+catArray[i].name.replace(/\s/g,'');
             if(name == aName){
-                console.log(name + aName);
                 var child = catArray[i].children;
-                for(var j = 0; j < catArray[i].children.length; j++){
+                for(var j = 1; j < catArray[i].children.length; j++){
+                    console.log(child[j],j);
                     if($("#catp"+child[j]).hasClass("hidden")){
-                        $("#catp"+child[j]).removeClass("hidden");
+                        $("#catp"+child[j]).removeClass("hidden invisible").addClass('appear');
+                        console.log('unhide');
                     } else{
                         // $("#catp"+child[j]).addClass("hidden");
                         for(var k = maxDepth; k >= catArray[i].depth; k--){
-                            // console.log($($(this).parent().parent())[0].children[j]);
-                            var $parent = $($(this).parent().parent())[0].children[j+1];
+                            // console.log($($(this).parent().parent())[0].children[j+1]);
+                            var $parent = $($(this).parent().parent())[0].children[j];
+                            console.log( $($(this).parent().parent())[0].children)
                             if($parent){
                                 var id = $parent.getAttribute('id');
-                                console.log('hiding');
-                                $("#"+id+" .subCatp"+k).addClass("hidden");
+                                if($("#"+id+" .subCatp"+k)){
+                                    console.log('hide');
+                                    console.log(id,k);
+                                    $("#"+id+" .subCatp"+k).addClass("invisible").removeClass('appear');
+                                    // setTimeout(500,function(){
+                                    $("#"+id+" .subCatp"+k).addClass("hidden");
+                                    // });
+                                }
+                                // if(k == 0){
+                                //     break;
+                                // }
                             }
                             // if(k == catArray[i].depth){
                             //     var length = $(this).parent().parent()[0].children.length - 1;
