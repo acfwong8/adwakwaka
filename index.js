@@ -131,7 +131,7 @@ passport.use(new localStrategy(
                         //     return done(null,false,{message: 'User already logged on'})
                         // }
                     }
-
+                    // auth.usernumb = timestamps.length + 1;
                     auth.user = username;
                     auth.permissions = user.permissions;
                     auth.sessionStart = Date.now();
@@ -360,9 +360,10 @@ app.post('/new/item/success', function(req,res,next){
     var itemData = req.body;
     itemData.picture = 'none';
     console.log(itemData);
-    db.none('INSERT into products("itemname","itemdesc","itemdesclong","itemcat","itemcatnumb","itemnumb","itempicture1","price") values(${itemName},${itemDesc},${itemDescLong},${itemCatName},${itemCatNumb},${itemNumb},${picture},${itemPrice})',itemData)
+    db.none('INSERT into products("itemname","itemid","itemdesc","itemdesclong","itemcat","itemcatnumb","itemnumb","itempicture1","price") values(${itemName},${itemId},${itemDesc},${itemDescLong},${itemCatName},${itemCatNumb},${itemNumb},${picture},${itemPrice})',itemData)
         .then(function(){
-            console.log('logged '+itemData);
+            console.log('logged ');
+            console.log(itemData);
             // res.send('uploaded');
         })
         .catch(function(error){
@@ -660,6 +661,9 @@ app.get('/getitem/:itemid',function(req,res,next){
 
 app.get('/support',function(req,res,next){
     res.render('rmapage',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+    current.setCurrentAuth(timestamps[0]);
+    console.log("then");
+    console.log(current.getCurrentAuth());
 })
 
 app.post('/support/submit',function(req,res,next){
