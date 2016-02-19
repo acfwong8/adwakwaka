@@ -224,11 +224,12 @@ app.get('/logout',function(req,res){
     }
     res.redirect('/')
 });
-app.post('/userstat',function(req,res){
+app.post('/userstat',function(req,res,next){
     console.log('userstat');
     var id = req.body;
     console.log(id);
     current.setCurrentAuth(id);
+    next();
 })
 
 app.get('/new',function(req,res,next){
@@ -662,8 +663,6 @@ app.get('/getitem/:itemid',function(req,res,next){
 app.get('/support',function(req,res,next){
     res.render('rmapage',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
     current.setCurrentAuth(timestamps[0]);
-    console.log("then");
-    console.log(current.getCurrentAuth());
 })
 
 app.post('/support/submit',function(req,res,next){
