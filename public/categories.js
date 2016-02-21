@@ -221,6 +221,11 @@ function catClick(catArray){
             var aName = "cat"+catArray[i].name.replace(/\s/g,'');
             if(name == aName){
                 var child = catArray[i].children;
+                child.sort(function(a,b){
+                    var textA = a.toUpperCase();
+                    var textB = b.toUpperCase();
+                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                });
                 for(var j = 1; j < catArray[i].children.length; j++){
                     console.log(child[j],j);
                     if($("#catp"+child[j]).hasClass("hidden")){
