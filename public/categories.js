@@ -18,6 +18,15 @@ $.ajax({
             var textB = b.catname.toUpperCase();
             return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
         });
+        res.children.sort(function(a,b){
+            if(a.namenumb.toUpperCase() > b.namenumb.toUpperCase()){
+                return 1;
+            }
+            if(a.namenumb.toUpperCase() < b.namenumb.toUpperCase()){
+                return -1;
+            }
+            return 0;
+        })
         console.log(res);
         var maxDepth = 0;
         var appendCat = res.parents;
