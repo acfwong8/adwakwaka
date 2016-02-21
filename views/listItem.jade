@@ -68,7 +68,7 @@ body
       url:'http://'+serverIP+'/getitems/#{catnumb}',
       dataType:'JSON',
       success: function(res){
-        console.log(res);
+        // console.log(res);
         items = res;
         for(var i = 0; i < items.length; i++){
           appendItem(i,items[i].itemname,items[i].itempicture1,items[i].itemnumb,items[i].itemdesc,items[i].price,items[i].currency);
@@ -79,7 +79,9 @@ body
     function appendItem(number,title,picture,itemNumb,itemDesc,price,currency){
       var $div = $("<div>").attr('class','item'+number);
       var $h3 = $("<h3>").text(title);
-      var $img = $("<img>").attr('src',"../../uploads/"+picture+".jpg");
+      if(picture !== 'none'){
+        var $img = $("<img>").attr('src',"../../uploads/"+picture+".jpg");
+      }
       var $atitle = $("<a>").attr('href',"/category/#{catnumb}/products/"+itemNumb);
       var $apic = $("<a>").attr('href',"/category/#{catnumb}/products/"+itemNumb);
       var $pDesc = $("<p>").text(itemDesc).addClass("shortDesc");

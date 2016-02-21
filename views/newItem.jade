@@ -48,13 +48,13 @@ body
         input(type="submit",value="Save Fields",name="saveFields")
 
         div(class="completion")
-          span Hit 'Save Fields' to save and create this item.
+          span Hit 'Save Fields' to save and create this item and add a picture.
 
-      form(class="upload",enctype="multipart/form-data")
+      form(class="upload hiddenForm",enctype="multipart/form-data")
         span Upload picture? 
         input(type="submit",value="Open picture selection",name="select" disabled)
     
-      form(class="itemPic",action="picupload",method="post",enctype="multipart/form-data")
+      form(class="itemPic hiddenForm",action="picupload",method="post",enctype="multipart/form-data")
         p
           input(type="file",name="itemPic")
         p  
@@ -122,22 +122,25 @@ body
       $(".upload input[type=submit]").prop("disabled", false);
       $(".newItem input[type=text]").prop("disabled",true);
       $(".newItem input[type=submit]").prop("disabled",true);
+      $(".upload").removeClass("hiddenForm");
+      $(".newItem").addClass("hiddenForm");
     });
 
     $(".upload").on("submit",function(e){
-    e.preventDefault();
-    console.log(newItem);
-      $.ajax({
-        type:'POST',
-        data:JSON.stringify(newItem),
-        contentType:'application/json',
-        url:'http://'+serverIP+'/new/picupload/picname',
-        success: function(res){
-          console.log('picture data up success: ' + newItem);
-          console.log(newItem);
-        }
-      });
+      e.preventDefault();
+      console.log(newItem);
+        $.ajax({
+          type:'POST',
+          data:JSON.stringify(newItem),
+          contentType:'application/json',
+          url:'http://'+serverIP+'/new/picupload/picname',
+          success: function(res){
+            console.log('picture data up success: ' + newItem);
+            console.log(newItem);
+          }
+        });
       $(".itemPic input[type=submit]").prop("disabled", false);
+      $(".itemPic").removeClass("hiddenForm");
     });
 
     function complete(){

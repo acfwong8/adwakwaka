@@ -27,7 +27,7 @@ $.ajax({
             }
             return 0;
         })
-        console.log(res);
+        // console.log(res);
         var maxDepth = 0;
         var appendCat = res.parents;
         for(var i = 0; i < res.children.length; i++){
@@ -38,7 +38,7 @@ $.ajax({
             if(res.children[i].subcat){
                 child.parent = res.children[i].subcat;
             }
-            console.log(child);
+            // console.log(child);
             childrenCat.push(child);
         }
         for(var i = 0; i < res.parents.length; i++){
@@ -184,7 +184,7 @@ $.ajax({
         //     appendp(res[i].catname,res[i].catnumb);
         // }
         catClick(parentCat);
-        console.log(parentCat);
+        // console.log(parentCat);
     }
 })
 function appendmain(name){
@@ -227,21 +227,21 @@ function catClick(catArray){
                     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                 });
                 for(var j = 1; j < catArray[i].children.length; j++){
-                    console.log(child[j],j);
+                    // console.log(child[j],j);
                     if($("#catp"+child[j]).hasClass("hidden")){
                         $("#catp"+child[j]).removeClass("hidden invisible").addClass('appear');
-                        console.log('unhide');
+                        // console.log('unhide');
                     } else{
                         // $("#catp"+child[j]).addClass("hidden");
                         for(var k = maxDepth+1; k >= catArray[i].depth; k--){
                             // console.log($($(this).parent().parent())[0].children[j+1]);
                             var $parent = $($(this).parent().parent())[0].children[j];
-                            console.log( $($(this).parent().parent())[0].children)
+                            // console.log( $($(this).parent().parent())[0].children)
                             if($parent){
                                 var id = $parent.getAttribute('id');
                                 if($("#"+id+" .subCatp"+k)){
-                                    console.log('hide');
-                                    console.log(id,k);
+                                    // console.log('hide');
+                                    // console.log(id,k);
                                     $("#"+id+" .subCatp"+k).addClass("invisible").removeClass('appear');
                                     // setTimeout(500,function(){
                                     $("#"+id+" .subCatp"+k).addClass("hidden");
