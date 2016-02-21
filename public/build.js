@@ -34,12 +34,10 @@ $(window).bind("beforeunload",function(){
     currentAuth.sessionStart = creds.getTimestamp();
     $.ajax({
         type:'POST',
-        url:"http://"+serverIP+"/userstat",
+        url:"http://"+serverIP+"/userstat/",
         data:JSON.stringify(currentAuth),
         contentType:"application/json",
         success: function(res){
-            console.log(res);
-            complete();
         },
         fail: function(fail){
             console.log(fail);
