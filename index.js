@@ -368,11 +368,11 @@ app.get('/new/item',function(req,res,next){
             newItemNumb = response[0].itemnumb+1;
             console.log(response);
             res.render('newItem',{ itemnumb: newItemNumb, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+            current.setCurrentAuth(timestamps[0]);
         })
         .catch(function(err){
             console.log('help' + err);
         });
-    current.setCurrentAuth(timestamps[0]);
 });
 app.post('/new/item/success', function(req,res,next){
     // console.log('body: '+JSON.stringify(req.body));

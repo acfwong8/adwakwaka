@@ -74,14 +74,14 @@ body
       success: function(res){
         console.log(res);
         items = res;
-        appendItem(items.itemname,items.itempicture1,items.itemnumb,items.itemdesc,items.itemdesclong,items.newdesclong,items.price,items.currency);
+        appendItem(items.itemname,items.itempicture1,items.itemnumb,items.itemdesc,items.itemdesclong,items.newdesclong,items.price,items.currency,items.itemid);
       }
     })
 
-    function appendItem(title,picture,itemNumb,itemDesc,itemDescLong,newDescLong,price,currency){
+    function appendItem(title,picture,itemNumb,itemDesc,itemDescLong,newDescLong,price,currency,itemid){
       console.log(title,picture,itemNumb,itemDesc,price,currency);
       var $div = $("<div>").attr('class','item');
-      var $h3 = $("<h3>").text(title);
+      var $h3 = $("<h3>").text(itemid);
       var $img = $("<img>").attr('src',"../../../uploads/"+picture+".jpg");
       var $atitle = $("<a>").attr('href',"/category/#{catnumb}/products/"+itemNumb);
       var $apic = $("<a>").attr('href',"../../../uploads/"+picture+".jpg");
