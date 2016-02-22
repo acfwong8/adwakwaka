@@ -242,7 +242,6 @@ app.post('/userstat',function(req,res,next){
     var id = req.body;
     console.log(id);
     current.setCurrentAuth(id);
-    next();
 })
 
 app.get('/new',function(req,res,next){
