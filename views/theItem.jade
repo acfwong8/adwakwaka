@@ -80,7 +80,7 @@ body
     function appendItem(title,picture,itemNumb,itemDesc,itemDescLong,newDescLong,price,currency,itemid){
       console.log(title,picture,itemNumb,itemDesc,price,currency);
       var $div = $("<div>").attr('class','item');
-      var $h3 = $("<h3>").text(itemid);
+      var $h3 = $("<h3>").text("Item Code: "+itemid);
       var $img = $("<img>").attr('src',"../../../uploads/"+picture+".jpg");
       var $atitle = $("<a>").attr('href',"/category/#{catnumb}/products/"+itemNumb);
       var $apic = $("<a>").attr('href',"../../../uploads/"+picture+".jpg");
@@ -89,7 +89,7 @@ body
       if(price !== null){
         priceText = currency+price;
       }  
-      var $pPrice = $("<p>").text("$"+priceText).addClass("itemPrice");
+      var $pPrice = $("<p>").text("Unit Price: $"+priceText).addClass("itemPrice");
       $atitle.append($h3);
       $apic.append($img);
       $div.append($apic,$atitle,$pDesc);
