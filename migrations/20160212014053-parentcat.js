@@ -5,7 +5,7 @@ exports.up = function(db, callback) {
     db.createTable('parentcat',{
         catname:'varchar(80)',
         catdesc:'varchar(80)',
-        hasparent:'varchar(80)',
+        hasparent:'varchar(500)',
         children:'varchar(80)',
         depth:'real'
     },callback);

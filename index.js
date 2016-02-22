@@ -247,22 +247,26 @@ app.post('/userstat',function(req,res,next){
 
 app.get('/new',function(req,res,next){
     res.render('new',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+    current.setCurrentAuth(timestamps[0]);
 });
 
 // user panel
 
 app.get('/user',function(req,res,next){
     res.render('userpanel', {username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart})
+    current.setCurrentAuth(timestamps[0]);
 });
 
 app.get('/user/view',function(req,res,next){
     res.render('rmaview', {username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart})
+    current.setCurrentAuth(timestamps[0]);
 })
 
 // category creation
 
 app.get('/new/category',function(req,res,next){
     res.render('newCat', {username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+    current.setCurrentAuth(timestamps[0]);
 });
 
 app.post('/new/category/success',function(req,res,next){
@@ -330,7 +334,8 @@ app.post('/new/category/success',function(req,res,next){
                         }
                         db.none('UPDATE parentcat SET children = ${newChildren} where catname = ${catParent}',catData)
                             .then(function(){
-                                db.none('INSERT into categoriesmain("catname","catdesc","catnumb","subcat") values(${catName},${catDesc},${catNumb},${catParent})', catData)
+                                catData.nameNumb = catData.catName + catData.catNumb;
+                                db.none('INSERT into categoriesmain("catname","catdesc","catnumb","subcat","namenumb") values(${catName},${catDesc},${catNumb},${catParent},${nameNumb})', catData)
                                     .then(function(){
                                         console.log('logged '+catData);
                                         res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
@@ -366,8 +371,8 @@ app.get('/new/item',function(req,res,next){
         })
         .catch(function(err){
             console.log('help' + err);
-        })
-
+        });
+    current.setCurrentAuth(timestamps[0]);
 });
 app.post('/new/item/success', function(req,res,next){
     // console.log('body: '+JSON.stringify(req.body));
@@ -443,16 +448,19 @@ app.post('/new/user/success',function(req,res,next){
                 console.log("error logging user: "+err);
             });
     }
+    current.setCurrentAuth(timestamps[0]);
 });
 
 // modify categories
 
 app.get('/user/modify',function(req,res,next){
     res.render('modify',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+    current.setCurrentAuth(timestamps[0]);
 })
 
 app.get('/user/modify/category',function(req,res,next){
     res.render('modCat',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+        current.setCurrentAuth(timestamps[0]);
 });
 
 app.post('/user/modify/category/success',function(req,res,next){
@@ -614,7 +622,25 @@ app.post('/user/modify/category/success',function(req,res,next){
             });
     }
     res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+    current.setCurrentAuth(timestamps[0]);
 })
+
+// modifying item
+
+app.get('/user/modify/item',function(req,res,next){
+    res.render('modItem',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+    current.setCurrentAuth(timestamps[0]);
+})
+
+app.get('/itemlist',function(req,res,next){
+    db.many('SELECT * from products')
+        .then(function(response){
+            res.send(response);
+        })
+        .catch(function(err){
+            console.log('error fetching products: '+err);
+        });
+});
 
 // categories and items listing
 
@@ -631,6 +657,7 @@ app.get('/category/:id/products',function(req,res,next){
     db.one('SELECT * from categoriesmain where catnumb = ${id}',dbParam)
         .then(function(response){
             res.render('listItem',{catname: response.catname, catnumb: response.catnumb, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+            current.setCurrentAuth(timestamps[0]);
         })
         .catch(function(err){
             res.end('failed loading: '+err);
@@ -662,6 +689,7 @@ app.get('/category/:catid/products/:itemid',function(req,res,next){
     db.one('SELECT * from products where itemnumb = ${itemId}',dbParam)
         .then(function(response){
             res.render('theItem',{itemname: response.itemname, itemnumb: response.itemnumb, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+            current.setCurrentAuth(timestamps[0]);
         })
         .catch(function(err){
             res.end('failed loading: '+ err);

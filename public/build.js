@@ -3,7 +3,7 @@ if(creds.getPermissions() == '' || creds.getPermissions() == undefined){
     $(".login").append($a);
     
 } else if(creds.getPermissions() == 'superuser') {
-    var $span = $("<span>").text("Welcome, " + creds.getUser());
+    var $span = $("<span>").text("Welcome, " + creds.getUser()+" | ");
     var $a = $("<a>").attr("href","/logout").attr("class","logout").text("Log out");
     $(".login").append($span, $a);
     var $toola = $("<a>").attr("href","/user").text("User Panel");
@@ -11,7 +11,7 @@ if(creds.getPermissions() == '' || creds.getPermissions() == undefined){
     $(".toolbar ul").append($li)
     
 } else if(creds.getPermissions() == 'support'){
-    var $span = $("<span>").text("Welcome, " + creds.getUser());
+    var $span = $("<span>").text("Welcome, " + creds.getUser()+" | ");
     var $a = $("<a>").attr("href","/logout").attr("class","logout").text("Log out");
     $(".login").append($span, $a);
     var $toola = $("<a>").attr("href","/user").text("User Panel");
@@ -19,7 +19,7 @@ if(creds.getPermissions() == '' || creds.getPermissions() == undefined){
     $(".toolbar ul").append($li)
     
 } else if(creds.getPermissions() == 'client'){
-    var $span = $("<span>").text("Welcome, " + creds.getUser());
+    var $span = $("<span>").text("Welcome, " + creds.getUser()+" | ");
     var $a = $("<a>").attr("href","/logout").attr("class","logout").text("Log out");
     $(".login").append($span, $a);
     var $toola = $("<a>").attr("href","/user").text("User Panel");

@@ -1,0 +1,148 @@
+link(rel="stylesheet",href="/style.css")
+link(rel="stylesheet",href="/clearfix.css")
+
+body
+  header(class="cf")
+    div(class="logo")
+      a(href="/")
+        img(src="../../uploads/staticpics/logo.png")
+
+    p(class="login")
+      
+    div(class="toolbar")
+      ul
+        li
+          a(href="/") Home
+        li
+          a(href="/business") Our business
+        li
+          a(href="/contact") Contact
+        li
+          a(href="/support") RMA/Support
+
+  section(class="sidebar")
+  
+  section(class="main")
+    h1 Modify existing Item
+
+    div(class="newspace")
+
+      form(class="newIat",enctype="multipart/form-data")
+        div
+          p Select category of item
+          select(class="newItemCat")
+        div
+          p Select item
+          select(class="dropItem")
+        div
+          p Edit item name
+          input(class="newItemName",type="text",name="itemName")
+      
+        div
+          p Edit item description
+          input(class="newItemDesc",type="text",name="itemDesc")
+        div
+          p Edit item long desciprtion
+          textarea(class="newLongDesc")
+        div
+          p Edit item price
+          input(class="newItemPrice",type="text",name="itemPrice")
+
+        div(class="hasParent")
+          p Change parent
+          select(class="newItemCat changeCat",id="whichParent")
+            option(value="",text="")
+      
+        input(type="submit",value="Edit Category",name="submit")
+
+        div(class="completion")
+          p  Hit create to complete fields
+
+      form(class="upload hiddenForm",enctype="multipart/form-data")
+        span Change Picture?
+        input(type="submit",value="open picture selection",name="select" disabled)
+
+      form(class="upload hiddenForm",action="picupload",method="post",enctype="multipart/form-data")
+        p
+          input(type="file",name="itemPic")
+        p
+          input(type="submit",value="Upload Picture",name="submit" disabled)        
+
+    a(href="/../user") Go back
+
+  script(src='/jquery-1.11.3.js')
+  script(src='/config.js')
+  script.
+    function cred(){
+      var auth = {};
+      return {
+        setCred: function(){
+          auth.user = "#{username}";
+          auth.permissions = "#{permissions}";
+          auth.timestamp = "#{sessionStart}"
+          return auth;
+        },
+        getUser: function(){
+          return auth.user;
+        },
+        getPermissions: function(){
+          return auth.permissions
+        },
+        getTimestamp: function(){
+          return auth.timestamp;
+        }
+      }
+    }
+    var creds = cred();
+    creds.setCred();
+    var items = [];
+    $.ajax({
+      type:'GET',
+      url:'http://'+serverIP+'/itemlist',
+      dataType:'JSON',
+      success:function(res){
+        items = res;
+        console.log(items);
+        appendItems(items);
+        $(".newItemCat").on("change",function(){
+          $(".dropItem").empty();
+          appendItems(items);
+        })
+      }
+    });
+    
+  script(src='/build.js')
+  script(src='/categories.js')
+  script.
+    function appendItems(items){
+      for(var i = 0; i < items.length; i++){
+        if(items[i].itemname){
+          var item = {
+            name: items[i].itemname,
+            id: items[i].itemnumb
+          }
+          var cat = {
+            numb: items[i].itemcatnumb,
+            name: items[i].itemcat
+          }
+          var id = JSON.stringify(item);
+          var catId = JSON.stringify(cat);
+          console.log(catId);
+          if(catId == $(".newItemCat").val()){
+            var $option = $("<option>").val(id).text(items[i].itemname);
+            $(".dropItem").append($option);
+          }
+        }
+      }
+      for(var i = 0; i < items.length; i++){
+        if(JSON.parse($(".dropItem").val())){
+          if(items[i].itemnumb == JSON.parse($(".dropItem").val()).id){
+            console.log(items[i].itemname);
+            $(".newItemName").val(items[i].itemname);
+            $(".newItemDesc").val(items[i].itemdesc);
+            $(".newLongDesc").val(items[i].itemdesclong);
+            $(".newItemPrice").val(items[i].price);
+          }
+        }
+      }
+    }

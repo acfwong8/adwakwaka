@@ -107,6 +107,7 @@ $.ajax({
                 var $option = $("<option>").val(JSON.stringify({numb: childrenCat[i].numb,name: childrenCat[i].name})).text(childrenCat[i].name);
                 $(".newItemCat").append($option);
             }
+            $(".changeCat").removeClass("newItemCat");
         }
         if($(".modClass")){
             for(var i = 0; i < parentCat.length; i++){
