@@ -741,10 +741,6 @@ app.get('/getitem/:itemid',function(req,res,next){
     dbParam.itemId = itemId;
     db.one('SELECT * from products where itemnumb = ${itemId}',dbParam)
         .then(function(response){
-            console.log(response);
-            // response.newdesclong = response.itemdesclong.replace("\n","<br/>");
-            console.log(response.itemdesclong);
-            // console.log(response.newdesclong);
             res.send(response);
         })
         .catch(function(err){
