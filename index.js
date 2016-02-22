@@ -242,6 +242,7 @@ app.post('/userstat',function(req,res,next){
     var id = req.body;
     console.log(id);
     current.setCurrentAuth(id);
+    next();
 })
 
 app.get('/new',function(req,res,next){
@@ -696,6 +697,7 @@ app.get('/category/:id/products',function(req,res,next){
         .then(function(response){
             res.render('listItem',{catname: response.catname, catnumb: response.catnumb, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
             current.setCurrentAuth(timestamps[0]);
+            next();
         })
         .catch(function(err){
             res.end('failed loading: '+err);
@@ -727,6 +729,7 @@ app.get('/category/:catid/products/:itemid',function(req,res,next){
             console.log(current.getCurrentAuth());
             res.render('theItem',{itemname: response.itemname, itemnumb: response.itemnumb, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
             current.setCurrentAuth(timestamps[0]);
+            next();
         })
         .catch(function(err){
             res.end('failed loading: '+ err);
