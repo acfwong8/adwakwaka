@@ -708,8 +708,6 @@ app.get('/getitems/:id',function(req,res,next){
     dbParam.id = id;
     db.many('select * from products where itemcatnumb = ${id}',dbParam)
         .then(function(response){
-            console.log(response);
-
             res.send(response);
         })
         .catch(function(err){
