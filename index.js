@@ -726,6 +726,7 @@ app.get('/category/:catid/products/:itemid',function(req,res,next){
     dbParam.itemId = itemId;
     db.one('SELECT * from products where itemnumb = ${itemId}',dbParam)
         .then(function(response){
+            console.log(current.getCurrentAuth());
             res.render('theItem',{itemname: response.itemname, itemnumb: response.itemnumb, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
             current.setCurrentAuth(timestamps[0]);
         })
