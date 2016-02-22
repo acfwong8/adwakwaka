@@ -25,7 +25,6 @@ body
   section(class="sidebar")
   
   section(class="main")
-    h1 #{itemname}
 
     div(class="singleItem")
       h2 #{itemname}
@@ -90,7 +89,7 @@ body
       if(price !== null){
         priceText = currency+price;
       }  
-      var $pPrice = $("<p>").text(priceText).addClass("itemPrice");
+      var $pPrice = $("<p>").text("$"+priceText).addClass("itemPrice");
       $atitle.append($h3);
       $apic.append($img);
       $div.append($apic,$atitle,$pDesc);
