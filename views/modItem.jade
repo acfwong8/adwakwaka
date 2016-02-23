@@ -27,17 +27,20 @@ body
 
     div(class="newspace")
 
-      form(class="newIat",enctype="multipart/form-data")
-        div
-          p Select category of item
-          select(class="newItemCat")
+      div
+        p Select category of item
+        select(class="newItemCat initialCat")
+          option
+      form(class="newItem hiddenForm",enctype="multipart/form-data")
         div
           p Select item
           select(class="dropItem")
         div
           p Edit item name
           input(class="newItemName",type="text",name="itemName")
-      
+        div
+          p Edit item code/id/number
+          input(class="newItemId",type="text",name="itemId")
         div
           p Edit item description
           input(class="newItemDesc",type="text",name="itemDesc")
@@ -62,13 +65,11 @@ body
         span Change Picture?
         input(type="submit",value="open picture selection",name="select" disabled)
 
-      form(class="upload hiddenForm",action="picupload",method="post",enctype="multipart/form-data")
+      form(class="itemPic hiddenForm",action="../../new/picupload",method="post",enctype="multipart/form-data")
         p
           input(type="file",name="itemPic")
         p
-          input(type="submit",value="Upload Picture",name="submit" disabled)        
-
-    a(href="/../user") Go back
+          input(type="submit",value="Upload Picture",name="submit" disabled)
 
   script(src='/jquery-1.11.3.js')
   script(src='/config.js')
@@ -104,7 +105,8 @@ body
         items = res;
         console.log(items);
         appendItems(items);
-        $(".newItemCat").on("change",function(){
+        $(".initialCat").on("change",function(){
+          $(".newItem").removeClass("hiddenForm");
           $(".dropItem").empty();
           appendItems(items);
         })
@@ -139,10 +141,68 @@ body
           if(items[i].itemnumb == JSON.parse($(".dropItem").val()).id){
             console.log(items[i].itemname);
             $(".newItemName").val(items[i].itemname);
+            $(".newItemId").val(items[i].itemid);
             $(".newItemDesc").val(items[i].itemdesc);
             $(".newLongDesc").val(items[i].itemdesclong);
             $(".newItemPrice").val(items[i].price);
+            $(".changeCat").val(JSON.stringify({numb: items[i].itemcatnumb, name: items[i].itemcat}));
           }
         }
       }
+      $(".dropItem").on("change",function(){
+        for(var i = 0; i < items.length; i++){
+          if(JSON.parse($(".dropItem").val()) !== null || JSON.parse($(".dropItem").val()) !== ''){
+            if(items[i].itemnumb == JSON.parse($(".dropItem").val()).id){
+              console.log(1);
+              $(".newItemName").val(items[i].itemname);
+              $(".newItemId").val(items[i].itemid);
+              $(".newItemDesc").val(items[i].itemdesc);
+              $(".newLongDesc").val(items[i].itemdesclong);
+              $(".newItemPrice").val(items[i].price);
+              $(".changeCat").val(JSON.stringify({numb: items[i].itemcatnumb, name: items[i].itemcat}));
+            }
+          }
+        }
+      })
     }
+    var newItem = {};
+    $(".newItem").on("submit",function(e){
+      e.preventDefault();
+      newItem.itemName = $(".newItemName").val();
+      newItem.itemId = $(".newItemId").val();
+      newItem.itemDesc = $(".newItemDesc").val();
+      newItem.newLongDesc = $(".newLongDesc").val();
+      newItem.newPrice = $(".newItemPrice").val();
+      newItem.newParent = JSON.parse($(".changeCat").val());
+      newItem.oldParent = JSON.parse($(".initialCat").val());
+      newItem.itemNumb = Number(JSON.parse($(".dropItem").val()).id);
+      console.log(newItem);
+      $.ajax({
+        type:"POST",
+        data:JSON.stringify(newItem),
+        contentType:"application/json",
+        url:"http://"+serverIP+"/user/modify/item/success",
+        success:function(res){
+          console.log("success");
+          $(".newItem").addClass("hiddenForm");
+          $(".upload").removeClass("hiddenForm");
+          $(".upload input[type=submit]").prop("disabled",false);
+        }
+      });
+    });
+    $(".upload").on("submit",function(e){
+        e.preventDefault();
+        $.ajax({
+          type:"POST",
+          data:JSON.stringify(newItem),
+          contentType:"application/json",
+          url:"http://"+serverIP+"/new/picupload/picname",
+          success: function(res){
+            console.log('picture data up success: ' + newItem);
+            console.log(newItem);
+
+          }
+        });
+        $(".itemPic").removeClass("hiddenForm");
+        $(".itemPic input[type=submit]").prop("disabled", false);
+    })

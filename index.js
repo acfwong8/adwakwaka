@@ -397,8 +397,6 @@ app.post('/new/picupload',function(req,res,next){
         }
         res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
     });
-
-    // res.send("File is uploaded");
 })
 
 app.post('/new/picupload/picname',function(req,res,next){
@@ -414,11 +412,13 @@ app.post('/new/picupload/picname',function(req,res,next){
             if(picList === 'none'){
                 itemData.newPicList = filename + z;
             } else {
-                itemData.newPicList = picList + ';' + filename + z;
+                // itemData.newPicList = picList + ';' + filename + z;
+                itemData.newPicList = filename + z;
             }
             db.none('UPDATE products SET itempicture1 = ${newPicList} where itemnumb = ${itemNumb}', itemData)
                 .then(function(){
                     console.log('uploading');
+                    res.send('uploading');
                 })
                 .catch(function(err){
                     res.end('Upload failed column: ' + err);
@@ -680,6 +680,37 @@ app.get('/itemlist',function(req,res,next){
             console.log('error fetching products: '+err);
         });
 });
+
+app.post('/user/modify/item/success',function(req,res,next){
+    var newItem = req.body;
+    newItem.oldCatNumb = newItem.oldParent.numb;
+    newItem.oldCatName = newItem.oldParent.name;
+    newItem.newCatNumb = newItem.newParent.numb;
+    newItem.newCatName = newItem.newParent.name;
+    console.log(newItem);
+    db.one('SELECT * from products where itemnumb = ${itemNumb}',newItem)
+        .then(function(response){
+            newItem.itemPic = response.itempicture1;
+            db.none('DELETE from products where itemnumb = ${itemNumb}',newItem)
+                .then(function(){
+                    db.none('INSERT into products("itemname","itemid","itemdesc","itemcat","itempicture1","itemnumb","itemcatnumb","price","itemdesclong") values(${itemName},${itemId},${itemDesc},${newCatName},${itemPic},${itemNumb},${newCatNumb},${newPrice},${newLongDesc})',newItem)
+                        .then(function(){
+                            console.log('logged');
+                            console.log(newItem);
+                        })
+                        .catch(function(erro){
+                            console.log('failed inserting: '+erro);
+                        });
+                })
+                .catch(function(error){
+                    console.log('failed deleting old item: '+error);
+                });
+        })
+        .catch(function(err){
+            console.log('failed selecting categoriesmain: '+err);
+        });
+    res.send('don');
+})
 
 // categories and items listing
 
