@@ -158,18 +158,17 @@ passport.deserializeUser(function(id,done){
     return done(err,user);
 });
 
+app.use('/userstat',function(req,res,next){
+    var id = req.body;
+    console.log('middleware');
+    current.setCurrentAuth(id);
+    console.log(id);
+    next();
+});
+
 app.get('/', function(req,res,next){
     var name = userdata;
-    // console.log('req.body');
-    // console.log(req.body);
-    // userstat(req.body);
-    // if(req.body.user == ''){
-    //     console.log(1);
-    //     userstat(req.body);
-    // } else {
-    //     console.log(2);
-    //     userstat(req.body);
-    // }
+
     console.log("first");
     console.log(current.getCurrentAuth());
     res.render('index',{companyname: name, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
@@ -178,7 +177,24 @@ app.get('/', function(req,res,next){
     console.log(current.getCurrentAuth());
 });
 
-
+// app.get('/', function(req,res,next){
+//     var name = userdata;
+//     console.log('req.body');
+//     console.log(req.body);
+//     if(req.body.username == ''){
+//         console.log(1);
+//         userstat(req.body);
+//     } else {
+//         console.log(2);
+//         // userstat(req.body);
+//     }
+//     console.log("first");
+//     console.log(current.getCurrentAuth());
+//     res.render('index',{companyname: name, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+//     current.setCurrentAuth(timestamps[0]);
+//     console.log("then");
+//     console.log(current.getCurrentAuth());
+// });
 
 app.get('/getcategories',function(req,res,next){
     var categories = {};
@@ -237,13 +253,13 @@ app.get('/logout',function(req,res){
 function userstat(object){
     current.setCurrentAuth(object);
 }
-app.post('/userstat',function(req,res,next){
-    console.log('userstat');
-    var id = req.body;
-    console.log(id);
-    current.setCurrentAuth(id);
-    next();
-})
+// app.post('/userstat',function(req,res,next){
+//     console.log('userstat');
+//     var id = req.body;
+//     console.log(id);
+//     current.setCurrentAuth(id);
+//     next();
+// })
 
 app.get('/new',function(req,res,next){
     res.render('new',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
