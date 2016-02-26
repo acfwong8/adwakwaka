@@ -4,8 +4,8 @@ link(rel="stylesheet",href="/clearfix.css")
 body
   header(class="cf")
     div(class="logo")
-      a(href="/")
-        img(src="../../uploads/staticpics/logo.png")
+      // a(href="/")
+        // img(src="../../uploads/staticpics/logo.png")
 
     p(class="login")
       
@@ -21,13 +21,14 @@ body
           a(href="/support") RMA/Support
 
   section(class="sidebar")
-  section(class="main")
+  section(class="main cf")
     h1 Welcome to Mantronic
 
     div(class="itemspace")
     
   script(src='/jquery-1.11.3.js')
   script(src='/config.js')
+  script(src='/logo.js')
   script.
     function cred(){
       var auth = {};

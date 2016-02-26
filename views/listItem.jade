@@ -6,8 +6,8 @@ body
   
   header(class="cf")
     div(class="logo")
-      a(href="/")
-        img(src="../../uploads/staticpics/logo.png")
+      // a(href="/")
+        // img(src="../../uploads/staticpics/logo.png")
 
     p(class="login")
       
@@ -24,16 +24,18 @@ body
 
   section(class="sidebar")
   
-  section(class="main")
+  section(class="main cf")
     h1 #{catname}
 
     div(class="itemspace")
       h2 Listing all #{catname} items
 
-
+  footer
+    p Copyright
 
   script(src="/jquery-1.11.3.js")
   script(src="/config.js")
+  script(src="/logoStill.js")
   script.
     function cred(){
       var auth = {};
@@ -77,7 +79,8 @@ body
     })
 
     function appendItem(number,title,picture,itemNumb,itemDesc,price,currency){
-      var $div = $("<div>").attr('class','item'+number);
+      var $div = $("<div>").attr('class','item'+number).addClass("item");
+      var $divText = $("<div>").attr("class","divText");
       var $h3 = $("<h3>").text(title);
       if(picture !== 'none'){
         var $img = $("<img>").attr('src',"../../uploads/"+picture+".jpg");
@@ -92,9 +95,13 @@ body
       var $pPrice = $("<p>").text(priceText).addClass("itemPrice");
       $atitle.append($h3);
       $apic.append($img);
-      $div.append($apic,$atitle,$pDesc);
+      $divText.append($atitle,$pDesc);
       if(creds.getPermissions() !== ''){
-        $div.append($pPrice);
+        $divText.append($pPrice);
       }
+      $div.append($apic,$divText);
       $(".itemspace").append($div);
+      var width = $(".item"+number).width();
+      console.log(width);
+      // $(".item"+number).css({'height': width + "px"});
     }

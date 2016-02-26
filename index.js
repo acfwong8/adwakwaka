@@ -158,11 +158,14 @@ passport.deserializeUser(function(id,done){
     return done(err,user);
 });
 
+var logging = [{user:'',permissions:'',sessionStart:''}];
 app.use('/userstat',function(req,res,next){
     var id = req.body;
-    console.log('middleware');
-    current.setCurrentAuth(id);
-    console.log(id);
+    if(logging.length < 2){
+        console.log('middleware');
+        current.setCurrentAuth(id);
+        console.log(id);
+    }
     next();
 });
 

@@ -248,20 +248,7 @@ function catClick(catArray){
                                     $("#"+id+" .subCatp"+k).addClass("hidden");
                                     // });
                                 }
-                                // if(k == 0){
-                                //     break;
-                                // }
                             }
-                            // if(k == catArray[i].depth){
-                            //     var length = $(this).parent().parent()[0].children.length - 1;
-                            //     for(var n = 0; n < length; n++){
-                            //         // console.log($(this).parent().parent()[0].children[n+1].children[0]);
-                            //         var $child = $(this).parent().parent()[0].children[n+1].children[0]
-                            //         var Id = $child.getAttribute('id');
-                            //         console.log('hiding');
-                            //         $("#"+Id).addClass("hidden");
-                            //     }
-                            // }
                         }
                     }
                 }
@@ -269,5 +256,6 @@ function catClick(catArray){
         }
     });
 }
+
 
 
