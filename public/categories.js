@@ -242,7 +242,7 @@ function catClick(catArray){
                                 var id = $parent.getAttribute('id');
                                 if($("#"+id+" .subCatp"+k)){
                                     // console.log('hide');
-                                    // console.log(id,k);
+                                    console.log(id,k);
                                     $("#"+id+" .subCatp"+k).addClass("invisible").removeClass('appear');
                                     // setTimeout(500,function(){
                                     $("#"+id+" .subCatp"+k).addClass("hidden");
