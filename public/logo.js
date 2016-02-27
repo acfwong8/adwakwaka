@@ -8,7 +8,7 @@ function drawText(){
     var c = document.getElementById("logo");
     c.width = 3200;
     c.height = 600;
-    var minX = 70/1600 * c.width;
+    var minX = 0/1600 * c.width;
     var maxY = 225/300 * c.height;
     var minY = 75/300 * c.height;
     var startX = 10;
