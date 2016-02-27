@@ -108,6 +108,7 @@ header .toolbar {
 
 header .toolbar ul{
     position:absolute;
+    width:320px;
     bottom:0;
     margin:0 0 0 0;
     text-align:center;
