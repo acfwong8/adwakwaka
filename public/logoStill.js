@@ -141,7 +141,7 @@ $(document).on("scroll",function(){
         opacity = 1 - 0.6;
     var shiftOpacity = 1 - (top * opacity/lock);
     if (top <= lock){
-        $("header").css({'top':0, 'background': 'linear-gradient(to bottom, rgba(255,255,255,'+shiftOpacity+'), rgba('+red+','+green+','+blue+',' + shiftOpacity + '))'});
+        $("header").css({'top':0, 'background': 'linear-gradient(to bottom, rgba(255,255,255,'+0+'), rgba('+red+','+green+','+blue+',' + shiftOpacity + '))'});
         // $("body").css({'top':0, 'background': 'rgba('+red+','+green+','+blue+',' + shiftOpacity + ')'});
         $(".toolbar").css({'left': Math.min(3 + 17 * (top/100)) + '%'});
         $("canvas").css({'height': canvasHeight,
