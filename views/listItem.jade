@@ -89,7 +89,7 @@ body
       var $pDesc = $("<p>").text(itemDesc).addClass("shortDesc");
       var priceText = ' ';
       if(price !== null){
-        priceText = currency+price;
+        priceText = '$'+price;
       }  
       var $pPrice = $("<p>").text(priceText).addClass("itemPrice");
       $atitle.append($h3);

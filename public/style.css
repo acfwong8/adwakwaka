@@ -166,7 +166,7 @@ section.sidebar{
     position:absolute;
     text-align:right;
     padding-right:15px;
-    background-color:rgba(0,0,0,0.5);
+    background-color:rgba(0,0,0,0.7);
     transition:all 0.25s ease;
 }
 .catExpand{
@@ -191,7 +191,7 @@ section.sidebar button {
     border:none;
     /* background-color: rgba(100,100,200,1); */
     background:none;
-    color:rgba(100,100,100,1);
+    color:rgba(255,255,255,1);
     margin-top:0;
     margin-bottom:0;
     padding-bottom:0;
@@ -208,6 +208,7 @@ section.sidebar .mainCat{
     border-top:none;
     border-right:none;
     border-left:none;
+    transition:all 0.25s ease;
 }
 .childp{
     text-align:left;
@@ -219,13 +220,13 @@ section.sidebar .mainCat{
 
 
 .catdiv:hover .mainCat{
-    color:white;
+    color:rgba(255,102,102,1);
     background:(255,255,255,0.9);
-    transition: all 0.25s ease;
+    /* transition: all 1s ease; */
 }
 
-button.subcat:hover{
-    color:white;
+button.subCatp:hover button{
+    color:rgba(255,102,102,1);
 }
 
 .subCatp:hover a {
@@ -268,7 +269,7 @@ h3 {
 }
 
 .itemspace .item{
-    width: 25%;
+    width: 20%;
     height:30vh;
     float:left;
     /* margin-left:1%; */
@@ -276,6 +277,7 @@ h3 {
     text-align:center;
     overflow:hidden;
     position:relative;
+    font-size:10px;
 }
 .itemspace .item:hover .divText{
     top:50%;
