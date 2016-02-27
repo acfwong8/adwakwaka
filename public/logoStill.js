@@ -8,7 +8,7 @@ function drawText(){
     var c = document.getElementById("logo");
     c.width = 3200;
     c.height = 600;
-    var minX = 70/1600 * c.width;
+    var minX = 0/1600 * c.width;
     var maxY = 225/300 * c.height;
     var minY = 75/300 * c.height;
     var startX = 10;
@@ -127,4 +127,20 @@ $(window).on("resize",function(){
     var height = $("header").height()-1;
     var width = height * 5.333333;
     $("canvas").css({"width": width, "height": height});
+})
+
+$(document).on("scroll",function(){
+    var startHeight = $("header").height()-1;
+    var top = $(window).scrollTop();
+    console.log(top);
+    var canvasHeight = startHeight - top;
+    if (top <= 100){
+        $("header").css({'top':0});
+        $(".toolbar").css({'left': Math.min(3 + 17 * (top/100)) + '%'});
+        $("canvas").css({'height': canvasHeight,
+                         'width': canvasHeight * 5.333333,
+                         'top': top});
+    } else {
+        $("header").css({'top':top-100});
+    }
 })

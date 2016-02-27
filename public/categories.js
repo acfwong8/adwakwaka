@@ -214,6 +214,13 @@ function appendchild(name,nameSpaces,parent,numb,desc,depth){
     $("#div"+parent).append($div);
 }
 
+function appendCat(){
+    var $div = $("<div>").addClass("catExpand");
+    var $p = $("<p>").text("Product Categories");
+    $div.append($p);
+    $("body").append($div);
+}
+appendCat();
 function catClick(catArray){
     $(".cat").on("click",function(){
         var name = this.id;
@@ -256,6 +263,4 @@ function catClick(catArray){
         }
     });
 }
-
-
 
