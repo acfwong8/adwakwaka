@@ -132,15 +132,21 @@ $(window).on("resize",function(){
 $(document).on("scroll",function(){
     var startHeight = $("header").height()-1;
     var top = $(window).scrollTop();
+    var lock = 100;
     console.log(top);
     var canvasHeight = startHeight - top;
-    if (top <= 100){
+    var lockedCanvas = startHeight - lock;
+    if (top <= lock){
         $("header").css({'top':0});
         $(".toolbar").css({'left': Math.min(3 + 17 * (top/100)) + '%'});
         $("canvas").css({'height': canvasHeight,
                          'width': canvasHeight * 5.333333,
                          'top': top});
     } else {
-        $("header").css({'top':top-100});
+        $("header").css({'top':top - lock});
+        $(".toolbar").css({'left': 20 + '%'});
+        $("canvas").css({'height': lockedCanvas,
+                         'width': lockedCanvas * 5.333333,
+                         'top': lock});
     }
 })
