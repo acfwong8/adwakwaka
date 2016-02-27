@@ -145,10 +145,14 @@ function drawText(){
     circle(minX + gap*4 + space*10 + bigGap*12 + bigGap, maxY - (maxY - minY)/3, 0.3*Math.PI, 1.7*Math.PI, thick, lineColor, (maxY - minY)/3);
     circle(minX + gap*4 + space*10 + bigGap*12 + bigGap, maxY - (maxY - minY)/3, 0.3*Math.PI, 1.7*Math.PI, thick, lineColor, (maxY - minY)/5);
 }
+$(window).on("load",function(){
+    var height = $("header").height()-1;
+    var width = height * 5.333333;
+    $("canvas").css({"width": width, "height": height});
+})
 
 $(window).on("resize",function(){
     var height = $("header").height()-1;
-    console.log(height);
     var width = height * 5.333333;
     $("canvas").css({"width": width, "height": height});
 })
