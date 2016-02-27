@@ -95,6 +95,7 @@ canvas{
     position:absolute;
     width:800px;
     left:40;
+    transition: all 0.25s ease;
 }
 header .logo {
     float:left;
@@ -110,6 +111,7 @@ header .toolbar {
     position:absolute;
     bottom:0;
     left:3%;
+    transition: all 0.25s ease;
 }
 
 header .toolbar ul{
