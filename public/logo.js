@@ -163,8 +163,14 @@ $(document).on("scroll",function(){
     var lock = 100;
     var canvasHeight = startHeight - top;
     var lockedCanvas = startHeight - lock;
-    if (top <= 100){
-        $("header").css({'top':0});
+    var red = 0,
+        green = 51,
+        blue = 102,
+        opacity = 1 - 0.6;
+    var shiftOpacity = 1 - (top * opacity/lock);
+    if (top <= lock){
+        $("header").css({'top':0, 'background': 'linear-gradient(to bottom, rgba(255,255,255,'+shiftOpacity+'), rgba('+red+','+green+','+blue+',' + shiftOpacity + '))'});
+        // $("body").css({'top':0, 'background': 'rgba('+red+','+green+','+blue+',' + shiftOpacity + ')'});
         $(".toolbar").css({'left': Math.min(3 + 17 * (top/100)) + '%'});
         $("canvas").css({'height': canvasHeight,
                          'width': canvasHeight * 5.333333,
