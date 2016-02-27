@@ -161,7 +161,6 @@ $(document).on("scroll",function(){
     var startHeight = $("header").height()-1;
     var top = $(window).scrollTop();
     var lock = 100;
-    console.log(top);
     var canvasHeight = startHeight - top;
     var lockedCanvas = startHeight - lock;
     if (top <= 100){

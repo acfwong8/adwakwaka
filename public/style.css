@@ -31,7 +31,8 @@ body{
     margin:0;
     padding:0;
     /* position:relative; */
-    background-color:rgb(150,150,150);
+    /* background-color:rgb(150,150,150); */
+    background:black;
 }
 
 
@@ -90,12 +91,13 @@ header{
     text-align:center;
     background:black;
     z-index:4;
+    transition:all 1s ease;
 }
 canvas{
     position:absolute;
     width:800px;
     left:40;
-    transition: all 0.25s ease;
+    transition: all 1s ease;
 }
 header .logo {
     float:left;
@@ -111,7 +113,7 @@ header .toolbar {
     position:absolute;
     bottom:0;
     left:3%;
-    transition: all 0.25s ease;
+    transition: all 1s ease;
 }
 
 header .toolbar ul{
@@ -135,7 +137,7 @@ header .toolbar ul li{
 header a{
     text-decoration:none;
     color:white;
-    transition: all 0.25s ease;
+    transition: all 1s ease;
 }
 header a:hover{
     color: rgba(255,200,200,1);
@@ -159,7 +161,7 @@ section.sidebar{
     width:210px;
     /* float:left; */
     left:0;
-    top:17%;
+    top:157;
     position:absolute;
     text-align:right;
     padding-right:15px;

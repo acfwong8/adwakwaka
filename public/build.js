@@ -7,7 +7,6 @@ if(creds.getPermissions() == '' || creds.getPermissions() == undefined){
     var $a = $("<a>").attr("href","/logout").attr("class","logout").text("Log out");
     $(".login").append($span, $a);
     var width = $(".toolbar ul").width() + 200;
-    console.log(width, $(".toolbar ul").width());
     $(".toolbar ul").css({"width": width + "px"});
     var $toola = $("<a>").attr("href","/user").text("User Panel");
     var $li = $("<li>").append($toola);
@@ -18,7 +17,6 @@ if(creds.getPermissions() == '' || creds.getPermissions() == undefined){
     var $a = $("<a>").attr("href","/logout").attr("class","logout").text("Log out");
     $(".login").append($span, $a);
     var width = $(".toolbar ul").width() + 200;
-    console.log(width, $(".toolbar ul").width());
     $(".toolbar ul").css({"width": width + "px"});
     var $toola = $("<a>").attr("href","/user").text("User Panel");
     var $li = $("<li>").append($toola);
