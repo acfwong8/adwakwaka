@@ -31,8 +31,8 @@ body{
     margin:0;
     padding:0;
     /* position:relative; */
-    /* background-color:rgb(150,150,150); */
-    background:black;
+    background:white;
+    /* background:rgba(0,51,102,1); */
 }
 
 
@@ -78,18 +78,19 @@ h1{
 }
 
 section.main{    
-    background-color:rgb(150,150,150);
+    background-color:rgb(255,255,255);
     /* border-top-left-radius:10px; */
     /* min-height:100vh; */
     /* padding-left:10px; */
     /* margin-left:200px; */
-    margin: 0 30px;
+    margin:0;
+    padding: 0 30px;
 }
 header{
     height:157px;
     position:relative;
     text-align:center;
-    background:black;
+    background:rgba(0,51,102,1);
     z-index:4;
     transition:all 1s ease;
 }
