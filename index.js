@@ -166,8 +166,10 @@ app.use('/userstat',function(req,res,next){
         logging.push(id);
         console.log('middleware');
         current.setCurrentAuth(logging[1]);
-        console.log(id);
+        console.log(logging);
     } else {
+        logging.splice(0, logging.length);
+        logging.push(timestamps[0]);
         res.end("Too many requests: Please try again");
     }
     next();
@@ -180,7 +182,7 @@ app.get('/', function(req,res,next){
     console.log(current.getCurrentAuth());
     res.render('index',{companyname: name, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
     current.setCurrentAuth(timestamps[0]);
-    logging.pop();
+    logging.splice(1,logging.length-1);
     console.log("then");
     console.log(current.getCurrentAuth());
 });
