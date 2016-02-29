@@ -161,9 +161,11 @@ passport.deserializeUser(function(id,done){
 var logging = [{user:'',permissions:'',sessionStart:''}];
 app.use('/userstat',function(req,res,next){
     var id = req.body;
-    if(logging.length < 2){
+    var length = logging.length
+    if(logging.length < length + 1){
+        logging.push(id);
         console.log('middleware');
-        current.setCurrentAuth(id);
+        current.setCurrentAuth(logging[length]);
         console.log(id);
     }
     next();
@@ -176,28 +178,10 @@ app.get('/', function(req,res,next){
     console.log(current.getCurrentAuth());
     res.render('index',{companyname: name, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
     current.setCurrentAuth(timestamps[0]);
+    logging.pop();
     console.log("then");
     console.log(current.getCurrentAuth());
 });
-
-// app.get('/', function(req,res,next){
-//     var name = userdata;
-//     console.log('req.body');
-//     console.log(req.body);
-//     if(req.body.username == ''){
-//         console.log(1);
-//         userstat(req.body);
-//     } else {
-//         console.log(2);
-//         // userstat(req.body);
-//     }
-//     console.log("first");
-//     console.log(current.getCurrentAuth());
-//     res.render('index',{companyname: name, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
-//     current.setCurrentAuth(timestamps[0]);
-//     console.log("then");
-//     console.log(current.getCurrentAuth());
-// });
 
 app.get('/getcategories',function(req,res,next){
     var categories = {};
@@ -746,6 +730,7 @@ app.get('/category/:id/products',function(req,res,next){
     db.one('SELECT * from categoriesmain where catnumb = ${id}',dbParam)
         .then(function(response){
             res.render('listItem',{catname: response.catname, catnumb: response.catnumb, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+            logging.pop();
             current.setCurrentAuth(timestamps[0]);
             next();
         })
