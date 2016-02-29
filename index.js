@@ -161,12 +161,14 @@ passport.deserializeUser(function(id,done){
 var logging = [{user:'',permissions:'',sessionStart:''}];
 app.use('/userstat',function(req,res,next){
     var id = req.body;
-    var length = logging.length
-    if(logging.length < length + 1){
+    // var length = logging.length
+    if(logging.length < 2){
         logging.push(id);
         console.log('middleware');
-        current.setCurrentAuth(logging[length]);
+        current.setCurrentAuth(logging[1]);
         console.log(id);
+    } else {
+        res.end("Too many requests: Please try again");
     }
     next();
 });
