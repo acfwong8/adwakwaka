@@ -220,7 +220,7 @@ function appendchild(name,nameSpaces,parent,numb,desc,depth){
 function appendCat(){
     var $2div = $("<div>").append($div)
     var $div = $("<div>").addClass("catExpand").append($2div);
-    var $p = $("<button>").text("Product Categories").addClass("expand");
+    var $p = $("<button>").text("Product Catalogue").addClass("expand");
     $2div.append($p);
     $("body").append($div);
     $(".expand").css({'width': $(".catExpand").height(),
