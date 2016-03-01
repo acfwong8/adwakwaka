@@ -189,7 +189,7 @@ $.ajax({
     }
 })
 function appendmain(name){
-    var newName = name.replace(/\s/g,'');
+    var newName = name.replace(/\s/g,'').replace('(','%28').replace(')','%29');
     var $button = $("<button>").text(name).addClass("mainCat cat appear").attr("id","cat"+newName);
     var $p = $("<p>").append($button).addClass("catp");
     var $div = $("<div>").append($p).attr("id","div"+newName).addClass('catdiv');
@@ -197,8 +197,8 @@ function appendmain(name){
 }
 
 function appendsub(name,parent,depth){
-    var newName = name.replace(/\s/g,'');
-    var newParent = parent.replace(/\s/g,'');
+    var newName = name.replace(/\s/g,'').replace('(','%28').replace(')','%29');
+    var newParent = parent.replace(/\s/g,'').replace('(','\\%28').replace(')','\\%29');
     var $button = $("<button>").text(name).attr("class","subCat"+ depth).addClass("subCat cat").attr("id","cat"+newName);
     var $p = $("<p>").append($button).attr("class","subCatp" + depth).addClass("hidden subCatp catp invisible").attr("id","catp"+newName);
     var $div = $("<div>").append($p).attr("id","div"+newName).addClass('catdiv');
@@ -211,7 +211,10 @@ function appendchild(name,nameSpaces,parent,numb,desc,depth){
     var $a = $("<a>").text(nameSpaces).attr("href","/category/"+numb+"/products");
     var $p = $("<p>").addClass("hidden invisible childp subCatp subCatp" + depth).attr("id","catp"+name+numb).append($a);
     var $div = $("<div>").append($p).attr("id","div"+name);
-    $("#div"+parent).append($div);
+    var newParent = parent.replace('(','\\%28').replace(')','\\%29');
+    var div = "#div"+newParent;
+    console.log($(div));
+    $(div).append($div);
 }
 
 function appendCat(){
@@ -226,7 +229,7 @@ function catClick(catArray){
         var name = this.id;
         var maxDepth = catArray[catArray.length - 1].depth
         for(var i = 0; i < catArray.length; i++){
-            var aName = "cat"+catArray[i].name.replace(/\s/g,'');
+            var aName = "cat"+catArray[i].name.replace(/\s/g,'').replace('(','%28').replace(')','%29');
             if(name == aName){
                 var child = catArray[i].children;
                 child.sort(function(a,b){

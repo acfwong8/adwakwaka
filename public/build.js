@@ -33,20 +33,20 @@ if(creds.getPermissions() == '' || creds.getPermissions() == undefined){
     $(".toolbar ul").append($li)
 }
 
-$(window).bind("beforeunload",function(){
-    var currentAuth = {};
-    currentAuth.user = creds.getUser();
-    currentAuth.permissions = creds.getPermissions();
-    currentAuth.sessionStart = creds.getTimestamp();
-    $.ajax({
-        type:'POST',
-        url:"http://"+serverIP+"/userstat",
-        data:JSON.stringify(currentAuth),
-        contentType:"application/json",
-        success: function(res){
-        },
-        fail: function(fail){
-            console.log(fail);
-        }
-    });
-});
+// $(window).bind("beforeunload",function(){
+//     var currentAuth = {};
+//     currentAuth.user = creds.getUser();
+//     currentAuth.permissions = creds.getPermissions();
+//     currentAuth.sessionStart = creds.getTimestamp();
+//     $.ajax({
+//         type:'POST',
+//         url:"http://"+serverIP+"/userstat",
+//         data:JSON.stringify(currentAuth),
+//         contentType:"application/json",
+//         success: function(res){
+//         },
+//         fail: function(fail){
+//             console.log(fail);
+//         }
+//     });
+// });

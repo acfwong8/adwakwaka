@@ -100,6 +100,26 @@ function currentAuth(){
         }
     }
 }
+app.use(function(req,res,next){
+    var cookie = req.cookies;
+    console.log('loggin user');
+    var user = cookie.user;
+    console.log(user);
+    db.one("SELECT username, permissions from login where lastlogin = ${stamp}",user)
+        .then(function(response){
+            console.log(response);
+            var client = {
+                user: response.username,
+                permissions: response.permissions
+            };
+            current.setCurrentAuth(client);
+            console.log(current.getCurrentAuth());
+            next();
+        })
+        .catch(function(err){
+            console.log('failed fetching login from db: '+err);
+        });
+});
 passport.use(new localStrategy(
     function(username,password,done){
         var credentials = {};
@@ -140,7 +160,7 @@ passport.use(new localStrategy(
                     console.log(current.getCurrentAuth());
                     // console.log(timestamps);
                     // console.log(auth)
-                    return done(null,{username: user.username})
+                    return done(null,user)
 
                 }
                 
@@ -158,31 +178,12 @@ passport.deserializeUser(function(id,done){
     return done(err,user);
 });
 
-var logging = [{user:'',permissions:'',sessionStart:''}];
-app.use('/userstat',function(req,res,next){
-    var id = req.body;
-    // var length = logging.length
-    if(logging.length < 2){
-        logging.push(id);
-        console.log('middleware');
-        current.setCurrentAuth(logging[1]);
-        console.log(logging);
-    } else {
-        logging.splice(0, logging.length);
-        logging.push(timestamps[0]);
-        res.end("Too many requests: Please try again");
-    }
-    next();
-});
-
 app.get('/', function(req,res,next){
-    var name = userdata;
-
+    var name = 'Mantronic';
     console.log("first");
     console.log(current.getCurrentAuth());
     res.render('index',{companyname: name, username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
     current.setCurrentAuth(timestamps[0]);
-    logging.splice(1,logging.length-1);
     console.log("then");
     console.log(current.getCurrentAuth());
 });
@@ -212,9 +213,25 @@ app.get('/login', function(req,res,next){
     res.render('login');
 });
 app.post('/logon', passport.authenticate('local', {
-    successRedirect:'/',
+    successRedirect:'/setuser',
     failureRedirect:'/loginfail'
 }));
+app.get('/setuser',function(req,res,next){
+    var cookie = req.cookies;
+    var user = current.getCurrentAuth();
+    var stamp = Date.now();
+    user.stamp = stamp;
+    db.none('UPDATE login SET lastlogin = ${stamp} where username = ${user}',user)
+        .then(function(){
+            res.cookie('user',user);
+            res.redirect('/');
+            current.setCurrentAuth(timestamps[0]);
+            console.log('logged user');
+        })
+        .catch(function(err){
+            console.log('error logging: '+ err);
+        });
+})
 app.get('/loginfail',function(rex,res,next){
     // console.log(timestamps);
     // console.log(auth);
