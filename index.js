@@ -194,8 +194,9 @@ app.get('/', function(req,res,next){
 });
 
 app.get('/closeconnection',function(req,res,next){
-    
-})
+    current.setCurrentAuth(timestamps[0]);
+    res.send('closed');
+});
 
 app.get('/getcategories',function(req,res,next){
     var categories = {};
@@ -214,7 +215,6 @@ app.get('/getcategories',function(req,res,next){
         .catch(function(err){
             console.log('error in main cat: '+err);
         });
-    current.setCurrentAuth(timestamps[0]);
     console.log(current.getCurrentAuth());
 });
 
