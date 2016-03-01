@@ -218,10 +218,15 @@ function appendchild(name,nameSpaces,parent,numb,desc,depth){
 }
 
 function appendCat(){
-    var $div = $("<div>").addClass("catExpand");
+    var $2div = $("<div>").append($div)
+    var $div = $("<div>").addClass("catExpand").append($2div);
     var $p = $("<button>").text("Product Categories").addClass("expand");
-    $div.append($p);
+    $2div.append($p);
     $("body").append($div);
+    $(".expand").css({'width': $(".catExpand").height(),
+                      'height': $(".catExpand").width()
+                      // 'left': $(".catExpand").position().left
+                     });
 }
 appendCat();
 $(".sidebar").on("mouseover",function(){
