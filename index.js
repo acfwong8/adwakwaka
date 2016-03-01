@@ -86,7 +86,7 @@ app.use(express.static(path.join(__dirname,'public')));
 
 
 var auth = {};
-var timestamps = [{user:'',permissions:'',sessionStart:''}];
+var timestamps = [{user:'',permissions:''}];
 var current = currentAuth();
 function currentAuth(){
     var currentAuth = {};
@@ -193,6 +193,10 @@ app.get('/', function(req,res,next){
     console.log(current.getCurrentAuth());
 });
 
+app.get('/closeconnection',function(req,res,next){
+    
+})
+
 app.get('/getcategories',function(req,res,next){
     var categories = {};
     db.query('SELECT * from categoriesmain where catname is not null')
@@ -210,6 +214,8 @@ app.get('/getcategories',function(req,res,next){
         .catch(function(err){
             console.log('error in main cat: '+err);
         });
+    current.setCurrentAuth(timestamps[0]);
+    console.log(current.getCurrentAuth());
 });
 
 
