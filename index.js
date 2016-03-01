@@ -104,21 +104,24 @@ app.use(function(req,res,next){
     var cookie = req.cookies;
     console.log('loggin user');
     var user = cookie.user;
-    console.log(user);
-    db.one("SELECT username, permissions from login where lastlogin = ${stamp}",user)
-        .then(function(response){
-            console.log(response);
-            var client = {
-                user: response.username,
-                permissions: response.permissions
-            };
-            current.setCurrentAuth(client);
-            console.log(current.getCurrentAuth());
-            next();
-        })
-        .catch(function(err){
-            console.log('failed fetching login from db: '+err);
-        });
+    if(user){
+        db.one("SELECT username, permissions from login where lastlogin = ${stamp}",user)
+            .then(function(response){
+                console.log(response);
+                var client = {
+                    user: response.username,
+                    permissions: response.permissions
+                };
+                current.setCurrentAuth(client);
+                console.log(current.getCurrentAuth());
+                next();
+            })
+            .catch(function(err){
+                console.log('failed fetching login from db: '+err);
+            });
+    } else {
+        next();
+    }
 });
 passport.use(new localStrategy(
     function(username,password,done){
@@ -243,32 +246,23 @@ app.get('/loginfail',function(rex,res,next){
 
 app.get('/logout',function(req,res){
     req.logout();
+    res.clearCookie('user');
     var currentId = current.getCurrentAuth();
-    for(var i = 0; i < timestamps.length; i++){
-        console.log(timestamps[i]);
-        console.log(currentId);
-        if(timestamps[i].user == currentId.user && timestamps[i].sessionStart == currentId.sessionStart){
-            console.log("splice "+timestamps[i]);
-            timestamps.splice(i,1);
-            current.setCurrentAuth(timestamps[0]);
-        } else {
-            console.log("notsplicing")
-        }
-        current.setCurrentAuth(timestamps[0]);
-    }
+    // for(var i = 0; i < timestamps.length; i++){
+    //     console.log(timestamps[i]);
+    //     console.log(currentId);
+    //     if(timestamps[i].user == currentId.user && timestamps[i].sessionStart == currentId.sessionStart){
+    //         console.log("splice "+timestamps[i]);
+    //         timestamps.splice(i,1);
+    //         current.setCurrentAuth(timestamps[0]);
+    //     } else {
+    //         console.log("notsplicing")
+    //     }
+    //     current.setCurrentAuth(timestamps[0]);
+    // }
+    current.setCurrentAuth(timestamps[0]);
     res.redirect('/')
 });
-function userstat(object){
-    current.setCurrentAuth(object);
-}
-// app.post('/userstat',function(req,res,next){
-//     console.log('userstat');
-//     var id = req.body;
-//     console.log(id);
-//     current.setCurrentAuth(id);
-//     next();
-// })
-
 app.get('/new',function(req,res,next){
     res.render('new',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
     current.setCurrentAuth(timestamps[0]);
