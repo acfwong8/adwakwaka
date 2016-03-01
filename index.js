@@ -104,7 +104,8 @@ app.use(function(req,res,next){
     var cookie = req.cookies;
     console.log('loggin user');
     var user = cookie.user;
-    if(user){
+    console.log(user);
+    if(user && user.user !== ''){
         db.one("SELECT username, permissions from login where lastlogin = ${stamp}",user)
             .then(function(response){
                 console.log(response);
@@ -120,6 +121,7 @@ app.use(function(req,res,next){
                 console.log('failed fetching login from db: '+err);
             });
     } else {
+        // current.setCurrentAuth(timestamps[0]);
         next();
     }
 });
@@ -213,6 +215,7 @@ app.get('/getcategories',function(req,res,next){
 
 app.get('/login', function(req,res,next){
     console.log(timestamps);
+    res.clearCookie('user');
     res.render('login');
 });
 app.post('/logon', passport.authenticate('local', {
