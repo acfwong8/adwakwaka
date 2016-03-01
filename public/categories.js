@@ -231,20 +231,19 @@ function appendCat(){
 appendCat();
 $(".sidebar").on("mouseover",function(){
     $(".sidebar").css({'margin-left': 0});
-    $(".expand").css({'opacity': 0});
+    $(".catExpand").css({'margin-left': -45});
 });
 $(".sidebar").on("mouseout",function(){
     $(".sidebar").css({'margin-left': -210});
-    $(".catExpand button").css({'opacity': 1});
+    $(".catExpand").css({'margin-left': 0});
 });
 $(".expand").on("click",function(){
     $(".sidebar").css({'margin-left': 0});
-    $(".catExpand button").css({'opacity': 0});
+    $(".catExpand").css({'margin-left': -45});
 });
-$(".expand").on("mouseover",function(){
-    console.log(1);
+$(".catExpand").on("mouseover",function(){
     $(".sidebar").css({'margin-left': 0});
-    $(".catExpand button").css({'opacity': 0});
+    $(".catExpand").css({'margin-left': -45});
 });
 $(document).on("scroll",function(){
     console.log(1);
