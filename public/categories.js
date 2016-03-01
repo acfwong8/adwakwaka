@@ -246,7 +246,18 @@ $(".expand").on("mouseover",function(){
     $(".sidebar").css({'margin-left': 0});
     $(".catExpand button").css({'opacity': 0});
 });
-
+$(document).on("scroll",function(){
+    console.log(1);
+    var top = $(window).scrollTop();
+    var lock = 100;
+    if (top <= lock){
+        $(".catExpand").css({'top': 157})
+        $("section.sidebar").css({'top': 157})
+    } else {
+        $(".catExpand").css({'top': top + 57});
+        $("section.sidebar").css({'top': top + 57});
+    }
+});
 
 function catClick(catArray){
     $(".cat").on("click",function(){

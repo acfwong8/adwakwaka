@@ -177,6 +177,7 @@ section.sidebar{
     margin:0;
     background:black;
     width:45px;
+    transition: all 1s ease;
 }
 .catExpand div{
     position:relative;
