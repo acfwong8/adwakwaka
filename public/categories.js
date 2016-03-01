@@ -219,11 +219,30 @@ function appendchild(name,nameSpaces,parent,numb,desc,depth){
 
 function appendCat(){
     var $div = $("<div>").addClass("catExpand");
-    var $p = $("<p>").text("Product Categories");
+    var $p = $("<button>").text("Product Categories").addClass("expand");
     $div.append($p);
     $("body").append($div);
 }
 appendCat();
+$(".sidebar").on("mouseover",function(){
+    $(".sidebar").css({'margin-left': 0});
+    $(".expand").css({'opacity': 0});
+});
+$(".sidebar").on("mouseout",function(){
+    $(".sidebar").css({'margin-left': -210});
+    $(".catExpand button").css({'opacity': 1});
+});
+$(".expand").on("click",function(){
+    $(".sidebar").css({'margin-left': 0});
+    $(".catExpand button").css({'opacity': 0});
+});
+$(".expand").on("mouseover",function(){
+    console.log(1);
+    $(".sidebar").css({'margin-left': 0});
+    $(".catExpand button").css({'opacity': 0});
+});
+
+
 function catClick(catArray){
     $(".cat").on("click",function(){
         var name = this.id;
