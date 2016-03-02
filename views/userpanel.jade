@@ -65,9 +65,11 @@ body
       var $pModify = $("<p>").append($aModify);
       var $aTabEntries = $("<a>").attr("href","user/entries").text("Modify main tab entries")
       var $pTabEntries = $("<p>").append($aTabEntries);
+      var $aHomePage = $("<a>").attr("href","user/homepage").text("Edit home page and add/delete specials");
+      var $pHomePage = $("<p>").append($aHomePage);
       var $aRemove = $("<a>").attr("href","user/remove").text("Remove an Item/Category/User")
       var $pRemove = $("<p>").append($aRemove);
-      $(".panelspace").append($pNew, $pView, $pModify, $pTabEntries, $pRemove);
+      $(".panelspace").append($pNew, $pView, $pModify, $pTabEntries, $pHomePage, $pRemove);
     } else if (creds.getPermissions() == "support"){
       var $aNew = $("<a>").attr("href","../new").text("Create new Item/Category");
       var $pNew = $("<p>").append($aNew);
@@ -75,9 +77,11 @@ body
       var $pView = $("<p>").append($aView);
       var $aModify = $("<a>").attr("href","user/modify").text("Modify an existing Item/Category")
       var $pModify = $("<p>").append($aModify);
+      var $aHomePage = $("<a>").attr("href","user/homepage").text("Edit home page and add/delete specials");
+      var $pHomePage = $("<p>").append($aHomePage);
       var $aRemove = $("<a>").attr("href","user/remove").text("Remove an Item/Category")
       var $pRemove = $("<p>").append($aRemove);
-      $(".panelspace").append($pNew, $pView, $pModify, $pRemove);
+      $(".panelspace").append($pNew, $pView, $pModify, $pHomePage, $pRemove);
     } else if(creds.getPermissions() == "client"){
       var $aView = $("<a>").attr("href","user/view").text("View RMA requests")
       var $pView = $("<p>").append($aView);

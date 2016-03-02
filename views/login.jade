@@ -1,11 +1,61 @@
+link(rel='stylesheet', href='/style.css')
+link(rel="stylesheet",href="/clearfix.css")
+
 body
-  h1 Log in
-  form(class='signinform' action='logon' method='post')
-    div
-      label Username:
-      input(type='text' name='username')
-    div
-      label Password:
-      input(type='password' name='password')
-    div
-      input(type='submit' value='Log in')
+  header(class="cf")
+    div(class="logo")
+    p(class="login")
+      
+    div(class="toolbar")
+      ul
+        li
+          a(href="/") Home
+        li
+          a(href="/business") Our business
+        li
+          a(href="/contact") Contact
+        li
+          a(href="/support") RMA/Support
+
+  section(class="sidebar")
+  section(class="main cf")
+    h1 Log in
+    div(class="loginspace")    
+      form(class='signinform' action='logon' method='post')
+        div
+          label Username:
+          input(type='text' name='username')
+        div
+          label Password:
+          input(type='password' name='password')
+        div
+          input(type='submit' value='Log in')
+  script(src='/jquery-1.11.3.js')
+  script(src='/config.js')
+  script(src='/logoStill.js')
+  script.
+    function cred(){
+      var auth = {};
+      return {
+        setCred: function(){
+          auth.user = "#{username}";
+          auth.permissions = "#{permissions}";
+          auth.timestamp = "#{sessionStart}";
+          return auth;
+        },
+        getUser: function(){
+          return auth.user;
+        },
+        getPermissions: function(){
+          return auth.permissions;
+        },
+        getTimestamp: function(){
+          return auth.timestamp;
+        }
+      }
+    }
+    var creds = cred();
+    creds.setCred();    
+  script(src='/build.js')
+  script(src='/categories.js')
+  script(src='/close.js')
