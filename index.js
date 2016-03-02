@@ -12,6 +12,7 @@ var storage = multer.diskStorage({
     }
 });
 var upload = multer({ storage : storage}).single('itemPic');
+var uploadTab = multer({ storage : storage}).single('tabPic');
 var path = require('path');
 var bodyParser = require('body-parser');
 var passport = require('passport');
@@ -430,7 +431,7 @@ app.post('/new/picupload/picname',function(req,res,next){
     console.log(req.body);
     var itemData = {itemNumb: req.body.itemNumb};
     console.log(itemData);
-    var filename = 'itemPic-'
+    var filename = 'itemPic-';
     z = Date.now();
     console.log(z);
     db.one('SELECT itempicture1 from products where itemnumb = ${itemNumb}', itemData)
@@ -739,6 +740,62 @@ app.post('/user/modify/item/success',function(req,res,next){
     res.send('don');
 })
 
+// edit main tabs
+app.get('/user/entries',function(req,res,next){
+    res.render('tabItems',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+
+app.get('/user/entries/ourbusiness',function(req,res,next){
+    res.render('ourBusiness',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});    
+});
+app.post('/user/entries/settext',function(req,res,next){
+    var text = req.body;
+    console.log(text);
+    db.many('SELECT * from tabs where tabname ${tab}',text)
+        .then(function(response){
+            console.log(response);
+        })
+        .catch(function(err){
+            console.log('falled getting tabs for text: '+err);
+        });
+})
+app.post('/user/entries/tabpicname',function(req,res,next){
+    var tab = req.body;
+    console.log(tab);
+    var filename = 'tabPic-';
+    z = Date.now();
+    db.many('SELECT * from tabs where tabname = ${tab}',tab)
+        .then(function(response){
+            console.log(response);
+        })
+        .catch(function(err){
+            console.log('failed getting tabs: '+err);
+        });
+});
+app.post('/user/entries/tabpicupload/',function(req,res,next){
+    uploadTab(req,res,function(err){
+        if(err){
+            return res.end("Error uploading tab picture: "+ err);
+        }
+        res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+    })
+});
+
+app.get('/user/entries/contact',function(req,res,next){
+    res.render('contact',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+app.get('/user/entries/rmasupprt',function(req,res,next){
+    res.render('rmaSupport',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+
+// tab pages
+app.get('/business',function(req,res,next){
+    res.render('business',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+app.get('/contact',function(req,res,next){
+    res.render('contact',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+
 // categories and items listing
 
 app.get('/category', function(req,res,next){
@@ -863,7 +920,6 @@ app.post('/support/submit',function(req,res,next){
         .catch(function(err){
             console.log("fetch failed "+err);
         });
-
 });
 
 app.get('/support/gettickets', function(req,res,next){

@@ -1,0 +1,107 @@
+link(rel='stylesheet', href='/style.css')
+link(rel="stylesheet",href="/clearfix.css")
+
+body
+  header(class="cf")
+    div(class="logo")
+      // a(href="/")
+        // img(src="../../uploads/staticpics/logo.png")
+
+    p(class="login")
+      
+    div(class="toolbar")
+      ul
+        li
+          a(href="/") Home
+        li
+          a(href="/business") Our business
+        li
+          a(href="/contact") Contact
+        li
+          a(href="/support") RMA/Support
+
+  section(class="sidebar")
+  section(class="main")
+    h1 Edit Tab Entries
+
+    div(class="tabeditspace")
+      div(class="textForm")
+        p Enter/edit text in the "Our Business" tab
+        textarea(class="businessText",rows="10",cols="40")
+        p
+          button(class="submitText") Save text
+
+      form(class="upload hiddenForm",enctype="multipart/form-data")
+        span Upload picture? 
+        input(type="submit",value="Open picture selection",name="select" disabled)
+
+      form(class="itemPic hiddenForm",action="tabpicupload",method="post",enctype="multipart/form-data")
+        p
+          input(type="file",name="tabPic")
+        p  
+          input(type="submit",value="Upload Picture",name="submit" disabled)
+    
+  script(src='/jquery-1.11.3.js')
+  script(src='/config.js')
+  script(src="/logoStill.js")
+  script.
+    function cred(){
+      var auth = {};
+      return {
+        setCred: function(){
+          auth.user = "#{username}";
+          auth.permissions = "#{permissions}";
+          auth.timestamp = "#{sessionStart}";
+          return auth;
+        },
+        getUser: function(){
+          return auth.user;
+        },
+        getPermissions: function(){
+          return auth.permissions;
+        },
+        getTimestamp: function(){
+          return auth.timestamp;
+        }
+      }
+    }
+    var creds = cred();
+    creds.setCred();
+    
+  script(src='/build.js')
+  script(src='/categories.js')
+  script.
+    $(".submitText").on("click",function(e){
+      e.preventDefault();
+      var business = {};
+      business.text = $(".businessText").val();
+      business.tab = 'business'
+      console.log(JSON.stringify(business));
+      $.ajax({
+        type:"POST",
+        data:business,
+        dataType:"application/json",
+        url:"http://"+serverIP+"/user/entries/settext",
+        success: function(res){
+          console.log(res);
+        }
+      });
+      $(".upload").removeClass("hiddenForm");
+      $(".upload input[type=submit]").prop("disabled",false);
+      $(".textForm").addClass("hiddenForm");
+    });
+
+    $(".upload").on("submit",function(e){
+      e.preventDefault();
+      $.ajax({
+        type:"POST",
+        data:JSON.stringify({'tab': 'business'}),
+        contentType:"application/json",
+        url:"http://"+serverIP+"/user/entries/tabpicname",
+        success: function(res){
+        console.log(res);
+        }
+      })
+      
+    })
+  script(src='/close.js')

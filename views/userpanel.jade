@@ -21,7 +21,6 @@ body
           a(href="/support") RMA/Support
 
   section(class="sidebar")
-    p
   section(class="main")
     h1 User Panel
 
@@ -64,9 +63,11 @@ body
       var $pView = $("<p>").append($aView);
       var $aModify = $("<a>").attr("href","user/modify").text("Modify an existing Item/Category/User")
       var $pModify = $("<p>").append($aModify);
+      var $aTabEntries = $("<a>").attr("href","user/entries").text("Modify main tab entries")
+      var $pTabEntries = $("<p>").append($aTabEntries);
       var $aRemove = $("<a>").attr("href","user/remove").text("Remove an Item/Category/User")
       var $pRemove = $("<p>").append($aRemove);
-      $(".panelspace").append($pNew, $pView, $pModify, $pRemove);
+      $(".panelspace").append($pNew, $pView, $pModify, $pTabEntries, $pRemove);
     } else if (creds.getPermissions() == "support"){
       var $aNew = $("<a>").attr("href","../new").text("Create new Item/Category");
       var $pNew = $("<p>").append($aNew);
