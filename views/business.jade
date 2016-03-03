@@ -24,7 +24,7 @@ body
   section(class="main")
     h1 Our business
 
-    div(class="businessspace")
+    div(class="businessSpace")
     
   script(src='/jquery-1.11.3.js')
   script(src='/config.js')
@@ -56,5 +56,22 @@ body
   script(src='/build.js')
   script(src='/categories.js')
   script.
-
+    $.ajax({
+      type:"GET",
+      dataType:"JSON",
+      url:"http://"+serverIP+"/getbusiness",
+      success: function(res){
+        console.log(res);
+        var $p = $("<p>").text(res[0].tabtext);
+        $(".businessSpace").append($p);
+        var images = res[0].tabpicture.split(";");
+        console.log(images);
+        var $div = $("<div>").addClass("pictureSpace");
+        $("section.main").append($div);
+        for(var i = 0; i < images.length; i++){
+          var $img = $("<img>").attr("src","../uploads/"+images[i]+".jpg");
+          $(".pictureSpace").append($img);
+        }
+      }
+    });
   script(src='/close.js')

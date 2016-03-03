@@ -400,3 +400,17 @@ h3 {
 .tabeditspace .submitText{
     
 }
+
+/*tab display*/
+.businessSpace{
+    width:50%;
+    float:left;
+}
+.businessSpace p{
+    white-space:pre-wrap;
+    font-family:'News Cycle', sans-serif;
+}
+.pictureSpace{
+    width:50%;
+    float:left;
+}

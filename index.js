@@ -656,7 +656,8 @@ app.post('/user/modify/category/success',function(req,res,next){
                                                 console.log('parent set')
                                                 db.none('DELETE from categoriesmain where catname = ${oldName}',changes)
                                                     .then(function(){
-                                                        db.none('INSERT into categoriesmain("catname","catdesc","subcat","catnumb") values(${catName},${catDesc},${catParent},${oldNumb})',changes)
+                                                        changes.nameNumb = changes.catname + changes.oldNumb;
+                                                        db.none('INSERT into categoriesmain("catname","catdesc","subcat","catnumb","namenumb") values(${catName},${catDesc},${catParent},${oldNumb},${nameNumb})',changes)
                                                             .then(function(){
                                                             })
                                                             .catch(function(erro){
@@ -751,22 +752,50 @@ app.get('/user/entries/ourbusiness',function(req,res,next){
 app.post('/user/entries/settext',function(req,res,next){
     var text = req.body;
     console.log(text);
-    db.many('SELECT * from tabs where tabname ${tab}',text)
-        .then(function(response){
-            console.log(response);
+    db.one('SELECT tabpicture from tabs where tabname = ${tab}',text)
+        .then(function(resp){
+            text.picture = resp.tabpicture;
+            db.none('DELETE from tabs where tabname = ${tab}',text)
+                .then(function(respond){
+                    db.none('INSERT into tabs("tabname","tabtext","tabpicture") values(${tab},${text},${picture})',text)
+                        .then(function(response){
+                            console.log('inserting business tab text');
+                        })
+                        .catch(function(err){
+                            console.log('failed setting tabs for text: '+err);
+                        });
+                })
+                .catch(function(error){
+                    console.log('failed deleting old entry: '+error);
+                });
         })
-        .catch(function(err){
-            console.log('falled getting tabs for text: '+err);
+        .catch(function(erro){
+            console.log('failed getting tabpicture: '+err);
         });
-})
+});
 app.post('/user/entries/tabpicname',function(req,res,next){
     var tab = req.body;
     console.log(tab);
     var filename = 'tabPic-';
     z = Date.now();
-    db.many('SELECT * from tabs where tabname = ${tab}',tab)
+    db.one('SELECT tabpicture from tabs where tabname = ${tab}',tab)
         .then(function(response){
             console.log(response);
+            var picList = response.tabpicture;
+            if(picList === null){
+                tab.newPicList = filename + z;
+            } else {
+                tab.newPicList = picList + ';' + filename + z;
+                // tab.newPicList = filename + z;
+            }
+            db.none('UPDATE tabs SET tabpicture = ${newPicList} where tabname = ${tab}',tab)
+                .then(function(){
+                    console.log('uploading');
+                    res.send('uploading');
+                })
+                .catch(function(erro){
+                    console.log('error updating piclist: '+ erro);
+                });
         })
         .catch(function(err){
             console.log('failed getting tabs: '+err);
@@ -789,12 +818,28 @@ app.get('/user/entries/rmasupprt',function(req,res,next){
 });
 
 // tab pages
+app.get('/getbusiness',function(req,res,next){
+    db.many("SELECT * from tabs where tabname = 'business' and tabtext is not null")
+        .then(function(response){
+            console.log('getting business text');
+            console.log(response);
+            res.send(response);
+        })
+        .catch(function(err){
+            console.log("failed fetching business tab: "+err);
+        });
+});
 app.get('/business',function(req,res,next){
     res.render('business',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 });
 app.get('/contact',function(req,res,next){
     res.render('contact',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 });
+
+//homepage edit
+app.get('/user/homepage',function(req,res,next){
+    
+})
 
 // categories and items listing
 

@@ -71,6 +71,15 @@ body
   script(src='/build.js')
   script(src='/categories.js')
   script.
+    $.ajax({
+      type:"GET",
+      dataType:"JSON",
+      url:"http://"+serverIP+"/getbusiness",
+      success: function(res){
+        console.log(res);
+        $(".businessText").val(res[0].tabtext);
+      }
+    });
     $(".submitText").on("click",function(e){
       e.preventDefault();
       var business = {};
@@ -101,7 +110,9 @@ body
         success: function(res){
         console.log(res);
         }
-      })
-      
+      });
+      $(".upload").addClass("hiddenForm");
+      $(".itemPic input[type=submit]").prop("disabled",false);
+      $(".itemPic").removeClass("hiddenForm");
     })
   script(src='/close.js')
