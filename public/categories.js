@@ -213,7 +213,6 @@ function appendchild(name,nameSpaces,parent,numb,desc,depth){
     var $div = $("<div>").append($p).attr("id","div"+name);
     var newParent = parent.replace('(','\\%28').replace(')','\\%29');
     var div = "#div"+newParent;
-    console.log($(div));
     $(div).append($div);
 }
 

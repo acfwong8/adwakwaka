@@ -838,8 +838,17 @@ app.get('/contact',function(req,res,next){
 
 //homepage edit
 app.get('/user/homepage',function(req,res,next){
-    
-})
+    res.render('homepageEdit',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+app.get('/user/homepage/picturereel',function(req,res,next){
+    res.render('pictureHomepage',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+app.get('/user/homepage/newarrivals',function(req,res,next){
+    res.render('arrivalsHomepage',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+app.get('/user/homepage/clearance',function(req,res,next){
+    res.render('clearanceHomepage',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
 
 // categories and items listing
 
