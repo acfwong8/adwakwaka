@@ -97,7 +97,7 @@ body
       var $apic = $("<a>").attr('href',"/category/#{catnumb}/products/"+itemNumb);
       var $pDesc = $("<p>").text(itemDesc).addClass("shortDesc");
       var priceText = ' ';
-      if(price !== null){
+      if(price !== null && price > 0){
         priceText = '$'+price;
       }  
       var $pPrice = $("<p>").text(priceText).addClass("itemPrice");
