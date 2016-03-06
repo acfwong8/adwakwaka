@@ -87,7 +87,7 @@ body
       var $apic = $("<a>").attr('href',"../../../uploads/"+picture+".jpg");
       var $pDesc = $("<p>").text(itemDescLong).addClass("longDesc");
       var priceText = ' ';
-      if(price !== null){
+      if(price !== null && price > 0) {
         priceText = currency+price;
       }  
       var $pPrice = $("<p>").text("Unit Price: $"+priceText).addClass("itemPrice");
