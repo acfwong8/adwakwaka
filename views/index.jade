@@ -73,13 +73,14 @@ body
         }
         var reelCounter = 0;
         setInterval(function(){
-          console.log(reelCounter, res.length);
           if(reelCounter < res.length-1){
             var next = reelCounter + 1;
             $(".imagereel"+reelCounter+" .reelDesc").addClass("invisHome");
             $(".imagereel"+reelCounter+" img").addClass("invisHome");
             $(".imagereel"+next+" .reelDesc").removeClass("invisHome");
             $(".imagereel"+next+" img").removeClass("invisHome");
+            $(".imagereel"+next+" .reelCaption").addClass("selected");
+            $(".imagereel"+reelCounter+" .reelCaption").removeClass("selected")
             reelCounter++;
           } else {
             var next = 0;
@@ -87,6 +88,8 @@ body
             $(".imagereel"+reelCounter+" img").addClass("invisHome");
             $(".imagereel"+next+" .reelDesc").removeClass("invisHome");
             $(".imagereel"+next+" img").removeClass("invisHome");
+            $(".imagereel"+next+" .reelCaption").addClass("selected");
+            $(".imagereel"+reelCounter+" .reelCaption").removeClass("selected");
             reelCounter = 0;
           }
 
@@ -99,9 +102,12 @@ body
       url:"http://"+serverIP+"/homepagearrivals",
       success: function(res){
         console.log(res);
+        var $title = $("<h2>").text("New Arrivals");
+        $(".arrivalspace").prepend($title);
         for(var i = 0; i < res.length; i++){
           appendarrivals(res[i].itemname, res[i].itempic, res[i].price, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i);
         }
+        arrivalbutton();
       }
     });
 
@@ -113,20 +119,68 @@ body
       if(number !== 0){
         $img.addClass("invisHome");
         $pDesc.addClass("invisHome");
+      } else {
+        $pCaption.addClass("selected");
       }
       console.log(number);
       $div.append($img, $pDesc, $pCaption);
       $(".pictureReel").append($div);
     }
     function appendarrivals(name, file, price, itemnumb, itemid, catnumb, number){
-      var $div = $("<div>").addClass("arrival arrival"+ number);
+      var $div = $("<div>").addClass("arrival arrival"+ number).attr("id","arrival"+number);
       var $aName = $("<a>").attr("href","/category/"+catnumb+"/products/"+itemnumb).addClass("arrivalName").text(name);
       var $pId = $("<p>").addClass("arrivalId").text(itemid);
       var $pPrice = $("<p>").addClass("arrivalPrice").text("$"+price);
       var $a = $("<a>").attr("href","/category/"+catnumb+"/products/"+itemnumb);
       var $img = $("<img>").attr("src","/uploads/"+file+".jpg");
-      $a.append($img);
+      var $imgdiv = $("<div>").append($img).addClass("imgdiv");
+      $a.append($imgdiv);
       $div.append($a, $aName, $pId, $pPrice);
       $(".arrivalReel").append($div);
+      var width = Math.ceil($(".arrival"+number).width());
+      $(".arrival"+number).css({"height": width});
+      var length = 5;
+      var posLeft = number*100/length;
+      $(".arrival"+number).css({"left": posLeft+"%"});
+      if(number == length){
+        var $left = $("<button>").addClass("leftbutton").text("<");
+        var $right = $("<button>").addClass("rightbutton").text(">");
+        $(".arrivalReel").append($left, $right);
+      }
+      if(number >= length){
+        $("#arrival"+number).css({"left":"100%"});
+      }
+    }
+    function arrivalbutton(){
+      var start = 0;
+      var length = 5;
+      var end = start+length;
+      $(".arrivalReel .leftbutton").on("click",function(){
+        for(var i = 0; i <= length; i++){
+          var box = start + i;
+          console.log(start, box);
+          if(document.getElementById("arrival"+box)){
+            var rect = document.getElementById("arrival"+box).getBoundingClientRect();
+            var width = rect.right - rect.left;
+            var newPos = rect.left-width;
+            $("#arrival"+box).css({"left": newPos-50});
+            
+          }
+        }
+        start++;
+      });
+      $(".arrivalReel .rightbutton").on("click",function(){
+        for(var i = 0; i <= length; i++){
+          var box = start + i-1;
+          if(document.getElementById("arrival"+box)){
+            var rect = document.getElementById("arrival"+box).getBoundingClientRect();
+            var width = rect.right - rect.left;
+            var newPos = rect.left+width;
+            console.log(width, newPos, rect.left, rect.right);
+            $("#arrival"+box).css({"left": newPos-50});
+          }
+        }
+        start--;
+      });
     }
   script(src='/close.js')
