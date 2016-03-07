@@ -884,6 +884,27 @@ app.post('/user/homepage/setpic',function(req,res,next){
             console.log('Error inserting image details: '+err);
         });
 });
+app.get('/user/homepage/getpictures',function(req,res,next){
+    db.many('SELECT * from imagefrontpage')
+        .then(function(response){
+            console.log(response);
+            res.send(response);
+        })
+        .catch(function(err){
+            console.log('failed fetching homepage pictures: '+err);
+        });
+});
+app.post('/user/homepage/deletepicture',function(req,res,next){
+    var pic = req.body;
+    console.log(pic);
+    db.none("DELETE from imagefrontpage * where imagename = ${name}",pic)
+        .then(function(){
+            
+        })
+        .catch(function(err){
+            console.log("failed deleting image: "+err);
+        });
+});
 app.post('/user/homepage/homepicname',function(req,res,next){
     var homePicData = req.body;
     console.log(homePicData);

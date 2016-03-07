@@ -54,6 +54,7 @@ body
         div
           p Select the picture you wish to delete
           select(class="picListDelete")
+        input(type="submit",value="Delete this picture", name="deletepicture")
           
   script(src='/jquery-1.11.3.js')
   script(src='/config.js')
@@ -90,7 +91,8 @@ body
       $(".option").addClass("hiddenForm");
     });
     $(".homePicDel").on("click",function(){
-
+      $(".picDelete").removeClass("hiddenForm");
+      $(".option").addClass("hiddenForm");
     })
 
     var picData = {};
@@ -128,5 +130,31 @@ body
       $(".upload").addClass("hiddenForm");
       $(".itemPic input[type=submit]").prop("disabled",false);
       $(".itemPic").removeClass("hiddenForm");
-    })
+    });
+    $.ajax({
+      type:"GET",
+      dataType:"json",
+      url:"http://"+serverIP+"/user/homepage/getpictures",
+      success:function(response){
+        console.log(response);
+        for(var i = 0; i < response.length; i++){
+          var $option = $("<option>").attr("value",response[i].imagename).text(response[i].imagename);
+          $(".picListDelete").append($option);
+        }
+      }
+    });
+    $(".picDelete").on("submit",function(){
+      var pic = {};
+      pic.name = $(".picListDelete").val();
+      console.log(pic);
+      $.ajax({
+        type:"POST",
+        dataType:"application/json",
+        data:pic,
+        url:"http://"+serverIP+"/user/homepage/deletepicture",
+        success: function(res){
+        
+        }
+      });
+    });
   script(src='/close.js')

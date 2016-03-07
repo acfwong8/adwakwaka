@@ -80,9 +80,17 @@ body
           }
           return 0;
         });
-        for(var i = 0; i < items.length; i++){
-          appendItem(i,items[i].itemname,items[i].itempicture1,items[i].itemnumb,items[i].itemdesc,items[i].price,items[i].currency);
-        }
+        $.ajax({
+          type:"GET",
+          dataType:"json",
+          url:"http://"+serverIP+"/user/homepage/retrieveclearance",
+          success:function(response){
+            console.log(response);
+            for(var i = 0; i < items.length; i++){
+              appendItem(i,items[i].itemname,items[i].itempicture1,items[i].itemnumb,items[i].itemdesc,items[i].price,items[i].currency);
+            }
+          }   
+        });
       }
     })
 
