@@ -24,7 +24,11 @@ body
   section(class="main cf")
     h1 Welcome to Mantronic
 
-    div(class="itemspace")
+    div(class="reelspace cf")
+      div(class="pictureReel cf")
+
+    div(class="arrivalspace")
+      div(class="arrivalReel")
     
   script(src='/jquery-1.11.3.js')
   script(src='/config.js')
@@ -54,5 +58,75 @@ body
     creds.setCred();    
   script(src='/build.js')
   script(src='/categories.js')
-  script(src='/close.js')
   script.
+    var reelspaceW = $(".reelspace").width();
+    $(".reelspace").css({"height": reelspaceW * 6/16});
+    $.ajax({
+      type:"GET",
+      dataType:"JSON",
+      url:"http://"+serverIP+"/homepagereel",
+      success:function(res){
+        console.log(res);
+        for(var i = 0; i < res.length; i++){
+          appendreel(res[i].imagename,res[i].imagefile,res[i].imagecaption,res[i].imagedesc,i);
+          $(".imagereel"+i+" .reelCaption").css({"height": 1*100/res.length+"%", "top": i*100/res.length+"%"});
+        }
+        var reelCounter = 0;
+        setInterval(function(){
+          console.log(reelCounter, res.length);
+          if(reelCounter < res.length-1){
+            var next = reelCounter + 1;
+            $(".imagereel"+reelCounter+" .reelDesc").addClass("invisHome");
+            $(".imagereel"+reelCounter+" img").addClass("invisHome");
+            $(".imagereel"+next+" .reelDesc").removeClass("invisHome");
+            $(".imagereel"+next+" img").removeClass("invisHome");
+            reelCounter++;
+          } else {
+            var next = 0;
+            $(".imagereel"+reelCounter+" .reelDesc").addClass("invisHome");
+            $(".imagereel"+reelCounter+" img").addClass("invisHome");
+            $(".imagereel"+next+" .reelDesc").removeClass("invisHome");
+            $(".imagereel"+next+" img").removeClass("invisHome");
+            reelCounter = 0;
+          }
+
+        },2000);
+      }
+    });
+    $.ajax({
+      type:"GET",
+      dataType:"JSON",
+      url:"http://"+serverIP+"/homepagearrivals",
+      success: function(res){
+        console.log(res);
+        for(var i = 0; i < res.length; i++){
+          appendarrivals(res[i].itemname, res[i].itempic, res[i].price, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i);
+        }
+      }
+    });
+
+    function appendreel(name, file, caption, desc, number){
+      var $div = $("<div>").addClass("imagereel imagereel"+number);
+      var $img = $("<img>").attr("src","/uploads/"+file+".jpg");
+      var $pCaption = $("<p>").addClass("reelCaption").text(caption);
+      var $pDesc = $("<p>").addClass("reelDesc").text(desc);
+      if(number !== 0){
+        $img.addClass("invisHome");
+        $pDesc.addClass("invisHome");
+      }
+      console.log(number);
+      $div.append($img, $pDesc, $pCaption);
+      $(".pictureReel").append($div);
+    }
+    function appendarrivals(name, file, price, itemnumb, itemid, catnumb, number){
+      var $div = $("<div>").addClass("arrival arrival"+ number);
+      var $aName = $("<a>").attr("href","/category/"+catnumb+"/products/"+itemnumb).addClass("arrivalName").text(name);
+      var $pId = $("<p>").addClass("arrivalId").text(itemid);
+      var $pPrice = $("<p>").addClass("arrivalPrice").text("$"+price);
+      var $a = $("<a>").attr("href","/category/"+catnumb+"/products/"+itemnumb);
+      var $img = $("<img>").attr("src","/uploads/"+file+".jpg");
+      $a.append($img);
+      $div.append($a, $aName, $pId, $pPrice);
+      $(".arrivalReel").append($div);
+    }
+  script(src='/close.js')

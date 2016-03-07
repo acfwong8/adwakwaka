@@ -30,7 +30,6 @@ body{
     font-family:'Oswald',sans-serif;
     margin:0;
     padding:0;
-    /* position:relative; */
     background:white;
     /* background:rgba(0,51,102,1); */
 }
@@ -272,9 +271,61 @@ button.subCatp:hover button{
     text-align:right;
     font-size:12px;
 }
-.subCatp1{background-color:rgba(255,255,255,0.2);width:90%}
+.subCatp1{background-color:rgba(255,255,255,0.2);width:90%;}
 .subCatp2{background-color:rgba(255,255,255,0.5);width:80%;}
-.subCatp3{background-color:rgba(255,255,255,0.7);width:70%;;}
+.subCatp3{background-color:rgba(255,255,255,0.7);width:70%;}
+
+/*homepage */
+.invisHome{
+    opacity:0;
+}
+
+.reelspace {
+    font-family:'News Cycle', sans-serif;
+    position:relative;
+    width:100%;
+    
+}
+.imagereel{
+    position:absolute;
+    top:0;
+    /* left:0; */
+    width:100%;
+    height:100%;
+    text-align:center;
+    /* object-fit:cover; */
+    transition:all 0.25s ease;
+
+}
+.imagereel img{
+    float:left;
+    min-width:70%;
+    height:100%;
+    object-fit:cover;
+}
+.imagereel .reelDesc{
+    position:absolute;
+    color:white;
+    background:rgba(0,0,0,0.4);
+    top:0;
+    width:70%;
+    padding:0 auto;
+    margin:0 30% 0 0;
+    left:0;
+}
+.reelCaption{
+    margin:0 0 0 70%;
+    left:0;
+    padding:0 auto;
+    position:absolute;
+}
+.arrivalspace{
+    font-family:'News Cycle', sans-serif;
+}
+
+.arrivalseditspace{
+    font-family:'News Cycle', sans-serif;
+}
 
 /* for items listing in specific Category*/
 .main h1, .main h2{

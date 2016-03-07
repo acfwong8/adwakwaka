@@ -1,0 +1,143 @@
+link(rel='stylesheet', href='/style.css')
+link(rel="stylesheet",href="/clearfix.css")
+
+body
+  header(class="cf")
+    div(class="logo")
+      // a(href="/")
+        // img(src="../../uploads/staticpics/logo.png")
+
+    p(class="login")
+      
+    div(class="toolbar")
+      ul
+        li
+          a(href="/") Home
+        li
+          a(href="/business") Our business
+        li
+          a(href="/contact") Contact
+        li
+          a(href="/support") RMA/Support
+
+  section(class="sidebar")
+  section(class="main")
+    h1 Edit New Arrivals List
+
+    div(class="arrivalseditspace")
+      div(class="option")
+        p Would you like to add or remove an item from the New Arrivals list?
+        button(class="arrivalsAdd") Add
+        button(class="arrivalsDel") Delete
+      form(class="picData hiddenForm",enctype="multipart/form-data")
+        div
+          p Select category of item
+          select(class="newItemCat")
+            option (Select Category)
+        div(class="listDiv hiddenForm")
+          p Select item to be set as New Arrival
+          select(class="itemList")
+        div(class="theItem hiddenForm")
+          p Selected Item
+      form(class="submitArrival hiddenForm",enctype="multipart/form-data")
+        input(type="submit",value="Add as New Arrival",name="arrivalSubmit")
+        
+      form(class="picDelete hiddenForm",enctype="multipart/form-data")
+        div
+          p Select the picture you wish to delete
+          select(class="picListDelete")
+          
+  script(src='/jquery-1.11.3.js')
+  script(src='/config.js')
+  script(src="/logoStill.js")
+  script.
+    function cred(){
+      var auth = {};
+      return {
+        setCred: function(){
+          auth.user = "#{username}";
+          auth.permissions = "#{permissions}";
+          auth.timestamp = "#{sessionStart}";
+          return auth;
+        },
+        getUser: function(){
+          return auth.user;
+        },
+        getPermissions: function(){
+          return auth.permissions;
+        },
+        getTimestamp: function(){
+          return auth.timestamp;
+        }
+      }
+    }
+    var creds = cred();
+    creds.setCred();
+    
+  script(src='/build.js')
+  script(src='/categories.js')
+  script.
+    $(".arrivalsAdd").on("click",function(){
+      $(".picData").removeClass("hiddenForm");
+      $(".option").addClass("hiddenForm");
+    });
+    $(".arrivalsDel").on("click",function(){
+
+    });
+    
+    $(".newItemCat").on("change",function(){
+      $(".listDiv").removeClass("hiddenForm");
+      var cat = JSON.parse($(".newItemCat").val());
+      console.log(cat);
+      $.ajax({
+        type:"GET",
+        dataType:"JSON",
+        url:"http://"+serverIP+"/getitems/"+cat.numb,
+        success: function(res){
+          console.log(res);
+          $(".itemList").empty();
+          for(var i = 0; i < res.length; i++){
+            var $option = $("<option>").attr("value",res[i].itemnumb).text(res[i].itemid);
+            $(".itemList").append($option);
+          }
+        }
+      });
+    });
+    var arrivalItem = {};
+    $(".itemList").on("change",function(){
+      var item = $(".itemList").val();
+      console.log(item);
+      $(".theItem").empty();
+      $.ajax({
+        type:"GET",
+        dataType:"json",
+        url:"http://"+serverIP+"/getitem/"+item,
+        success: function(res){
+          arrivalItem = res;
+          console.log(res);
+          $(".theItem").removeClass("hiddenForm");
+          var $pIntro = $("<p>").text("Selected Item");
+          var $pId = $("<p>").text(res.itemid)
+          var $pName = $("<p>").text(res.itemname);
+          var $img = $("<img>").attr("src","../../uploads/"+res.itempicture1+".jpg");
+          $img.css({"width": 200+"px"});
+          $(".theItem").append($pId, $pName, $img);
+          $(".submitArrival").removeClass("hiddenForm");
+        }
+      });
+    });
+
+    $(".submitArrival").on("submit",function(e){
+      e.preventDefault();
+      $.ajax({
+        type:"POST",
+        dataType:"application/json",
+        data:arrivalItem,
+        url:"http://"+serverIP+"/user/homepage/setarrivals",
+        success: function(res){
+          console.log(res);
+        }
+      });
+    })
+    
+  script(src='/close.js')

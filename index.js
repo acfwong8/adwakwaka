@@ -13,6 +13,7 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ storage : storage}).single('itemPic');
 var uploadTab = multer({ storage : storage}).single('tabPic');
+var uploadHome = multer ({ storage : storage}).single('homePic');
 var path = require('path');
 var bodyParser = require('body-parser');
 var passport = require('passport');
@@ -192,6 +193,26 @@ app.get('/', function(req,res,next){
     current.setCurrentAuth(timestamps[0]);
     console.log("then");
     console.log(current.getCurrentAuth());
+});
+app.get('/homepagereel',function(req,res,next){
+    db.many("SELECT * from imagefrontpage")
+        .then(function(response){
+            console.log(response);
+            res.send(response);
+        })
+        .catch(function(err){
+            console.log('failed fetching homepage picture reel: '+err);
+        });
+});
+app.get('/homepagearrivals',function(req,res,next){
+    db.many("SELECT * from arrivals")
+        .then(function(response){
+            console.log(response);
+            res.send(response);
+        })
+        .catch(function(err){
+            console.log('failed fetching new arrivals: '+err);
+        });
 });
 
 app.get('/closeconnection',function(req,res,next){
@@ -843,9 +864,71 @@ app.get('/user/homepage',function(req,res,next){
 app.get('/user/homepage/picturereel',function(req,res,next){
     res.render('pictureHomepage',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 });
+app.post('/user/homepage/setpic',function(req,res,next){
+    var homePicData = req.body
+    console.log(req.body);
+    db.none('INSERT into imagefrontpage(imagename,imagecaption,imagedesc) values(${name},${caption},${desc})',homePicData)
+        .then(function(){
+            res.send('uploading');
+        })
+        .catch(function(err){
+            console.log('Error inserting image details: '+err);
+        });
+});
+app.post('/user/homepage/homepicname',function(req,res,next){
+    var homePicData = req.body;
+    console.log(homePicData);
+    var filename = 'homePic-';
+    z = Date.now();
+    db.one('SELECT imagename from imagefrontpage where imagename = ${name}',homePicData)
+        .then(function(response){
+            console.log(response);
+            var picList = response.imagefile;
+            if(picList === null){
+                homePicData.newPicList = filename + z;
+            } else {
+                // homePicData.newPicList = picList + ';' + filename + z;
+                homePicData.newPicList = filename + z;
+            }
+            db.none('UPDATE imagefrontpage SET imagefile = ${newPicList} where imagename = ${name}',homePicData)
+                .then(function(){
+                    console.log('uploading');
+                    res.send('uploading');
+                })
+                .catch(function(erro){
+                    console.log('error updating piclist: '+ erro);
+                });
+        })
+        .catch(function(err){
+            console.log('failed getting tabs: '+err);
+        });
+});
+app.post('/user/homepage/homepicupload',function(req,res,next){
+    uploadHome(req,res,function(err){
+        if(err){
+            return res.end("Error uploading" + err);
+        }
+        res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+    });
+})
+
 app.get('/user/homepage/newarrivals',function(req,res,next){
     res.render('arrivalsHomepage',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 });
+app.post('/user/homepage/setarrivals',function(req,res,next){
+    var arrivalItem = req.body;
+    console.log('setarrivals');
+    console.log(arrivalItem);
+    db.none("INSERT into arrivals(itemname, itemid, itempic, itemnumb, itemcatnumb, price, currency) values(${itemname}, ${itemid}, ${itempicture1}, ${itemnumb}, ${itemcatnumb}, ${price},${currency})",arrivalItem)
+        .then(function(){
+            console.log('loggin');
+            res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+        })
+        .catch(function(err){
+            console.log('failed logging new arrivals: '+err);
+        });
+});
+
 app.get('/user/homepage/clearance',function(req,res,next){
     res.render('clearanceHomepage',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 });
@@ -912,6 +995,7 @@ app.get('/getitem/:itemid',function(req,res,next){
     dbParam.itemId = itemId;
     db.one('SELECT * from products where itemnumb = ${itemId}',dbParam)
         .then(function(response){
+            console.log(response);
             res.send(response);
         })
         .catch(function(err){

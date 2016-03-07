@@ -45,12 +45,12 @@ body
         span Upload picture? 
         input(type="submit",value="Open picture selection",name="select" disabled)
 
-      form(class="itemPic hiddenForm",action="tabpicupload",method="post",enctype="multipart/form-data")
+      form(class="itemPic hiddenForm",action="homepicupload",method="post",enctype="multipart/form-data")
         p
-          input(type="file",name="tabPic")
+          input(type="file",name="homePic")
         p  
           input(type="submit",value="Upload Picture",name="submit" disabled)
-      form(class="picDelete",enctype="multipart/form-data")
+      form(class="picDelete hiddenForm",enctype="multipart/form-data")
         div
           p Select the picture you wish to delete
           select(class="picListDelete")
@@ -87,38 +87,40 @@ body
   script.
     $(".homePicAdd").on("click",function(){
       $(".picData").removeClass("hiddenForm");
+      $(".option").addClass("hiddenForm");
     });
     $(".homePicDel").on("click",function(){
 
     })
 
-    $(".submitText").on("click",function(e){
+    var picData = {};
+    $(".picData").on("submit",function(e){
       e.preventDefault();
-      var business = {};
-      business.text = $(".businessText").val();
-      business.tab = 'business'
-      console.log(JSON.stringify(business));
+      picData.name = $(".newPicName").val();
+      picData.caption = $(".newPicCaption").val();
+      picData.desc = $(".newPicDesc").val();
       $.ajax({
         type:"POST",
-        data:business,
+        data:picData,
         dataType:"application/json",
-        url:"http://"+serverIP+"/user/entries/settext",
+        url:"http://"+serverIP+"/user/homepage/setpic",
         success: function(res){
           console.log(res);
         }
       });
       $(".upload").removeClass("hiddenForm");
       $(".upload input[type=submit]").prop("disabled",false);
-      $(".textForm").addClass("hiddenForm");
+      $(".picData").addClass("hiddenForm");
     });
 
     $(".upload").on("submit",function(e){
       e.preventDefault();
+      console.log(JSON.stringify(picData));
       $.ajax({
         type:"POST",
-        data:JSON.stringify({'tab': 'business'}),
+        data:JSON.stringify(picData),
         contentType:"application/json",
-        url:"http://"+serverIP+"/user/entries/tabpicname",
+        url:"http://"+serverIP+"/user/homepage/homepicname",
         success: function(res){
         console.log(res);
         }
