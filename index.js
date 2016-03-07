@@ -974,6 +974,26 @@ app.post('/user/homepage/setclearance',function(req,res,next){
             console.log('failed logging new arrivals: '+err);
         });
 });
+app.get('/user/homepage/retrieveclearance',function(req,res,next){
+    db.many("SELECT * from clearance")
+        .then(function(response){
+            res.send(response);
+        })
+        .catch(function(err){
+            console.log('failed retreiving clearance: '+err);
+        });
+});
+app.post('/user/homepage/removeclearance',function(req,res,next){
+    var item = req.body;
+    console.log(item);
+    db.none("DELETE from clearance where itemnumb = ${numb}",item)
+        .then(function(){
+            res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+        })
+        .catch(function(err){
+            console.log("failed deleting entry: "+err);
+        });
+});
 
 // categories and items listing
 

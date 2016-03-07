@@ -334,10 +334,13 @@ button.subCatp:hover button{
 }
 .arrivalspace, .clearancespace{
     font-family:'News Cycle', sans-serif;
-    margin: 5% 0 0 0;
+    margin: 2% 0 0 0;
     position:relative;
     float:left;
     width:100%;
+}
+.arrivalspace h3, .clearancespace h3{
+    margin:1%;
 }
 .arrivalReel{
 }

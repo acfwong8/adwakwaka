@@ -245,7 +245,7 @@ $(".catExpand").on("mouseover",function(){
     $(".catExpand").css({'margin-left': -45});
 });
 $(document).on("scroll",function(){
-    console.log(1);
+    // console.log(1);
     var top = $(window).scrollTop();
     var lock = 100;
     if (top <= lock){
