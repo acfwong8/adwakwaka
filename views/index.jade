@@ -170,7 +170,10 @@ body
       var $img = $("<img>").attr("src","/uploads/"+file+".jpg");
       var $imgdiv = $("<div>").append($img).addClass("imgdiv");
       $a.append($imgdiv);
-      $div.append($a, $aName, $pId, $pPrice);
+      $div.append($a, $aName, $pId);
+      if(creds.getPermissions() !== ''){
+        $div.append($pPrice);
+      }
       $(".arrivalReel").append($div);
       var width = Math.ceil($(".arrival"+number).width());
       $(".arrival"+number).css({"height": width});
@@ -199,7 +202,10 @@ body
       var $img = $("<img>").attr("src","/uploads/"+file+".jpg");
       var $imgdiv = $("<div>").append($img).addClass("imgdiv");
       $a.append($imgdiv);
-      $div.append($a, $aName, $pId, $pPrice);
+      $div.append($a, $aName, $pId);
+      if(creds.getPermissions() !== ''){
+        $div.append($pPrice);
+      }
       $(".clearanceReel").append($div);
       var width = Math.ceil($(".clearance"+number).width());
       $(".clearance"+number).css({"height": width});
