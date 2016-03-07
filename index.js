@@ -214,7 +214,16 @@ app.get('/homepagearrivals',function(req,res,next){
             console.log('failed fetching new arrivals: '+err);
         });
 });
-
+app.get('/homepageclearance',function(req,res,next){
+    db.many("SELECT * from clearance")
+        .then(function(response){
+            console.log(response);
+            res.send(response);
+        })
+        .catch(function(err){
+            console.log('failed fetching new clearance: '+err);
+        });
+});
 app.get('/closeconnection',function(req,res,next){
     current.setCurrentAuth(timestamps[0]);
     res.send('closed');
@@ -953,10 +962,10 @@ app.get('/user/homepage/clearance',function(req,res,next){
     res.render('clearanceHomepage',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 });
 app.post('/user/homepage/setclearance',function(req,res,next){
-    var arrivalItem = req.body;
+    var clearanceItem = req.body;
     console.log('setarrivals');
-    console.log(arrivalItem);
-    db.none("INSERT into arrivals(itemname, itemid, itempic, itemnumb, itemcatnumb, price, currency) values(${itemname}, ${itemid}, ${itempicture1}, ${itemnumb}, ${itemcatnumb}, ${price},${currency})",arrivalItem)
+    console.log(clearanceItem);
+    db.none("INSERT into clearance(itemname, itemid, itempic, itemnumb, itemcatnumb, price, newprice, currency) values(${itemname}, ${itemid}, ${itempicture1}, ${itemnumb}, ${itemcatnumb}, ${price}, ${newPrice}, ${currency})",clearanceItem)
         .then(function(){
             console.log('loggin');
             res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});

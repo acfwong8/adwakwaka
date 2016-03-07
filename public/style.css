@@ -332,31 +332,35 @@ button.subCatp:hover button{
     background:black;
     color:white;
 }
-.arrivalspace{
+.arrivalspace, .clearancespace{
     font-family:'News Cycle', sans-serif;
     margin: 5% 0 0 0;
     position:relative;
+    float:left;
+    width:100%;
+}
+.arrivalReel{
 }
 
-.arrivalseditspace{
+.arrivalseditspace, .clearanceseditspace{
     font-family:'News Cycle', sans-serif;
 }
-.arrival{
+.arrival, .clearance{
     position:absolute;
     width:20%;
     text-align:center;
     float:left;
     transition:all 0.25s ease;
 }
-.arrival .imgdiv{
+.arrival .imgdiv, .clearance .imgdiv{
     width:100%;
     height:100%;
     overflow:hidden;
 }
-.arrival img{
+.arrival img, .clearance img{
     height:100%;
 }
-.arrival p{
+.arrival p, .clearance p{
     margin:0;
 }
 .hidereelRight{
@@ -365,7 +369,7 @@ button.subCatp:hover button{
 .arrivalReel {
     overflow:hidden;
 }
-.arrivalReel button{
+.arrivalReel button, .clearanceReel button{
     position:absolute;
     width:50px;
     height:15vh;
@@ -375,18 +379,18 @@ button.subCatp:hover button{
     font-size:22px;
     transition:all 0.25s ease;
 }
-.arrivalReel button:disabled{
+.arrivalReel button:disabled, .clearanceReel button:disabled{
     color:black;
 }
-.arrivalReel button:hover{
+.arrivalReel button:hover, .clearanceReel button:hover{
     font-size:40px;
     background:rgba(0,0,0,0.2);
     color:red;
 }
-.arrivalReel .leftbutton{
+.arrivalReel .leftbutton, .clearanceReel .leftbutton{
     left:-50;
 }
-.arrivalReel .rightbutton{
+.arrivalReel .rightbutton, .clearacenReel .leftbutton{
     right:-50;
 }
 

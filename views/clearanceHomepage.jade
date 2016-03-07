@@ -1,0 +1,174 @@
+link(rel='stylesheet', href='/style.css')
+link(rel="stylesheet",href="/clearfix.css")
+
+body
+  header(class="cf")
+    div(class="logo")
+      // a(href="/")
+        // img(src="../../uploads/staticpics/logo.png")
+
+    p(class="login")
+      
+    div(class="toolbar")
+      ul
+        li
+          a(href="/") Home
+        li
+          a(href="/business") Our business
+        li
+          a(href="/contact") Contact
+        li
+          a(href="/support") RMA/Support
+
+  section(class="sidebar")
+  section(class="main")
+    h1 Edit Clearance List
+
+    div(class="clearanceseditspace")
+      div(class="option")
+        p Would you like to add or remove an item from the Clearance list?
+        button(class="arrivalsAdd") Add
+        button(class="arrivalsDel") Delete
+      form(class="picData hiddenForm",enctype="multipart/form-data")
+        div
+          p Select category of item
+          select(class="newItemCat")
+            option (Select Category)
+        div(class="listDiv hiddenForm")
+          p Select item to be set as a clearance item
+          select(class="itemList")
+          p Set new price
+          input(type="number",class="clearancePrice")
+        div(class="theItem hiddenForm")
+          p Selected Item
+      form(class="submitClearance hiddenForm",enctype="multipart/form-data")
+        input(type="submit",value="Add as New Clearance Item",name="clearanceSubmit")
+        
+      form(class="picDelete hiddenForm",enctype="multipart/form-data")
+        div
+          p Select the item you wish to remove
+          select(class="picListDelete")
+            option Select Item
+          input(type="submit",value="Remove item from Clearance",name="clearanceRemove")
+          
+  script(src='/jquery-1.11.3.js')
+  script(src='/config.js')
+  script(src="/logoStill.js")
+  script.
+    function cred(){
+      var auth = {};
+      return {
+        setCred: function(){
+          auth.user = "#{username}";
+          auth.permissions = "#{permissions}";
+          auth.timestamp = "#{sessionStart}";
+          return auth;
+        },
+        getUser: function(){
+          return auth.user;
+        },
+        getPermissions: function(){
+          return auth.permissions;
+        },
+        getTimestamp: function(){
+          return auth.timestamp;
+        }
+      }
+    }
+    var creds = cred();
+    creds.setCred();
+    
+  script(src='/build.js')
+  script(src='/categories.js')
+  script.
+    $(".arrivalsAdd").on("click",function(){
+      $(".picData").removeClass("hiddenForm");
+      $(".option").addClass("hiddenForm");
+    });
+    $(".arrivalsDel").on("click",function(){
+      $(".picDelete").removeClass("hiddenForm");
+      $(".option").addClass("hiddenForm");
+      $.ajax({
+        type:"GET",
+        dataType:"json",
+        url:"http://"+serverIP+"/user/homepage/retrieveclearance",
+        success: function(res){
+          console.log(res);
+          for(var i = 0; i < res.length; i++){
+            var $option = $("<option>").attr("value",res[i].itemnumb).text(res[i].itemid+" "+res[i].itemname);
+            $(".picListDelete").append($option);
+          }
+        }
+      });
+    });
+    
+    $(".newItemCat").on("change",function(){
+      $(".listDiv").removeClass("hiddenForm");
+      var cat = JSON.parse($(".newItemCat").val());
+      console.log(cat);
+      $.ajax({
+        type:"GET",
+        dataType:"JSON",
+        url:"http://"+serverIP+"/getitems/"+cat.numb,
+        success: function(res){
+          console.log(res);
+          $(".itemList").empty();
+          for(var i = 0; i < res.length; i++){
+            var $option = $("<option>").attr("value",res[i].itemnumb).text(res[i].itemid);
+            $(".itemList").append($option);
+          }
+        }
+      });
+    });
+    var clearanceItem = {};
+    $(".itemList").on("change",function(){
+      var item = $(".itemList").val();
+      console.log(item);
+      $(".theItem").empty();
+      $.ajax({
+        type:"GET",
+        dataType:"json",
+        url:"http://"+serverIP+"/getitem/"+item,
+        success: function(res){
+          clearanceItem = res;
+          console.log(res);
+          $(".theItem").removeClass("hiddenForm");
+          var $pIntro = $("<p>").text("Selected Item");
+          var $pId = $("<p>").text(res.itemid)
+          var $pName = $("<p>").text(res.itemname);
+          var $pOldPrice = $("<p>").text("$"+res.price);
+          var $img = $("<img>").attr("src","../../uploads/"+res.itempicture1+".jpg");
+          $img.css({"width": 200+"px"});
+          $(".theItem").append($pId, $pName, $pOldPrice, $img);
+          $(".submitClearance").removeClass("hiddenForm");
+        }
+      });
+    });
+
+    $(".submitClearance").on("submit",function(e){
+      clearanceItem.newPrice = $(".clearancePrice").val();
+      $.ajax({
+        type:"POST",
+        dataType:"application/json",
+        data:clearanceItem,
+        url:"http://"+serverIP+"/user/homepage/setclearance",
+        success: function(res){
+          console.log(res);
+        }
+      });
+    })
+    $(".picDelete").on("submit",function(){
+      var item = {};
+      item.numb = $(".picListDelete").val();
+      console.log(item);
+      $.ajax({
+        type:"POST",
+        dataType:"application/json",
+        data:item,
+        url:"http://"+serverIP+"/user/homepage/removeclearance",
+        success: function(res){
+        }
+      });
+    });
+    
+  script(src='/close.js')

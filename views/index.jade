@@ -24,11 +24,14 @@ body
   section(class="main cf")
     h1 Welcome to Mantronic
 
-    div(class="reelspace cf")
+    div(class="reelspace")
       div(class="pictureReel cf")
 
-    div(class="arrivalspace")
-      div(class="arrivalReel")
+    div(class="arrivalspace cf")
+      div(class="arrivalReel cf")
+
+    div(class="clearancespace cf")
+      div(class="clearanceReel cf")
     
   script(src='/jquery-1.11.3.js')
   script(src='/config.js')
@@ -59,7 +62,21 @@ body
   script(src='/build.js')
   script(src='/categories.js')
   script.
+    var tallest = '';
     var reelspaceW = $(".reelspace").width();
+    $(window).on("resize",function(){
+      $(".reelspace").css({"height": reelspaceW * 6/16});
+      var picReel = $(".pictureReel").children().length
+      $(".imagereel"+" .reelCaption").css({"height": 1*100/picReel+"%"});
+      var widtha = Math.ceil($(".arrival").width());
+      $(".arrival").css({"height": widtha});
+      var widthc = Math.ceil($(".clearance").width());
+      $(".clearance").css({"height": widthc});
+      var heighta = $(".imgdiv").height()+$(".clearancePrice").height()+$(".clearanceId").height()+$(".clearanceName").height();
+      $(".clearanceReel").css({"height":heighta});
+      var heighta = $(".imgdiv").height()+$(".arrivalPrice").height()+$(".arrivalId").height()+$(".arrivalName").height();
+      $(".arrivalReel").css({"height":heighta});
+    });
     $(".reelspace").css({"height": reelspaceW * 6/16});
     $.ajax({
       type:"GET",
@@ -107,7 +124,25 @@ body
         for(var i = 0; i < res.length; i++){
           appendarrivals(res[i].itemname, res[i].itempic, res[i].price, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i);
         }
-        arrivalbutton("arrivalreel", "arrival");
+        var heighta = $(".imgdiv").height()+$(".arrivalPrice").height()+$(".arrivalId").height()+$(".arrivalName").height();
+        $(".arrivalReel").css({"height":heighta});
+        arrivalbutton("arrivalReel", "arrival");
+      }
+    });
+    $.ajax({
+      type:"GET",
+      dataType:"JSON",
+      url:"http://"+serverIP+"/homepageclearance",
+      success: function(res){
+        console.log(res);
+        var $title = $("<h2>").text("Clearance Items");
+        $(".clearancespace").prepend($title);
+        for(var i = 0; i < res.length; i++){
+          appendclearance(res[i].itemname, res[i].itempic, res[i].price, res[i].newprice, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i);
+        }
+        var heighta = $(".imgdiv").height()+$(".clearancePrice").height()+$(".clearanceId").height()+$(".clearanceName").height();
+        $(".clearanceReel").css({"height":heighta});
+        arrivalbutton("clearanceReel", "clearance");
       }
     });
 
@@ -151,6 +186,35 @@ body
         $("#arrival"+number).css({"left":"100%"});
       }
     }
+    
+    function appendclearance(name, file, price, newprice, itemnumb, itemid, catnumb, number){
+      var $div = $("<div>").addClass("clearance clearance"+ number).attr("id","clearance"+number);
+      var $aName = $("<a>").attr("href","/category/"+catnumb+"/products/"+itemnumb).addClass("clearanceName").text(name);
+      var $pId = $("<p>").addClass("clearanceId").text(itemid);
+      var $pPrice = $("<p>").addClass("clearancePrice");
+      var $oldPrice = $("<strike>").text("$"+price+" ");
+      var $newPrice = $("<span>").text("$"+newprice).css({"color": "red"});
+      $pPrice.append($oldPrice, $newPrice);
+      var $a = $("<a>").attr("href","/category/"+catnumb+"/products/"+itemnumb);
+      var $img = $("<img>").attr("src","/uploads/"+file+".jpg");
+      var $imgdiv = $("<div>").append($img).addClass("imgdiv");
+      $a.append($imgdiv);
+      $div.append($a, $aName, $pId, $pPrice);
+      $(".clearanceReel").append($div);
+      var width = Math.ceil($(".clearance"+number).width());
+      $(".clearance"+number).css({"height": width});
+      var length = 5;
+      var posLeft = number*100/length;
+      $(".clearance"+number).css({"left": posLeft+"%"});
+      if(number == length){
+        var $left = $("<button>").addClass("leftbutton").text("<");
+        var $right = $("<button>").addClass("rightbutton").text(">");
+        $(".clearanceReel").append($left, $right);
+      }
+      if(number >= length){
+        $("#clearance"+number).css({"left":"100%"});
+      }
+    }
     function arrivalbutton(parent, selector){
       $("."+parent+" .leftbutton").prop("disabled",true);
       var start = 0;
@@ -160,33 +224,33 @@ body
         for(var i = 0; i <= length; i++){
           var box = start + i;
           console.log(start, box);
-          if(document.getElementById("arrival"+box)){
-            var rect = document.getElementById("arrival"+box).getBoundingClientRect();
+          if(document.getElementById(selector+box)){
+            var rect = document.getElementById(selector+box).getBoundingClientRect();
             var width = rect.right - rect.left;
             var newPos = rect.left-width;
-            $("#arrival"+box).css({"left": newPos-50});
-            $(".arrivalreel .rightbutton").prop("disabled",true);
+            $("#"+selector+box).css({"left": newPos-50});
+            $("."+parent+" .rightbutton").prop("disabled",true);
           }
         }
         start++;
-        $(".arrivalReel .leftbutton").prop("disabled",false);
+        $("."+parent+" .leftbutton").prop("disabled",false);
       });
-      $(".arrivalReel .leftbutton").on("click",function(){
+      $("."+parent+" .leftbutton").on("click",function(){
         for(var i = 0; i <= length; i++){
           var box = start + i-1;
-          if(document.getElementById("arrival"+box)){
-            var rect = document.getElementById("arrival"+box).getBoundingClientRect();
+          if(document.getElementById(selector+box)){
+            var rect = document.getElementById(selector+box).getBoundingClientRect();
             var width = rect.right - rect.left;
             var newPos = rect.left+width;
             console.log(width, newPos, rect.left, rect.right);
-            $("#arrival"+box).css({"left": newPos-50});
+            $("#"+selector+box).css({"left": newPos-50});
           }
         }
         start--;
         if(start == 0){
-          $(".arrivalReel .leftbutton").prop("disabled",true);
+          $("."+parent+" .leftbutton").prop("disabled",true);
         }
-        $(".arrivalReel .rightbutton").prop("disabled",false);
+        $("."+parent+" .rightbutton").prop("disabled",false);
       });
     }
   script(src='/close.js')
