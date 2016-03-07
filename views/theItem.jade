@@ -72,13 +72,27 @@ body
       url:'http://'+serverIP+'/getitem/#{itemnumb}',
       dataType:'JSON',
       success: function(res){
-        console.log(res);
-        items = res;
-        appendItem(items.itemname,items.itempicture1,items.itemnumb,items.itemdesc,items.itemdesclong,items.newdesclong,items.price,items.currency,items.itemid);
+        $.ajax({
+          type:"GET",
+          dataType:"JSON",
+          url:"http://"+serverIP+"/user/homepage/retrieveclearance",
+          success: function(response){
+            console.log(response);
+            var clearance = 0;
+            items = res;
+            for(var i = 0; i < response.length; i++){
+              if(response[i].itemnumb == items.itemnumb){
+                clearance = response[i].newprice;
+              }
+            }
+            console.log(clearance);
+            appendItem(items.itemname,items.itempicture1,items.itemnumb,items.itemdesc,items.itemdesclong,items.newdesclong,items.price,clearance,items.currency,items.itemid);
+          }
+        })
       }
     });
 
-    function appendItem(title,picture,itemNumb,itemDesc,itemDescLong,newDescLong,price,currency,itemid){
+    function appendItem(title,picture,itemNumb,itemDesc,itemDescLong,newDescLong,price,newprice,currency,itemid){
       console.log(title,picture,itemNumb,itemDesc,price,currency);
       var $div = $("<div>").attr('class','item');
       var $h3 = $("<h3>").text("Item Code: "+itemid);
@@ -89,8 +103,17 @@ body
       var priceText = ' ';
       if(price !== null && price > 0) {
         priceText = currency+price;
-      }  
-      var $pPrice = $("<p>").text("Unit Price: $"+priceText).addClass("itemPrice");
+      }
+      var $pPrice = '';
+      if(newprice > 0){
+        console.log(1);
+        var $text = $("<span>").text("Unit Price: $")
+        var $oldPrice = $("<strike>").text(priceText+" ");
+        var $newPrice = $("<span>").text("$"+newprice).css({"color":"red"});
+        $pPrice = $("<p>").append($text,$oldPrice,$newPrice).addClass("itemPrice");
+      } else {
+        $pPrice = $("<p>").text("Unit Price: $"+priceText).addClass("itemPrice");
+      }
       $atitle.append($h3);
       $apic.append($img);
       $div.append($apic,$atitle,$pDesc);

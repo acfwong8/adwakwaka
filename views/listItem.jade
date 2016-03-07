@@ -87,14 +87,20 @@ body
           success:function(response){
             console.log(response);
             for(var i = 0; i < items.length; i++){
-              appendItem(i,items[i].itemname,items[i].itempicture1,items[i].itemnumb,items[i].itemdesc,items[i].price,items[i].currency);
+              var clearance = 0;
+              for(var j = 0; j < response.length; j++){
+                if(response[j].itemnumb == items[i].itemnumb){
+                  clearance = response[j].newprice;
+                }
+              }
+              appendItem(i,items[i].itemname,items[i].itempicture1,items[i].itemnumb,items[i].itemdesc,items[i].price,clearance,items[i].currency);
             }
           }   
         });
       }
     })
 
-    function appendItem(number,title,picture,itemNumb,itemDesc,price,currency){
+    function appendItem(number,title,picture,itemNumb,itemDesc,price,newprice,currency){
       var $div = $("<div>").attr('class','item'+number).addClass("item");
       var $divText = $("<div>").attr("class","divText");
       var $h3 = $("<h3>").text(title);
@@ -107,8 +113,15 @@ body
       var priceText = ' ';
       if(price !== null && price > 0){
         priceText = '$'+price;
-      }  
-      var $pPrice = $("<p>").text(priceText).addClass("itemPrice");
+      }
+      var $pPrice = '';
+      if(newprice > 0){
+        var $oldPrice = $("<strike>").text(priceText+" ");
+        var $newPrice = $("<span>").text("$"+newprice).css({"color":"red"});
+        $pPrice = $("<p>").append($oldPrice,$newPrice).addClass("itemPrice");
+      } else {
+        $pPrice = $("<p>").text(priceText).addClass("itemPrice");
+      }
       $atitle.append($h3);
       $apic.append($img);
       $divText.append($atitle,$pDesc);
