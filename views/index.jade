@@ -74,8 +74,10 @@ body
       $(".clearance").css({"height": widthc});
       var heighta = $(".imgdiv").height()+$(".clearancePrice").height()+$(".clearanceId").height()+$(".clearanceName").height();
       $(".clearanceReel").css({"height":heighta});
+      $(".clearanceReel button").css({"height": $(".imgdiv").height()});
       var heighta = $(".imgdiv").height()+$(".arrivalPrice").height()+$(".arrivalId").height()+$(".arrivalName").height();
       $(".arrivalReel").css({"height":heighta});
+      $(".arrivalReel button").css({"height": $(".imgdiv").height()});
     });
     $(".reelspace").css({"height": reelspaceW * 6/16});
     $.ajax({
@@ -83,7 +85,6 @@ body
       dataType:"JSON",
       url:"http://"+serverIP+"/homepagereel",
       success:function(res){
-        console.log(res);
         for(var i = 0; i < res.length; i++){
           appendreel(res[i].imagename,res[i].imagefile,res[i].imagecaption,res[i].imagedesc,i);
           $(".imagereel"+i+" .reelCaption").css({"height": 1*100/res.length+"%", "top": i*100/res.length+"%"});
@@ -118,7 +119,6 @@ body
       dataType:"JSON",
       url:"http://"+serverIP+"/homepagearrivals",
       success: function(res){
-        console.log(res);
         var $title = $("<h2>").text("New Arrivals");
         $(".arrivalspace").prepend($title);
         for(var i = 0; i < res.length; i++){
@@ -126,6 +126,7 @@ body
         }
         var heighta = $(".imgdiv").height()+$(".arrivalPrice").height()+$(".arrivalId").height()+$(".arrivalName").height();
         $(".arrivalReel").css({"height":heighta});
+        $(".arrivalReel button").css({"height": $(".imgdiv").height()});
         arrivalbutton("arrivalReel", "arrival");
       }
     });
@@ -134,7 +135,6 @@ body
       dataType:"JSON",
       url:"http://"+serverIP+"/homepageclearance",
       success: function(res){
-        console.log(res);
         var $title = $("<h2>").text("Clearance Items");
         $(".clearancespace").prepend($title);
         for(var i = 0; i < res.length; i++){
@@ -142,6 +142,7 @@ body
         }
         var heighta = $(".imgdiv").height()+$(".clearancePrice").height()+$(".clearanceId").height()+$(".clearanceName").height();
         $(".clearanceReel").css({"height":heighta});
+        $(".clearanceReel button").css({"height": $(".imgdiv").height()});
         arrivalbutton("clearanceReel", "clearance");
       }
     });
@@ -157,7 +158,6 @@ body
       } else {
         $pCaption.addClass("selected");
       }
-      console.log(number);
       $div.append($img, $pDesc, $pCaption);
       $(".pictureReel").append($div);
     }
@@ -223,12 +223,15 @@ body
       $("."+parent+" .rightbutton").on("click",function(){
         for(var i = 0; i <= length; i++){
           var box = start + i;
-          console.log(start, box);
+          var boxx = box + 1;
           if(document.getElementById(selector+box)){
             var rect = document.getElementById(selector+box).getBoundingClientRect();
             var width = rect.right - rect.left;
             var newPos = rect.left-width;
             $("#"+selector+box).css({"left": newPos-50});
+          }
+          if(document.getElementById(selector+boxx)){
+          } else {
             $("."+parent+" .rightbutton").prop("disabled",true);
           }
         }
@@ -242,7 +245,6 @@ body
             var rect = document.getElementById(selector+box).getBoundingClientRect();
             var width = rect.right - rect.left;
             var newPos = rect.left+width;
-            console.log(width, newPos, rect.left, rect.right);
             $("#"+selector+box).css({"left": newPos-50});
           }
         }

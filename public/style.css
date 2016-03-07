@@ -350,7 +350,7 @@ button.subCatp:hover button{
     width:20%;
     text-align:center;
     float:left;
-    transition:all 0.25s ease;
+    transition:all 0.5s ease-in;
 }
 .arrival .imgdiv, .clearance .imgdiv{
     width:100%;
@@ -378,6 +378,7 @@ button.subCatp:hover button{
     border:none;
     font-size:22px;
     transition:all 0.25s ease;
+    z-index:2;
 }
 .arrivalReel button:disabled, .clearanceReel button:disabled{
     color:black;
@@ -390,7 +391,7 @@ button.subCatp:hover button{
 .arrivalReel .leftbutton, .clearanceReel .leftbutton{
     left:-50;
 }
-.arrivalReel .rightbutton, .clearacenReel .leftbutton{
+.arrivalReel .rightbutton, .clearanceReel .rightbutton{
     right:-50;
 }
 
