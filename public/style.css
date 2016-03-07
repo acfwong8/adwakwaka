@@ -299,25 +299,31 @@ button.subCatp:hover button{
 }
 .imagereel img{
     float:left;
-    min-width:70%;
+    width:75%;
     height:100%;
     object-fit:cover;
+    transition: all 0.25s ease;
 }
 .imagereel .reelDesc{
     position:absolute;
     color:white;
     background:rgba(0,0,0,0.4);
     top:0;
-    width:70%;
+    width:75%;
     padding:0 auto;
-    margin:0 30% 0 0;
+    margin:0 25% 0 0;
     left:0;
+    transition: all 0.25s ease;
 }
 .reelCaption{
-    margin:0 0 0 70%;
+    margin:0 0 0 75%;
     left:0;
+    width:25%;
     padding:0 auto;
     position:absolute;
+    background:rgba(0,0,0,0.7);
+    color:red;
+    transition: all 0.25s ease;
 }
 .arrivalspace{
     font-family:'News Cycle', sans-serif;
