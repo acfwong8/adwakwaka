@@ -32,6 +32,7 @@ body{
     padding:0;
     background:white;
     /* background:rgba(0,51,102,1); */
+    overflow-x:hidden;
 }
 
 
@@ -283,8 +284,9 @@ button.subCatp:hover button{
 .reelspace {
     font-family:'News Cycle', sans-serif;
     position:relative;
-    width:100%;
-    
+    width:80%;
+    margin:0 10% 0 10%;
+    text-align:center;
 }
 .imagereel{
     position:absolute;
@@ -363,14 +365,28 @@ button.subCatp:hover button{
 .arrivalReel {
     overflow:hidden;
 }
-.arrivalReel .leftbutton{
+.arrivalReel button{
     position:absolute;
+    width:50px;
     height:15vh;
+    background:rgba(0,0,0,0.8);
+    color:white;
+    border:none;
+    font-size:22px;
+    transition:all 0.25s ease;
+}
+.arrivalReel button:disabled{
+    color:black;
+}
+.arrivalReel button:hover{
+    font-size:40px;
+    background:rgba(0,0,0,0.2);
+    color:red;
+}
+.arrivalReel .leftbutton{
     left:-50;
 }
 .arrivalReel .rightbutton{
-    position:absolute;
-    height:15vh;
     right:-50;
 }
 

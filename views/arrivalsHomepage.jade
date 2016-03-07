@@ -46,6 +46,8 @@ body
         div
           p Select the picture you wish to delete
           select(class="picListDelete")
+            option Select Item
+          input(type="submit",value="Remove item from New Arrival",name="arrivalRemove")
           
   script(src='/jquery-1.11.3.js')
   script(src='/config.js')
@@ -82,7 +84,20 @@ body
       $(".option").addClass("hiddenForm");
     });
     $(".arrivalsDel").on("click",function(){
-
+      $(".picDelete").removeClass("hiddenForm");
+      $(".option").addClass("hiddenForm");
+      $.ajax({
+        type:"GET",
+        dataType:"json",
+        url:"http://"+serverIP+"/user/homepage/retrievearrivals",
+        success: function(res){
+          console.log(res);
+          for(var i = 0; i < res.length; i++){
+            var $option = $("<option>").attr("value",res[i].itemnumb).text(res[i].itemid+" "+res[i].itemname);
+            $(".picListDelete").append($option);
+          }
+        }
+      });
     });
     
     $(".newItemCat").on("change",function(){
@@ -139,5 +154,18 @@ body
         }
       });
     })
+    $(".picDelete").on("submit",function(){
+      var item = {};
+      item.numb = $(".picListDelete").val();
+      console.log(item);
+      $.ajax({
+        type:"POST",
+        dataType:"application/json",
+        data:item,
+        url:"http://"+serverIP+"/user/homepage/removearrivals",
+        success: function(res){
+        }
+      });
+    });
     
   script(src='/close.js')

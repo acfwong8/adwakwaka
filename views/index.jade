@@ -107,7 +107,7 @@ body
         for(var i = 0; i < res.length; i++){
           appendarrivals(res[i].itemname, res[i].itempic, res[i].price, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i);
         }
-        arrivalbutton();
+        arrivalbutton("arrivalreel", "arrival");
       }
     });
 
@@ -151,11 +151,12 @@ body
         $("#arrival"+number).css({"left":"100%"});
       }
     }
-    function arrivalbutton(){
+    function arrivalbutton(parent, selector){
+      $("."+parent+" .leftbutton").prop("disabled",true);
       var start = 0;
       var length = 5;
       var end = start+length;
-      $(".arrivalReel .leftbutton").on("click",function(){
+      $("."+parent+" .rightbutton").on("click",function(){
         for(var i = 0; i <= length; i++){
           var box = start + i;
           console.log(start, box);
@@ -164,12 +165,13 @@ body
             var width = rect.right - rect.left;
             var newPos = rect.left-width;
             $("#arrival"+box).css({"left": newPos-50});
-            
+            $(".arrivalreel .rightbutton").prop("disabled",true);
           }
         }
         start++;
+        $(".arrivalReel .leftbutton").prop("disabled",false);
       });
-      $(".arrivalReel .rightbutton").on("click",function(){
+      $(".arrivalReel .leftbutton").on("click",function(){
         for(var i = 0; i <= length; i++){
           var box = start + i-1;
           if(document.getElementById("arrival"+box)){
@@ -181,6 +183,10 @@ body
           }
         }
         start--;
+        if(start == 0){
+          $(".arrivalReel .leftbutton").prop("disabled",true);
+        }
+        $(".arrivalReel .rightbutton").prop("disabled",false);
       });
     }
   script(src='/close.js')

@@ -928,9 +928,42 @@ app.post('/user/homepage/setarrivals',function(req,res,next){
             console.log('failed logging new arrivals: '+err);
         });
 });
+app.get('/user/homepage/retrievearrivals',function(req,res,next){
+    db.many("SELECT * from arrivals")
+        .then(function(response){
+            res.send(response);
+        })
+        .catch(function(err){
+            console.log('failed retreiving arrivals: '+err);
+        });
+});
+app.post('/user/homepage/removearrivals',function(req,res,next){
+    var item = req.body;
+    console.log(item);
+    db.none("DELETE from arrivals where itemnumb = ${numb}",item)
+        .then(function(){
+            res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+        })
+        .catch(function(err){
+            console.log("failed deleting entry: "+err);
+        });
+});
 
 app.get('/user/homepage/clearance',function(req,res,next){
     res.render('clearanceHomepage',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+app.post('/user/homepage/setclearance',function(req,res,next){
+    var arrivalItem = req.body;
+    console.log('setarrivals');
+    console.log(arrivalItem);
+    db.none("INSERT into arrivals(itemname, itemid, itempic, itemnumb, itemcatnumb, price, currency) values(${itemname}, ${itemid}, ${itempicture1}, ${itemnumb}, ${itemcatnumb}, ${price},${currency})",arrivalItem)
+        .then(function(){
+            console.log('loggin');
+            res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+        })
+        .catch(function(err){
+            console.log('failed logging new arrivals: '+err);
+        });
 });
 
 // categories and items listing
