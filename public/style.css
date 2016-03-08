@@ -365,7 +365,10 @@ button.subCatp:hover button{
     overflow:hidden;
 }
 .arrival img, .clearance img{
-    height:100%;
+    width:100%;
+    position:relative;
+    top:50%;
+    transform:translateY(-50%);
 }
 .arrival p, .clearance p{
     margin:0;
