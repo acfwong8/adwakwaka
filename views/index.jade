@@ -171,7 +171,7 @@ body
       var $imgdiv = $("<div>").append($img).addClass("imgdiv");
       $a.append($imgdiv);
       $div.append($a, $aName, $pId);
-      if(creds.getPermissions() !== ''){
+      if(creds.getPermissions() !== '' && price !== 0){
         $div.append($pPrice);
       }
       $(".arrivalReel").append($div);
