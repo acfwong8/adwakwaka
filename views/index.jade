@@ -74,10 +74,10 @@ body
       $(".clearance").css({"height": widthc});
       var heighta = $(".imgdiv").height()+$(".clearancePrice").height()+$(".clearanceId").height()+$(".clearanceName").height();
       $(".clearanceReel").css({"height":heighta});
-      $(".clearanceReel button").css({"height": $(".imgdiv").height()});
+      $(".clearanceReel button").css({"height": heighta});
       var heighta = $(".imgdiv").height()+$(".arrivalPrice").height()+$(".arrivalId").height()+$(".arrivalName").height();
       $(".arrivalReel").css({"height":heighta});
-      $(".arrivalReel button").css({"height": $(".imgdiv").height()});
+      $(".arrivalReel button").css({"height": heighta});
     });
     $(".reelspace").css({"height": reelspaceW * 6/16});
     $.ajax({
@@ -121,12 +121,22 @@ body
       success: function(res){
         var $title = $("<h2>").text("New Arrivals");
         $(".arrivalspace").prepend($title);
+        var counter = 0;
+        setInterval(function(){
+          if(counter == 0){
+            $(".arrivalspace h2").css({"color": "red"});
+            counter++;
+          } else {
+            $(".arrivalspace h2").css({"color": "black"});
+            counter--;
+          }
+        },100);
         for(var i = 0; i < res.length; i++){
           appendarrivals(res[i].itemname, res[i].itempic, res[i].price, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i);
         }
         var heighta = $(".imgdiv").height()+$(".arrivalPrice").height()+$(".arrivalId").height()+$(".arrivalName").height();
         $(".arrivalReel").css({"height":heighta});
-        $(".arrivalReel button").css({"height": $(".imgdiv").height()});
+        $(".arrivalReel button").css({"height": heighta});
         arrivalbutton("arrivalReel", "arrival");
       }
     });
@@ -140,9 +150,9 @@ body
         for(var i = 0; i < res.length; i++){
           appendclearance(res[i].itemname, res[i].itempic, res[i].price, res[i].newprice, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i);
         }
-        var heighta = $(".imgdiv").height()+$(".clearancePrice").height()+$(".clearanceId").height()+$(".clearanceName").height();
+        var heighta = $(".imgdconiv").height()+$(".clearancePrice").height()+$(".clearanceId").height()+$(".clearanceName").height();
         $(".clearanceReel").css({"height":heighta});
-        $(".clearanceReel button").css({"height": $(".imgdiv").height()});
+        $(".clearanceReel button").css({"height": heighta});
         arrivalbutton("clearanceReel", "clearance");
       }
     });

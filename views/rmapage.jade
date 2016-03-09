@@ -6,8 +6,8 @@ body
   
   header(class="cf")
     div(class="logo")
-      a(href="/")
-        img(src="../../uploads/staticpics/logo.png")
+      // a(href="/")
+        // img(src="../../uploads/staticpics/logo.png")
 
     p(class="login")
       
@@ -29,6 +29,7 @@ body
 
     div(class="rmaspace")
       h2 RMA Request Application
+      div(class="rmaDetails")
       p Please fill in the form, and we will contact you shortly for confirmation. Thank you!
       form
         div(class="personaldetails cf")
@@ -56,6 +57,7 @@ body
 
   script(src="/jquery-1.11.3.js")
   script(src="/config.js")
+  script(src="/logoStill.js")
   script.
     function cred(){
       var auth = {};
@@ -86,25 +88,18 @@ body
     }
 
   script(src='/build.js')
-  
-  script.  
-    var categories = [];
+  script(src="/categories.js")
+  script.
     $.ajax({
-      type:'GET',
-      url:'http://'+serverIP+'/getcategories',
-      dataType:'JSON',
+      type:"GET",
+      dataType:"JSON",
+      url:"http://"+serverIP+"/getrma",
       success: function(res){
-        for(var i = 0; i< res.length; i++){
-          appendp(res[i].catname,res[i].catnumb);
-        }
+        console.log(res);
+        var $pDetails = $("<p>").text(res[0].tabtext);
+        $(".rmaDetails").append($pDetails);
       }
-    })
-    function appendp(name,numb){
-      var $a = $("<a>").text(name).attr("href","/category/"+numb+"/products");
-      var $p = $("<p>").append($a);
-      $(".sidebar").append($p);
-    }
-    
+    });
     var items = [];
     $.ajax({
       type:'GET',

@@ -24,13 +24,12 @@ body
   section(class="main")
     h1 Edit Tab Entries
 
-    div(class="newspace")
-      p
-        a(href="/user/entries/ourbusiness") Modify "Our Business" tab
-      p
-        a(href="/user/entries/contact") Modify "Contact" tab
-      p
-        a(href="/user/entries/rmasupport") Modify "RMA/Support" tab
+    div(class="tabeditspace")
+      div(class="textForm")
+        p Enter/edit text in the "RMA" tab
+        textarea(class="businessText",rows="10",cols="40")
+        p
+          button(class="submitText") Save text
     
   script(src='/jquery-1.11.3.js')
   script(src='/config.js')
@@ -61,4 +60,33 @@ body
     
   script(src='/build.js')
   script(src='/categories.js')
+  script.
+    $.ajax({
+      type:"GET",
+      dataType:"JSON",
+      url:"http://"+serverIP+"/getrma",
+      success: function(res){
+        console.log(res);
+        $(".businessText").val(res[0].tabtext);
+      }
+    });
+    $(".submitText").on("click",function(e){
+      var business = {};
+      business.text = $(".businessText").val();
+      business.tab = 'rma'
+      console.log(JSON.stringify(business));
+      $.ajax({
+        type:"POST",
+        data:business,
+        dataType:"application/json",
+        url:"http://"+serverIP+"/user/entries/settext",
+        success: function(res){
+          console.log(res);
+        }
+      });
+      $(".upload").removeClass("hiddenForm");
+      $(".upload input[type=submit]").prop("disabled",false);
+      $(".textForm").addClass("hiddenForm");
+    });
+
   script(src='/close.js')

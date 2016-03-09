@@ -168,6 +168,7 @@ section.sidebar{
     padding-right:15px;
     background-color:rgba(0,0,0,0.7);
     transition:all 0.25s ease;
+    z-index:10;
 }
 .catExpand{
     position:absolute;
@@ -177,6 +178,7 @@ section.sidebar{
     margin:0;
     background:black;
     width:45px;
+    z-index:9;
     transition: all 1s ease;
 }
 .catExpand div{
@@ -342,11 +344,13 @@ button.subCatp:hover button{
     position:relative;
     float:left;
     width:100%;
+
 }
 .arrivalspace h3, .clearancespace h3{
     margin:1%;
 }
-.arrivalReel{
+.arrivalReel,.clearanceReel{
+    background:rgba(220,220,220,1);
 }
 
 .arrivalseditspace, .clearanceseditspace{
@@ -363,12 +367,23 @@ button.subCatp:hover button{
     width:100%;
     height:100%;
     overflow:hidden;
+    transition: 0.25s all ease;
+}
+.arrival .imgdiv:hover, .clearance .imgdiv:hover{
+                            overflow:inherit;
+                            
 }
 .arrival img, .clearance img{
     width:100%;
     position:relative;
     top:50%;
     transform:translateY(-50%);
+    transition:all 0.25s ease;
+}
+.arrival img:hover, .clearance img:hover{
+                        margin: 0 -25% 0 -25%;
+                        width:150%;
+                        z-index:4;                        
 }
 .arrival p, .clearance p{
     margin:0;
@@ -507,6 +522,7 @@ h3 {
     float:left;
 }
 
+
 /*viewing RMA*/
 
 .rma p {
@@ -543,4 +559,8 @@ h3 {
 .pictureSpace{
     width:50%;
     float:left;
+}
+
+.rmaDetails p{
+    white-space:pre-wrap;
 }

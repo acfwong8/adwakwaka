@@ -14,6 +14,8 @@ var storage = multer.diskStorage({
 var upload = multer({ storage : storage}).single('itemPic');
 var uploadTab = multer({ storage : storage}).single('tabPic');
 var uploadHome = multer ({ storage : storage}).single('homePic');
+var nodemailer = require('nodemailer');
+// var transporter = nodemailer.createTransport()
 var path = require('path');
 var bodyParser = require('body-parser');
 var passport = require('passport');
@@ -843,8 +845,11 @@ app.post('/user/entries/tabpicupload/',function(req,res,next){
 app.get('/user/entries/contact',function(req,res,next){
     res.render('contact',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 });
-app.get('/user/entries/rmasupprt',function(req,res,next){
+app.get('/user/entries/rmasupport',function(req,res,next){
     res.render('rmaSupport',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+app.get('/user/entries/footer',function(req,res,next){
+    res.render('footer',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 });
 
 // tab pages
@@ -861,6 +866,17 @@ app.get('/getbusiness',function(req,res,next){
 });
 app.get('/business',function(req,res,next){
     res.render('business',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+app.get('/getrma',function(req,res,next){
+    db.many("SELECT * from tabs where tabname = 'rma' and tabtext is not null")
+        .then(function(response){
+            console.log('getting rma text');
+            console.log(response);
+            res.send(response);
+        })
+        .catch(function(err){
+            console.log("failed fetching rma tab: "+err);
+        });
 });
 app.get('/contact',function(req,res,next){
     res.render('contact',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
