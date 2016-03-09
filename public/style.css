@@ -349,7 +349,7 @@ button.subCatp:hover button{
 .arrivalspace h3, .clearancespace h3{
     margin:1%;
 }
-.arrivalReel,.clearanceReel{
+.arrivalReel, .clearanceReel{
     background:rgba(220,220,220,1);
 }
 

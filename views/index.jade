@@ -150,7 +150,7 @@ body
         for(var i = 0; i < res.length; i++){
           appendclearance(res[i].itemname, res[i].itempic, res[i].price, res[i].newprice, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i);
         }
-        var heighta = $(".imgdconiv").height()+$(".clearancePrice").height()+$(".clearanceId").height()+$(".clearanceName").height();
+        var heighta = $(".imgdiv").height()+$(".clearancePrice").height()+$(".clearanceId").height()+$(".clearanceName").height();
         $(".clearanceReel").css({"height":heighta});
         $(".clearanceReel button").css({"height": heighta});
         arrivalbutton("clearanceReel", "clearance");
