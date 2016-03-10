@@ -102,14 +102,15 @@ $.ajax({
                 $(".parent").append($option);
             }
         }
-        if($(".newItemCat")){
+        if($(".newItemCat").length > 0){
+            console.log(1);
             for(var i = 0; i < childrenCat.length; i++){
                 var $option = $("<option>").val(JSON.stringify({numb: childrenCat[i].numb,name: childrenCat[i].name})).text(childrenCat[i].name);
                 $(".newItemCat").append($option);
             }
             $(".changeCat").removeClass("newItemCat");
         }
-        if($(".modClass")){
+        if($(".modClass").length > 0){
             for(var i = 0; i < parentCat.length; i++){
                 var $option = $("<option>").val(parentCat[i].name).text(parentCat[i].name);
                 $(".modClass").append($option)
@@ -181,11 +182,88 @@ $.ajax({
                 }
             });
         }
-        // for(var i = 0; i< res.length; i++){
-        //     appendp(res[i].catname,res[i].catnumb);
-        // }
+        
+        if($(".deleteClass").length > 0){
+            for(var i = 0; i < parentCat.length; i++){
+                var $option = $("<option>").val(parentCat[i].name).text(parentCat[i].name);
+                if(parentCat[i].children || parentCat[i].children == ''){
+                    
+                }else{
+                    $(".deleteClass").append($option)
+                }
+            }
+            $(".PorC").on("change",function(){
+                if($(".PorC").val() == 'child'){
+                    $(".deleteClass").empty();
+                    for(var j = 0; j < childrenCat.length; j++){
+                        var $option = $("<option>").val(JSON.stringify({numb: childrenCat[j].numb,name: childrenCat[j].name})).text(childrenCat[j].name);
+                        $(".deleteClass").append($option);
+                    }
+                }
+                if($(".PorC").val() == 'parent'){
+                    $(".deleteClass").empty();
+                    for(var j = 0; j < parentCat.length; j++){
+                        var $option = $("<option>").val(parentCat[j].name).text(parentCat[j].name);
+                        if(parentCat[j].children || parentCat[j].children == ''){
+                            
+                        }else{
+                            $(".deleteClass").append($option);
+                        }
+                    }
+                }
+                if($(".PorC").val() == 'child'){
+                    $(".newCatName").val(JSON.parse($(".deleteClass").val()).name);
+                    oldCat.name = JSON.parse($(".deleteClass").val()).name;
+                    oldCat.numb = JSON.parse($(".deleteClass").val()).numb;
+                    for(var j = 0; j < childrenCat.length; j++){
+                        if(childrenCat[j].numb == JSON.parse($(".deleteClass").val()).numb){
+                            $(".newCatDesc").val(childrenCat[j].desc);
+                            var element = document.getElementById("whichParent");
+                            element.value = childrenCat[j].parent;
+                        }
+                    }
+                }
+                if($(".PorC").val() == 'parent'){
+                    $(".newCatName").val($(".deleteClass").val());
+                    oldCat.name = $(".deleteClass").val();
+                    for(var j = 0; j < parentCat.length; j++){
+                        if(parentCat[j].name == $(".deleteClass").val()){
+                            $(".newCatDesc").val(parentCat[j].desc);
+                            var element = document.getElementById("whichParent");
+                            element.value = parentCat[j].parent;
+                        }
+                    }
+                }
+                
+            });
+            // $(".deleteClass").on("change",function(){
+            //     if($(".PorC").val() == 'child'){
+            //         $(".newCatName").val(JSON.parse($(".deleteClass").val()).name);
+            //         oldCat.name = JSON.parse($(".deleteClass").val()).name;
+            //         oldCat.numb = JSON.parse($(".deleteClass").val()).numb;
+            //         for(var j = 0; j < childrenCat.length; j++){
+            //             if(childrenCat[j].numb == JSON.parse($(".deleteClass").val()).numb){
+            //                 $(".newCatDesc").val(childrenCat[j].desc);
+            //                 var element = document.getElementById("whichParent");
+            //                 element.value = childrenCat[j].parent;
+            //             }
+            //         }
+            //     }
+            //     if($(".PorC").val() == 'parent'){
+            //         $(".newCatName").val($(".deleteClass").val());
+            //         oldCat.name = $(".deleteClass").val();
+            //         oldCat.numb = 0;
+            //         for(var j = 0; j < parentCat.length; j++){
+            //             if(parentCat[j].name == $(".deleteClass").val()){
+            //                 $(".newCatDesc").val(parentCat[j].desc);
+            //                 var element = document.getElementById("whichParent");
+            //                 element.value = parentCat[j].parent;
+            //             }
+            //         }
+            //     }
+            // });
+        }
         catClick(parentCat);
-        // console.log(parentCat);
     }
 })
 function appendmain(name){

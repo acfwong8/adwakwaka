@@ -335,7 +335,7 @@ app.post('/new/category/success',function(req,res,next){
     console.log(catData);
     if(catData.catParent == ""){
         catData.depth = 0;
-        db.none('INSERT into parentcat("catname","catdesc","hasparent","depth") values(${catName},${catDesc},${catParent},${depth})',catData)
+        db.none('INSERT into parentcat("catname","catdesc","hasparent","depth","children") values(${catName},${catDesc},${catParent},${depth},"")',catData)
             .then(function(){
                 console.log('logged '+ catData);
                 res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
@@ -361,7 +361,7 @@ app.post('/new/category/success',function(req,res,next){
                 db.none('UPDATE parentcat SET children = ${newChildren} where catname = ${catParent}',catData)
                     .then(function(){
                         console.log('updated parent')
-                        db.none('INSERT into parentcat("catname","catdesc","hasparent","depth") values(${catName},${catDesc},${catParent},${depth})',catData)
+                        db.none('INSERT into parentcat("catname","catdesc","hasparent","depth","children") values(${catName},${catDesc},${catParent},${depth},"")',catData)
                             .then(function(){
                                 console.log('logged '+ catData);
                                 res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
@@ -723,7 +723,123 @@ app.post('/user/modify/category/success',function(req,res,next){
     }
     res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
     current.setCurrentAuth(timestamps[0]);
-})
+});
+
+//remove things
+
+app.get('/user/remove',function(req,res,next){
+    res.render('remove',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+
+app.get('/user/remove/category',function(req,res,next){
+    res.render('removeCat',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+app.post('/user/remove/category/success',function(req,res,next){
+    var catDelete = req.body;
+    console.log("catDelete");
+    console.log(catDelete);
+    if(catDelete.PorC == 'child'){
+        var cat = JSON.parse(catDelete.catName);
+        db.one("SELECT * from categoriesmain where catnumb = ${numb}",cat)
+            .then(function(response){
+                cat.parent = response.subcat;
+                cat.namenumb = response.namenumb;
+                db.many("SELECT * from parentcat where catname = ${parent}",cat)
+                    .then(function(resp){
+                        for(var i = 0; i < resp.length; i++){
+                            cat.children = resp[i].children;
+                            var children = resp[i].children.split(';');
+                            var index = children.indexOf(cat.namenumb);
+                            db.none("DELETE from categoriesmain where namenumb = ${namenumb}",cat)
+                                .then(function(){
+                                    if(index == 0 && children.length <= 2){
+                                        db.none("UPDATE parentcat set children = '' where children = ${children}",cat)
+                                            .then(function(){
+                                                res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+                                            })
+                                            .catch(function(er){
+                                                console.log("failed updating old children on parent: "+er);
+                                            });
+                                    } else if(index >= 0){
+                                        console.log(children);
+                                        children.splice(index,1);
+                                        console.log(children);
+                                        cat.newChildren = children.join(';');
+                                        console.log(cat.newChildren);
+                                        db.none("UPDATE parentcat set children = ${newChildren} where children = ${children}",cat)
+                                            .then(function(){
+                                                res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+                                            })
+                                            .catch(function(er){
+                                                console.log("failed updating old children on parent: "+er);
+                                            });
+                                    }
+                                })
+                                .catch(function(error){
+                                    console.log("failed deleting from categoriesmain: "+error);
+                                });
+                        }
+                    })
+                    .catch(function(erro){
+                        console.log('failed fetching parent of cat to update: '+erro);
+                    });
+            })
+            .catch(function(err){
+                console.log("failed fetching child cat to delete: "+err);
+            });
+    } else if (catDelete.PorC == 'parent'){
+        var cat = catDelete;
+        cat.name = catDelete.catName;
+        db.many("SELECT * from parentcat where catname = ${name}",cat)
+            .then(function(response){
+                cat.parent = response[0].hasparent;
+                console.log(cat);
+                db.many("SELECT * from parentcat where catname = ${parent}",cat)
+                    .then(function(resp){
+                        for(var i = 0; i < resp.length; i++){
+                            cat.children = resp[i].children;
+                            var children = resp[i].children.split(';');
+                            var index = children.indexOf(cat.name);
+                            console.log(index);
+                            db.none("DELETE from parentcat where catname = ${name} and children is null or children = ''",cat)
+                                .then(function(){
+                                    if(index == 0 && children.length <= 2){
+                                        db.none("UPDATE parentcat set children = '' where children = ${children}",cat)
+                                            .then(function(){
+                                                res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+                                            })
+                                            .catch(function(er){
+                                                console.log("failed updating old children on parent: "+er);
+                                            });
+                                    } else if(index >= 0){
+                                        console.log(children);
+                                        children.splice(index,1);
+                                        console.log(children);
+                                        cat.newChildren = children.join(';');
+                                        console.log(cat.newChildren);
+                                        db.none("UPDATE parentcat set children = ${newChildren} where children = ${children}",cat)
+                                            .then(function(){
+                                                res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+                                            })
+                                            .catch(function(er){
+                                                console.log("failed updating old children on parent: "+er);
+                                            });
+                                    }
+                                })
+                                .catch(function(erro){
+                                    console.log("failed deleting from parentcat: "+ erro);
+                                });
+                        }
+                    })
+                    .catch(function(error){
+                        console.log("failed retrieving parent for deleting parent: "+error);
+                    });
+            })
+            .catch(function(err){
+                console.log("failed selecting parentcat for deleting: "+ err);
+            });
+    }
+});
 
 // modifying item
 
