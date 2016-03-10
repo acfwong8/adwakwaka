@@ -538,6 +538,10 @@ h3 {
     font-family:'News Cycle',sans-serif;
 }
 
+.newspace input[type=submit]{
+    margin: 20px 0 20px 0;
+}
+
 /* editing tab areas*/
 
 .tabeditspace{
