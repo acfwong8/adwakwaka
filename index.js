@@ -335,7 +335,7 @@ app.post('/new/category/success',function(req,res,next){
     console.log(catData);
     if(catData.catParent == ""){
         catData.depth = 0;
-        db.none('INSERT into parentcat("catname","catdesc","hasparent","depth","children") values(${catName},${catDesc},${catParent},${depth},"")',catData)
+        db.none("INSERT into parentcat(catname,catdesc,hasparent,depth,children) values(${catName},${catDesc},${catParent},${depth},'')",catData)
             .then(function(){
                 console.log('logged '+ catData);
                 res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
@@ -361,7 +361,7 @@ app.post('/new/category/success',function(req,res,next){
                 db.none('UPDATE parentcat SET children = ${newChildren} where catname = ${catParent}',catData)
                     .then(function(){
                         console.log('updated parent')
-                        db.none('INSERT into parentcat("catname","catdesc","hasparent","depth","children") values(${catName},${catDesc},${catParent},${depth},"")',catData)
+                        db.none("INSERT into parentcat(catname,catdesc,hasparent,depth,children) values(${catName},${catDesc},${catParent},${depth},'')",catData)
                             .then(function(){
                                 console.log('logged '+ catData);
                                 res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
@@ -793,51 +793,62 @@ app.post('/user/remove/category/success',function(req,res,next){
         db.many("SELECT * from parentcat where catname = ${name}",cat)
             .then(function(response){
                 cat.parent = response[0].hasparent;
+                cat.depth = response[0].depth;
                 console.log(cat);
-                db.many("SELECT * from parentcat where catname = ${parent}",cat)
-                    .then(function(resp){
-                        for(var i = 0; i < resp.length; i++){
-                            cat.children = resp[i].children;
-                            var children = resp[i].children.split(';');
-                            var index = children.indexOf(cat.name);
-                            console.log(index);
-                            db.none("DELETE from parentcat where catname = ${name} and children is null or children = ''",cat)
-                                .then(function(){
-                                    if(index == 0 && children.length <= 2){
-                                        db.none("UPDATE parentcat set children = '' where children = ${children}",cat)
-                                            .then(function(){
-                                                res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
-                                            })
-                                            .catch(function(er){
-                                                console.log("failed updating old children on parent: "+er);
-                                            });
-                                    } else if(index >= 0){
-                                        console.log(children);
-                                        children.splice(index,1);
-                                        console.log(children);
-                                        cat.newChildren = children.join(';');
-                                        console.log(cat.newChildren);
-                                        db.none("UPDATE parentcat set children = ${newChildren} where children = ${children}",cat)
-                                            .then(function(){
-                                                res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
-                                            })
-                                            .catch(function(er){
-                                                console.log("failed updating old children on parent: "+er);
-                                            });
-                                    }
-                                })
-                                .catch(function(erro){
-                                    console.log("failed deleting from parentcat: "+ erro);
-                                });
-                        }
-                    })
-                    .catch(function(error){
-                        console.log("failed retrieving parent for deleting parent: "+error);
-                    });
+                if(cat.parent !== '' && cat.parent !== null){
+                    db.many("SELECT * from parentcat where catname = ${parent}",cat)
+                        .then(function(resp){
+                            for(var i = 0; i < resp.length; i++){
+                                cat.children = resp[i].children;
+                                var children = resp[i].children.split(';');
+                                var index = children.indexOf(cat.name);
+                                console.log(index);
+                                db.none("DELETE from parentcat where catname = ${name} and children is null or children = ''",cat)
+                                    .then(function(){
+                                        if(index == 0 && children.length <= 2){
+                                            db.none("UPDATE parentcat set children = '' where children = ${children}",cat)
+                                                .then(function(){
+                                                    res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+                                                })
+                                                .catch(function(er){
+                                                    console.log("failed updating old children on parent: "+er);
+                                                });
+                                        } else if(index >= 0){
+                                            console.log(children);
+                                            children.splice(index,1);
+                                            console.log(children);
+                                            cat.newChildren = children.join(';');
+                                            console.log(cat.newChildren);
+                                            db.none("UPDATE parentcat set children = ${newChildren} where children = ${children}",cat)
+                                                .then(function(){
+                                                    res.render("logged",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+                                                })
+                                                .catch(function(er){
+                                                    console.log("failed updating old children on parent: "+er);
+                                                });
+                                        }
+                                    })
+                                    .catch(function(erro){
+                                        console.log("failed deleting from parentcat: "+ erro);
+                                    });
+                            }
+                        })
+                        .catch(function(error){
+                            console.log("failed retrieving parent for deleting parent: "+error);
+                        });
+                } else {
+                    db.none("DELETE from parentcat where catname = ${name} and depth = ${depth}",cat)
+                        .then(function(){
+                            
+                        })
+                        .catch(function(error){
+                            console.log("Failed deleting depth 0 cat: "+error);
+                        });
+                }
             })
             .catch(function(err){
                 console.log("failed selecting parentcat for deleting: "+ err);
-            });
+            });             
     }
 });
 
