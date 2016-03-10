@@ -1,0 +1,102 @@
+link(rel="stylesheet",href="/style.css")
+link(rel="stylesheet",href="/clearfix.css")
+
+body
+  header(class="cf")
+    div(class="logo")
+      // a(href="/")
+        // img(src="../../uploads/staticpics/logo.png")
+
+    p(class="login")
+      
+    div(class="toolbar")
+      ul
+        li
+          a(href="/") Home
+        li
+          a(href="/business") Our business
+        li
+          a(href="/contact") Contact
+        li
+          a(href="/support") RMA/Support
+
+  section(class="sidebar")
+  
+  section(class="main")
+    h1 Remove existing Category
+
+    div(class="newspace")
+
+      form(class="newCat",enctype="multipart/form-data")
+        div
+          p Remove parent or child (Parent categories must be empty in order to be deleted.)
+          select(class="PorC")
+            option(value="parent") Parent
+            option(value="child") Child
+        div
+          p Select category to Remove
+          select(class="deleteClass")
+      
+        input(type="submit",value="Remove Category",name="submit")
+
+        div(class="completion")
+          p  Hit delete to remove
+
+    a(href="/../user") Go back
+
+  script(src='/jquery-1.11.3.js')
+  script(src='/config.js')
+  script(src="logoStill.js")
+  script.
+    function cred(){
+      var auth = {};
+      return {
+        setCred: function(){
+          auth.user = "#{username}";
+          auth.permissions = "#{permissions}";
+          auth.timestamp = "#{sessionStart}"
+          return auth;
+        },
+        getUser: function(){
+          return auth.user;
+        },
+        getPermissions: function(){
+          return auth.permissions
+        },
+        getTimestamp: function(){
+          return auth.timestamp;
+        }
+      }
+    }
+    var creds = cred();
+    creds.setCred();
+    
+  script(src='/build.js')
+  script(src='/categories.js')
+  script.
+    for(var i = 0; i < parentCat.length; i++){
+      var $option = $("<option>").val(parentCat[i].name).text(parentCat[i].name);
+      $(".parent").append($option);
+      console.log(1);
+    }
+    var catItem = {};
+    $('.newCat').on('submit',function(e){
+      var catName = $('.deleteClass').val();
+      var PorC = $('.PorC').val();
+      catItem.catName = catName;
+      catItem.PorC = PorC;
+      $.ajax({
+        type:'POST',
+        data:JSON.stringify(catItem),
+        contentType: 'application/json',
+        url:'http://'+serverIP+'/user/remove/category/success',
+        success: function(res){
+          console.log('success');
+          var $p = $("<p>").text("Categories updated!");
+          $(".completion").append($p);
+          document.location.reload(true);
+        }
+      })
+
+    });
+  script(src='/close.js')
