@@ -15,7 +15,6 @@ var upload = multer({ storage : storage}).single('itemPic');
 var uploadTab = multer({ storage : storage}).single('tabPic');
 var uploadHome = multer ({ storage : storage}).single('homePic');
 var nodemailer = require('nodemailer');
-// var transporter = nodemailer.createTransport()
 var path = require('path');
 var bodyParser = require('body-parser');
 var passport = require('passport');
@@ -88,6 +87,18 @@ app.set('view engine','jade');
 
 app.use(express.static(path.join(__dirname,'public')));
 
+var rmaEmail = {};
+var smtpConfig = {
+    host:'mail.mantronic.com',
+    port:1025,
+    secure: false,
+    auth: {
+        user:'',
+        password:''
+    }
+}
+
+var transporter = nodemailer.createTransport(smtpConfig);
 
 var auth = {};
 var timestamps = [{user:'',permissions:''}];
@@ -122,6 +133,8 @@ app.use(function(req,res,next){
                 next();
             })
             .catch(function(err){
+                res.clearCookie('user');
+                res.redirect('/');
                 console.log('failed fetching login from db: '+err);
             });
     } else {
@@ -1231,10 +1244,28 @@ app.get('/getitem/:itemid',function(req,res,next){
 
 // RMA Support
 
+app.use('/support',function(req,res,next){
+    console.log(1);
+    db.many("SELECT * from emails where name = 'rma'")
+        .then(function(response){
+            rmaEmail.email = response[0].email;
+            rmaEmail.password = response[0].mailpass;
+            console.log(rmaEmail);
+            smtpConfig.auth.user = rmaEmail.email;
+            smtpConfig.auth.password = rmaEmail.password;
+            console.log(smtpConfig);
+            next();
+        })
+        .catch(function(err){
+            console.log("failed retrieving rma email info: "+err);
+            res.redirect('/');
+        });
+});
+
 app.get('/support',function(req,res,next){
     res.render('rmapage',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
     current.setCurrentAuth(timestamps[0]);
-})
+});
 
 app.post('/support/submit',function(req,res,next){
     console.log(req.body);
@@ -1257,6 +1288,19 @@ app.post('/support/submit',function(req,res,next){
     var invDate = rmaVar.invYear + dash + rmaVar.invMonth + dash + rmaVar.invDay;
     rmaVar.invDate = invDate;
     rmaVar.defaultstatus = "pending";
+    var mail = {
+        from:persVar.email,
+        to:rmaEmail.email,
+        subject:'rma test',
+        text:'this is an rma test',
+        html:'<p>some test<p>'
+    }
+    transporter.sendMail(mail,function(error,info){
+        if(error){
+            return console.log(error);
+        }
+        console.log('email sent: '+info.response);
+    });
     db.one('SELECT max(supportticket) from ticket')
         .then(function(response){
             currentTicket = Math.max(100,response.max);
