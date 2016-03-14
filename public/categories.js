@@ -48,13 +48,15 @@ $.ajax({
             parent.parent = res.parents[i].hasparent;
             parent.desc = res.parents[i].catdesc;
             if(res.parents[i].children){
-                var childArray = res.parents[i].children.replace(/\s/g,'');
-                parent.children = childArray.split(";");
-                parent.children.sort(function(a,b){
+                var childArray = res.parents[i].children
+                parent.sortChildren = childArray.split(";");
+                parent.sortChildren.sort(function(a,b){
                     var textA = a.toUpperCase();
                     var textB = b.toUpperCase();
                     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                 });
+                var joined = parent.sortChildren.join(';').replace(/\s/g,'');
+                parent.children = joined.split(';');
                 var children = [];
                 for(var j = 0; j < parent.children.length; j++){
                     var child = parent.children[j];
