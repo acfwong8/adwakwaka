@@ -56,20 +56,22 @@ $.ajax({
                     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                 });
                 var joined = parent.sortChildren.join(';').replace(/\s/g,'');
+                console.log(joined);
                 parent.children = joined.split(';');
-                var children = [];
-                for(var j = 0; j < parent.children.length; j++){
-                    var child = parent.children[j];
-                    for(var k = 0; k < childrenCat.length; k++){
-                        if(childrenCat[k].name + childrenCat[k].numb == child){
-                            children.push(child);
-                            parent.children.splice(j,1);
-                        }
-                    }
-                }
-                for(var j = 0; j < children.length; j++) {
-                    parent.children.push(children[j]);
-                }
+                console.log(parent.children);
+                // var children = [];
+                // for(var j = 0; j < parent.children.length; j++){
+                //     var child = parent.children[j];
+                //     for(var k = 0; k < childrenCat.length; k++){
+                //         if(childrenCat[k].name + childrenCat[k].numb == child){
+                //             children.push(child);
+                //             parent.children.splice(j,1);
+                //         }
+                //     }
+                // }
+                // for(var j = 0; j < children.length; j++) {
+                //     parent.children.push(children[j]);
+                // }
             }
             parentCat.push(parent);
             if(parent.depth == 0){
@@ -238,32 +240,6 @@ $.ajax({
                 }
                 
             });
-            // $(".deleteClass").on("change",function(){
-            //     if($(".PorC").val() == 'child'){
-            //         $(".newCatName").val(JSON.parse($(".deleteClass").val()).name);
-            //         oldCat.name = JSON.parse($(".deleteClass").val()).name;
-            //         oldCat.numb = JSON.parse($(".deleteClass").val()).numb;
-            //         for(var j = 0; j < childrenCat.length; j++){
-            //             if(childrenCat[j].numb == JSON.parse($(".deleteClass").val()).numb){
-            //                 $(".newCatDesc").val(childrenCat[j].desc);
-            //                 var element = document.getElementById("whichParent");
-            //                 element.value = childrenCat[j].parent;
-            //             }
-            //         }
-            //     }
-            //     if($(".PorC").val() == 'parent'){
-            //         $(".newCatName").val($(".deleteClass").val());
-            //         oldCat.name = $(".deleteClass").val();
-            //         oldCat.numb = 0;
-            //         for(var j = 0; j < parentCat.length; j++){
-            //             if(parentCat[j].name == $(".deleteClass").val()){
-            //                 $(".newCatDesc").val(parentCat[j].desc);
-            //                 var element = document.getElementById("whichParent");
-            //                 element.value = parentCat[j].parent;
-            //             }
-            //         }
-            //     }
-            // });
         }
         catClick(parentCat);
     }
@@ -345,11 +321,12 @@ function catClick(catArray){
             var aName = "cat"+catArray[i].name.replace(/\s/g,'').replace('(','%28').replace(')','%29');
             if(name == aName){
                 var child = catArray[i].children;
-                child.sort(function(a,b){
-                    var textA = a.toUpperCase();
-                    var textB = b.toUpperCase();
-                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-                });
+                console.log(child);
+                // child.sort(function(a,b){
+                //     var textA = a.toUpperCase();
+                //     var textB = b.toUpperCase();
+                //     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                // });
                 for(var j = 1; j < catArray[i].children.length; j++){
                     // console.log(child[j],j);
                     if($("#catp"+child[j]).hasClass("hidden")){
