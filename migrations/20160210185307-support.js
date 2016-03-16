@@ -8,6 +8,8 @@ exports.up = function(db, callback) {
         company:'varchar(80)',
         date:'varchar(80)',
         email:'varchar(80)',
+        number:'text',
+        postal:'text',
         salesrep:'varchar(80)',
         addressstreet:'varchar(120)',
         addresscity:'varchar(40)',

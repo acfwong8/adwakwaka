@@ -511,11 +511,21 @@ h3 {
     font-family:'News Cycle',sans-serif;
 }
 
+.personal {
+    float:left;
+    margin-right:20px;
+    margin-top:20px;
+}
+
 .addressblock {
     margin-top:20px;
     margin-right: 20px;
     float:left;
     text-align:left;
+}
+
+.addressdetails{
+    margin-bottom:20px;
 }
 
 .details div{

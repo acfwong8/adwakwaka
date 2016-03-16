@@ -22,7 +22,8 @@
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "pg": "^4.4.3",
-    "pg-promise": "^2.8.5"
+    "pg-promise": "^2.8.5",
+    "xoauth2": "^1.1.0"
   },
   "devDependencies": {},
   "description": ""

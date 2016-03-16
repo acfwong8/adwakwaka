@@ -31,27 +31,36 @@ body
       h2 RMA Request Application
       div(class="rmaDetails")
       p Please fill in the form, and we will contact you shortly for confirmation. Thank you!
-      form
+      form(class="rmafields",enctype="multipart/form-data")
         div(class="personaldetails cf")
           div(class="personal cf")
             p Your Name
             input(type="text",name="name",class="clientname")
+          div(class="personal")
             p Company
             input(type="text",name="company",class="companyname")
+          div(class="personal")
             p Email
             input(type="text",name="email",class="email")
+          div(class="personal")
+            p Phone Number
+            input(type="text",name="phone",class="phone")
+        div(class="addressdetails cf")
           div(class="addressblock")
             p Street Address
             input(type="text",name="street",class="street")
           div(class="addressblock")
             p City
             input(type="text",name="city",class="city")
-          div(class="addressblock cf")
+          div(class="addressblock")
             p Province
             input(type="text",name="province",class="province")
+          div(class="addressblock")
+            p Postal Code
+            input(type="text",name="postalcode",class="postalcode")
         div(class="rmaform")
         div(class="buttons")
-          button(class="submitform",type="button") Submit
+          input(type="submit",value="submit",name="submitfields")
           button(class="submitanother",type="button") Submit and Add Another
 
 
@@ -118,6 +127,9 @@ body
     function appendForm(){
       var $itemName = $("<input>").attr("type","text").attr("class","itemName" + ent);
       var $pName = $("<p>").text("Name of Item");
+
+      var $itemCode = $("<input>").attr("type","text").attr("class","itemCode"+ent);
+      var $pCode = $("<p>").text("Item Code");
       
       var $serialNumber = $("<input>").attr("type","text").attr("class","serialNumber" + ent);
       var $pSerialNumber = $("<p>").text("Serial Number");
@@ -125,7 +137,7 @@ body
       var $invoiceNumber = $("<input>").attr("type","text").attr("class","invoiceNumber" + ent);
       var $pInvoiceNumber = $("<p>").text("Invoice Number");
 
-      var $quantity = $("<input>").attr("type","text").attr("class","quantity" + ent);
+      var $quantity = $("<input>").attr("type","number").attr("class","quantity" + ent).val(0);
       var $pQuantity = $("<p>").text("Qty");
       
       var $invoiceMonth = $("<select>").attr("class","invoiceMonth" + ent);
@@ -155,6 +167,9 @@ body
       
       var $namediv = $("<div>").attr("class","namediv");
       $namediv.append($pName,$itemName);
+
+      var $codediv = $("<div>").attr("class","codediv");
+      $codediv.append($pCode,$itemCode);
       
       var $numberdiv = $("<div>").attr("class","numberdiv");
       $numberdiv.append($pSerialNumber,$serialNumber);
@@ -181,7 +196,7 @@ body
 
 
       
-      $details.append($namediv,$numberdiv,$invoicenodiv,$quantitydiv,$monthdiv,$daydiv,$yeardiv);
+      $details.append($namediv,$codediv,$numberdiv,$invoicenodiv,$quantitydiv,$monthdiv,$daydiv,$yeardiv);
       $(".rmaform").append($details,$descdiv);
     };
     
@@ -197,8 +212,11 @@ body
       personal.street = $(".street").val();
       personal.city = $(".city").val();
       personal.prov = $(".province").val();
+      personal.postal = $(".postalcode").val();
+      personal.phone = $(".phone").val();
 
       rma.item = $(".itemName" + ent).val();
+      rma.code = $(".itemCode"+ent).val();
       rma.number = $(".serialNumber" + ent).val();
       rma.invoice = $(".invoiceNumber" + ent).val();
       rma.invDay = $(".invoiceDay" + ent).val();
@@ -223,7 +241,7 @@ body
       })
 
     };
-    $(".submitform").on("click",function(){
+    $(".rmafields").on("submit",function(){
       var store = storeData();
     });
 

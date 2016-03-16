@@ -15,6 +15,7 @@ var upload = multer({ storage : storage}).single('itemPic');
 var uploadTab = multer({ storage : storage}).single('tabPic');
 var uploadHome = multer ({ storage : storage}).single('homePic');
 var nodemailer = require('nodemailer');
+var xoauth2 = require('xoauth2');
 var path = require('path');
 var bodyParser = require('body-parser');
 var passport = require('passport');
@@ -86,18 +87,19 @@ app.set('index',path.join(__dirname,'views'));
 app.set('view engine','jade');
 
 app.use(express.static(path.join(__dirname,'public')));
-
+// generator.on('token',function(token){
+//     console.log('new token: ',token.user,token.accessToken);
+// });
 var rmaEmail = {};
-var smtpConfig = {
-    host:'mail.mantronic.com',
-    port:1025,
-    secure: false,
-    auth: {
-        user:'',
-        password:''
-    }
-}
+// var smtpConfig = {
+//     service: 'gmail',
+//     auth: {
+//         user:'acfwong10@gmail.com',
+//         password:'shithole'
+//     }
+// }
 
+var smtpConfig = 'smtps://'+rmaEmail.email+':'+rmaEmail.password+'@smtp.gmail.com'
 var transporter = nodemailer.createTransport(smtpConfig);
 
 var auth = {};
@@ -1246,14 +1248,14 @@ app.get('/getitem/:itemid',function(req,res,next){
 
 app.use('/support',function(req,res,next){
     console.log(1);
-    db.many("SELECT * from emails where name = 'rma'")
+    db.many("SELECT * from emails where name = 'angus'")
         .then(function(response){
-            rmaEmail.email = response[0].email;
+            rmaEmail.email = response[0].email.replace('@','%40');
             rmaEmail.password = response[0].mailpass;
             console.log(rmaEmail);
-            smtpConfig.auth.user = rmaEmail.email;
-            smtpConfig.auth.password = rmaEmail.password;
-            console.log(smtpConfig);
+            smtpConfig = 'smtps://'+rmaEmail.email+':'+rmaEmail.password+'@smtp.gmail.com'
+            transporter = nodemailer.createTransport(smtpConfig);
+            // smtpConfig = 'smtps://acfwong10%40gmail.com:shithole@smtp.gmail.com'
             next();
         })
         .catch(function(err){
@@ -1288,32 +1290,37 @@ app.post('/support/submit',function(req,res,next){
     var invDate = rmaVar.invYear + dash + rmaVar.invMonth + dash + rmaVar.invDay;
     rmaVar.invDate = invDate;
     rmaVar.defaultstatus = "pending";
-    var mail = {
-        from:persVar.email,
-        to:rmaEmail.email,
-        subject:'rma test',
-        text:'this is an rma test',
-        html:'<p>some test<p>'
-    }
-    transporter.sendMail(mail,function(error,info){
-        if(error){
-            return console.log(error);
-        }
-        console.log('email sent: '+info.response);
-    });
+    console.log(rmaVar);
+    console.log(persVar);
+    var mailtext = {}
+    mailtext.rma = rmaVar;
+    mailtext.pers = persVar;
     db.one('SELECT max(supportticket) from ticket')
         .then(function(response){
             currentTicket = Math.max(100,response.max);
             newTicket = currentTicket+1;
             rmaVar.newTicket = newTicket;
             persVar.newTicket = newTicket;
-            db.none('INSERT INTO ticket("supportticket","itemname","serialnumber","invoicenumber","invoicedate","quantity","rmadesc","status") values(${newTicket},${item},${number},${invoice},${invDate},${quantity},${description},${defaultstatus})',rmaVar)
+            db.none('INSERT INTO ticket("supportticket","itemname","itemcode","serialnumber","invoicenumber","invoicedate","quantity","rmadesc","status") values(${newTicket},${item},${code},${number},${invoice},${invDate},${quantity},${description},${defaultstatus})',rmaVar)
                 .then(function(){
                     console.log('logged');
                     console.log(rmaVar);
-                    db.none('INSERT INTO support("name","company","date","email","addressstreet","addresscity","addressprovince","supportticket") values(${name},${company},${date},${email},${street},${city},${prov},${newTicket})',persVar)
+                    db.none('INSERT INTO support("name","company","date","email","addressstreet","addresscity","addressprovince","supportticket","postal","number") values(${name},${company},${date},${email},${street},${city},${prov},${newTicket},${postal},${phone})',persVar)
                         .then(function(){
                             console.log('logged');
+                            var mail = {
+                                from:persVar.email,
+                                to:'rma@mantronic.com',
+                                subject:'rma test',
+                                html:'<p>RMA request sent from: '+persVar.name+' ('+persVar.email+') of '+persVar.company+'</p><p>Contact Number: '+persVar.phone+'</p><p>Address: '+persVar.street+', '+persVar.city+', '+persVar.prov+', '+persVar.postal+'</p><p>Sent at: '+persVar.date+'</p><p>Item Name: '+rmaVar.item+'</p><p>Item Code: '+rmaVar.code+'</p><p>Serial Number: '+rmaVar.number+'</p><p>Quantity: '+rmaVar.quantity+'</p><p>Invoice Number: '+rmaVar.invoice+'</p><p>Invoice Date: '+invDate+'</p><p>Reason for RMA: '+rmaVar.description+'</p><p>Ticket Number: '+rmaVar.newTicket+'</p>'
+                            }
+                            transporter.sendMail(mail,function(error,info){
+                                if(error){
+                                    return console.log(error);
+                                }
+                                console.log('email sent: '+info.response);
+                            });
+                            res.end();
                             console.log(persVar);
                         })
                         .catch(function(err){

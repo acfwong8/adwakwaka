@@ -5,6 +5,7 @@ exports.up = function(db, callback) {
     db.createTable('ticket',{
         supportticket:'real',
         itemname:'varchar(80)',
+        itemcode:'text',
         serialnumber:'varchar(30)',
         invoicenumber:'varchar(30)',
         invoicedate:'varchar(10)',
