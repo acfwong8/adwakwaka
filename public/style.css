@@ -535,11 +535,35 @@ h3 {
 
 /*viewing RMA*/
 
-.rma p {
+.rma{
+    border: 1px solid black;
+    margin-bottom: 1%;
+}
+
+.rmaDetails{
+    height:initial;
+    transition:all 0.25s ease;
+}
+.hideDetails{
+    height:0;
+    overflow:hidden;
+}
+
+.rmaBrief p {
     font-family:'News Cycle',sans-serif;
     float:left;
-    width: 9%;
-    margin:1%;
+    width: 10%;
+    padding:1%;
+    margin:0;
+    text-align:center;
+}
+.rma input {
+    padding:1%;
+    margin:0;
+}
+
+.rmaDetails p{
+    font-family:'News Cycle', sans-serif;
 }
 
 /* creating new*/
