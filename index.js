@@ -1310,7 +1310,7 @@ app.post('/support/submit',function(req,res,next){
                             console.log('logged');
                             var mail = {
                                 from:persVar.email,
-                                to:'acfwong8@gmail.com',
+                                to:'rma@mantronic.com',
                                 subject:'rma test',
                                 html:'<p>RMA request sent from: '+persVar.name+' ('+persVar.email+') of '+persVar.company+'</p><p>Contact Number: '+persVar.phone+'</p><p>Address: '+persVar.street+', '+persVar.city+', '+persVar.prov+', '+persVar.postal+'</p><p>Sent at: '+persVar.date+'</p><p>Item Name: '+rmaVar.item+'</p><p>Item Code: '+rmaVar.code+'</p><p>Serial Number: '+rmaVar.number+'</p><p>Quantity: '+rmaVar.quantity+'</p><p>Invoice Number: '+rmaVar.invoice+'</p><p>Invoice Date: '+invDate+'</p><p>Reason for RMA: '+rmaVar.description+'</p><p>Ticket Number: '+rmaVar.newTicket+'</p>'
                             }
