@@ -1337,6 +1337,17 @@ app.post('/support/submit',function(req,res,next){
         });
 });
 
+app.post('/support/updatestatus',function(req,res,next){
+    var newStatus = req.body;
+    db.none("UPDATE ticket set status = ${status} where supportticket = ${ticket}",newStatus)
+        .then(function(){
+            console.log('status changed'+newStatus.ticket+" "+newStatus.status);
+        })
+        .catch(function(err){
+            console.log('failed updating status of rma: '+err);
+        });
+});
+
 app.get('/support/gettickets', function(req,res,next){
     var data = {};
     db.many('SELECT * from ticket')

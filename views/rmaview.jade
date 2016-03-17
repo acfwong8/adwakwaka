@@ -87,6 +87,24 @@ body
       success:function(res){
         console.log(res);
         for(var i = 0; i < res.ticket.length; i++){
+          res.ticket.sort(function(a,b){
+            if(a.supportticket > b.supportticket){
+              return 1;
+            }
+            if(a.supportticket < b.supportticket){
+              return -1;
+            }
+            return 0;
+          });
+          res.personal.sort(function(a,b){
+            if(a.supportticket > b.supportticket){
+              return 1;
+            }
+            if(a.supporttickt < b.supportticket){
+              return -1;
+            }
+            return 0;
+          });
           var t = res.ticket[i];
           var n = 0;
           for(var j = 0; j < res.personal.length; j++){
@@ -116,19 +134,42 @@ body
       var $pqty = $("<p>").text(quantity);
       var $pdesc = $("<p>").text(desc);
       if(creds.getPermissions() == "superuser" || creds.getPermissions() == "support"){
-        var $status = $("<input>").attr("class","status").val(stat);
+        var $status = $("<input>").attr("class","status"+tnumber).val(stat);
         var $details = $("<button>").addClass("details"+tnumber).text("More Details");
-        var $saveStatus = $("<button>").addClass("saveStatus").text("Save Status");
+        var $saveStatus = $("<button>").addClass("saveStatus"+tnumber).text("Save Status");
         $divBrief.append($pticket,$pdate,$pname,$pserial,$pinvoice,$pidate,$pqty,$pdesc,$status,$details,$saveStatus);
         var $divDetail = $("<div>").addClass("rmaDetails"+ tnumber+" rmaDetails cf hideDetails");
         var $aEmail = $("<a>").attr("href","mailto:"+personal.email).text(personal.email);
         var $spanClose = $("<span>").text(")")
         var $pPerson = $("<p>").text("Request from: "+personal.name + " (").append($aEmail,$spanClose);
-        $divDetail.append($pPerson);
+        var $pCompany = $("<p>").text("Company: "+ personal.company);
+        var $pAddress = $("<p>").text("Company Address: "+personal.addressstreet+", "+personal.addresscity+", "+personal.addressprovince+", "+personal.postal);
+        $divDetail.append($pPerson,$pCompany,$pAddress);
         $div.append($divBrief,$divDetail);
         $(".rmaview").append($div);
         $(".details"+tnumber).on("click",function(){
-          $(".rmaDetails"+tnumber).removeClass("hideDetails");
+          if($(".rmaDetails"+tnumber).hasClass("hideDetails")){
+            $(".rmaDetails"+tnumber).removeClass("hideDetails");
+            $(".details"+tnumber).text("Less Details");
+          } else {
+            $(".rmaDetails"+tnumber).addClass("hideDetails");
+            $(".details"+tnumber).text("More Details");
+          }
+        });
+        $(".saveStatus"+tnumber).on("click",function(){
+          var current = {};
+          current.status = $(".status"+tnumber).val();
+          current.ticket = tnumber;
+          $.ajax({
+            type:"POST",
+            dataType:"application/json",
+            data: current,
+            url:"http://"+serverIP+"/support/updatestatus",
+            success: function(res){
+            }
+          })
+          $(".status"+tnumber).prop("disabled", true);
+          $(".saveStatus"+tnumber).prop("disabled",true);
         });
       } else if (creds.getPermissions() == "client"){
         var $status = $("<p>").attr("class","status").text(stat);
