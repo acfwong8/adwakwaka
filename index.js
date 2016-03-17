@@ -1314,7 +1314,7 @@ app.post('/support/submit',function(req,res,next){
                 .then(function(){
                     console.log('logged');
                     console.log(rmaVar);
-                    db.none('INSERT INTO support("name","company","date","email","addressstreet","addresscity","addressprovince","supportticket","postal","number") values(${name},${company},${date},${email},${street},${city},${prov},${newTicket},${postal},${phone})',persVar)
+                    db.none('INSERT INTO support("username","name","company","date","email","addressstreet","addresscity","addressprovince","supportticket","postal","number") values(${user},${name},${company},${date},${email},${street},${city},${prov},${newTicket},${postal},${phone})',persVar)
                         .then(function(){
                             console.log('logged');
                             var mail = {

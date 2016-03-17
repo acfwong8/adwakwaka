@@ -214,6 +214,11 @@ body
       personal.prov = $(".province").val();
       personal.postal = $(".postalcode").val();
       personal.phone = $(".phone").val();
+      if(creds.getUser() == "" || creds.getUser() == null){
+        personal.user = 'none';
+      } else {
+        personal.user = creds.getUser();
+      }
 
       rma.item = $(".itemName" + ent).val();
       rma.code = $(".itemCode"+ent).val();

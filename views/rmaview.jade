@@ -68,7 +68,6 @@ body
       url:'http://'+serverIP+'/getcategories',
       dataType:'JSON',
       success: function(res){
-        console.log(res);
         for(var i = 0; i < res.length; i++){
           appendp(res[i].catname,res[i].catnumb);
         }
@@ -86,7 +85,6 @@ body
       url:"http://"+serverIP+"/support/gettickets",
       dataType:"JSON",
       success:function(res){
-        console.log(res);
         for(var i = 0; i < res.ticket.length; i++){
           res.ticket.sort(function(a,b){
             if(a.supportticket > b.supportticket){
@@ -109,14 +107,10 @@ body
           var t = res.ticket[i];
           var n = 0;
           for(var j = 0; j < res.personal.length; j++){
-            console.log(res.personal[j].supportticket);
             if(res.personal[j].supportticket == res.ticket[i].supportticket){
               n = j;
-              console.log(n);
             }
           }
-          console.log(res.ticket[i].supportticket);
-          console.log(res.personal[n].supportticket);
           var p = res.personal[n];
           appendrma(t.supportticket,p.date,t.itemname,t.serialnumber,t.invoicenumber,t.invoicedate,t.quantity,t.rmadesc,t.status,p);
         }
@@ -173,9 +167,13 @@ body
           $(".saveStatus"+tnumber).prop("disabled",true);
         });
       } else if (creds.getPermissions() == "client"){
-        var $status = $("<p>").attr("class","status").text(stat);
-        $div.append($pticket,$pdate,$pname,$pserial,$pinvoice,$pidate,$pqty,$pdesc,$status);
-        $(".rmaview").append($div);
+        console.log(personal.username);
+        if(personal.username == creds.getUser()){
+          var $status = $("<p>").attr("class","status").text(stat);
+          var $divBrief = $("<div>").append($pticket,$pdate,$pname,$pserial,$pinvoice,$pidate,$pqty,$pdesc,$status).addClass("rmaBrief"+tnumber+" rmaBrief cf");
+          $div.append($divBrief);
+          $(".rmaview").append($div);
+        }
       }
     }
 
