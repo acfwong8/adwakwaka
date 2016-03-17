@@ -110,9 +110,9 @@ body
         url:"http://"+serverIP+"/getitems/"+cat.numb,
         success: function(res){
           console.log(res);
+          $(".itemList").empty();
           var $firstoption = $("<option>").attr("value","");
           $(".itemList").append($firstoption);
-          $(".itemList").empty();
           for(var i = 0; i < res.length; i++){
             var $option = $("<option>").attr("value",res[i].itemnumb).text(res[i].itemid);
             $(".itemList").append($option);
