@@ -139,7 +139,11 @@ body
           var $img = $("<img>").attr("src","../../uploads/"+res.itempicture1+".jpg");
           $img.css({"width": 200+"px"});
           $(".theItem").append($pId, $pName, $img);
-          $(".submitArrival").removeClass("hiddenForm");
+          if(item == ""){
+            $(".submitArrival").addClass("hiddenForm");
+          } else{
+            $(".submitArrival").removeClass("hiddenForm");
+          }
         }
       });
     });
