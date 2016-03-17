@@ -602,3 +602,16 @@ h3 {
 .rmaDetails p{
     white-space:pre-wrap;
 }
+
+/*footer*/
+
+footer {
+    background:black;
+    color:white;
+    text-align:center;
+}
+
+footer p{
+    white-space:pre-wrap;
+    margin:1% 0 0 0;
+}

@@ -991,7 +991,7 @@ app.get('/user/entries/rmasupport',function(req,res,next){
     res.render('rmaSupport',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 });
 app.get('/user/entries/footer',function(req,res,next){
-    res.render('footer',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+    res.render('footerEdit',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 });
 
 // tab pages
@@ -1018,6 +1018,15 @@ app.get('/getrma',function(req,res,next){
         })
         .catch(function(err){
             console.log("failed fetching rma tab: "+err);
+        });
+});
+app.get('/getfooter',function(req,res,next){
+    db.many("select * from tabs where tabname = 'footer' and tabtext is not null")
+        .then(function(response){
+            res.send(response);
+        })
+        .catch(function(err){
+            console.log('failed fetching footer: '+ err);
         });
 });
 app.get('/contact',function(req,res,next){
