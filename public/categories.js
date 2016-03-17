@@ -56,9 +56,7 @@ $.ajax({
                     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                 });
                 var joined = parent.sortChildren.join(';').replace(/\s/g,'');
-                console.log(joined);
                 parent.children = joined.split(';');
-                console.log(parent.children);
                 // var children = [];
                 // for(var j = 0; j < parent.children.length; j++){
                 //     var child = parent.children[j];
@@ -107,7 +105,6 @@ $.ajax({
             }
         }
         if($(".newItemCat").length > 0){
-            console.log(1);
             for(var i = 0; i < childrenCat.length; i++){
                 var $option = $("<option>").val(JSON.stringify({numb: childrenCat[i].numb,name: childrenCat[i].name})).text(childrenCat[i].name);
                 $(".newItemCat").append($option);
