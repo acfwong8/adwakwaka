@@ -137,6 +137,7 @@ header .toolbar ul{
 }
 
 header .toolbar ul li{
+    list-style-type:none;
     text-decoration:none;
     float:left;
     padding-left:1%;

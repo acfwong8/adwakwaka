@@ -54,10 +54,17 @@ function drawText(){
         drawAnimationOval();
         function drawAnimationOval(){
             ctx.beginPath();
-            ctx.ellipse(xCenter, yCenter, radX, radY, Math.PI/180, posStart, posEnd, false);
-            ctx.strokeStyle = color;
-            ctx.lineWidth = thickness;
-            ctx.stroke();
+            if(typeof ctx.ellipse == 'function'){
+                ctx.ellipse(xCenter, yCenter, radX, radY, Math.PI/180, posStart, posEnd, false);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = thickness;
+                ctx.stroke();
+            } else {
+                ctx.arc(xCenter,yCenter,radY,posStart,posEnd);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = thickness;
+                ctx.stroke();
+            }
         }
         ctx.closePath();
     }

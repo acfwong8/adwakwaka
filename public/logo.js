@@ -80,11 +80,19 @@ function drawText(){
             var end = posStart + (counter/2*(posEnd - posStart))/divider;
             var rad = radY + (counter/2*(radX - radY))/divider;
             if(end <= posEnd){
-                ctx.ellipse(xCenter, yCenter, radX, radY, Math.PI/180, posStart, end, false);
-                ctx.strokeStyle = color;
-                ctx.lineWidth = thickness;
-                ctx.stroke();
-                window.requestAnimationFrame(drawAnimationOval);
+                if (typeof ctx.ellipse == 'function'){
+                    ctx.ellipse(xCenter, yCenter, radX, radY, Math.PI/180, posStart, end);
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = thickness;
+                    ctx.stroke();
+                    window.requestAnimationFrame(drawAnimationOval);
+                } else {
+                    ctx.arc(xCenter,yCenter,radY, posStart,end);
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = thickness;
+                    ctx.stroke();
+                    window.requestAnimationFrame(drawAnimationOval);
+                }
             }
         }
         ctx.closePath();
@@ -123,7 +131,9 @@ function drawText(){
     lines(minX + gap*4 + space*4 + bigGap*6, maxY, minX + gap*4 + space*4 + bigGap*6, maxY - (maxY - minY)/1.5, thick, lineColor);
     lines(minX + gap*4 + space*4 + bigGap*6, maxY - (maxY - minY)/1.5, minX + gap*4 + space*4 + bigGap*7, maxY - (maxY - minY)/1.5, thick, lineColor);
     lines(minX + gap*4 + space*4 + bigGap*6.5, maxY, minX + gap*4 + space*4 + bigGap*6.5, maxY - (maxY - minY)/3, thick, lineColor);
+    console.log(1);
     var RadiusR = minY/3;
+    console.log(2);
     circle(minX + gap*4 + space*4 + bigGap*7, maxY - (maxY - minY)/1.5 + RadiusR, 1.5*Math.PI, 2.5*Math.PI, thick, lineColor, RadiusR);
     lines(minX + gap*4 + space*4 + bigGap*6.5, maxY - (maxY - minY)/3, minX + gap*4 + space*4 + bigGap*7.5, maxY, thick, lineColor);
     lines(minX + gap*4 + space*4 + bigGap*7, maxY - (maxY - minY)/3, minX + gap*4 + space*4 + bigGap*8, maxY, thick, lineColor);
