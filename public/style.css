@@ -643,6 +643,10 @@ h3 {
 .contactusspace{
     font-family:'News Cycle',sans-serif;
 }
+
+.longAddressText{
+    white-space:pre-wrap;
+}
 .repspace p{
     margin:0;
 }
