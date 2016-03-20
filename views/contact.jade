@@ -97,6 +97,7 @@ body
         contact.name = $(".conName"+number).val();
         contact.phone = $(".conPhone"+number).val();
         contact.email = $(".conEmail"+number).val();
+        contact.number = number;
         $.ajax({
           type:"POST",
           dataType:"application/json",
