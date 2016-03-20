@@ -614,6 +614,39 @@ h3 {
     white-space:pre-wrap;
 }
 
+/*contact edit*/
+.contactspace{
+    font-family:'News Cycle',sans-serif;
+}
+.inputContact{
+    margin-top: 10px;
+    margin-bottom:10px;
+}
+/*address edit*/
+.hiddenHeight{
+    height:0;
+    overflow:hidden;
+}
+.addressForm{
+    position:inherit;
+}
+.buttonsDiv{
+    margin-top:10px;
+}
+
+#map {
+    margin-top:20px;
+    height:30vh;
+    width:50%;
+}
+/*contact space*/
+.contactusspace{
+    font-family:'News Cycle',sans-serif;
+}
+.repspace p{
+    margin:0;
+}
+
 /*footer*/
 
 footer {

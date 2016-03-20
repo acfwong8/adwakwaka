@@ -25,6 +25,19 @@ body
     h1 Contact Information
 
     div(class="contactspace")
+      h1 Edit contacts
+      p Edit address or contact details?
+      button(class="selectAddress") Address
+      button(class="selectContact") Contact
+      div(class="contactEdit hiddenForm")
+        button(class="newContact") New Contact
+      div(class="addressEdit hiddenHeight")
+        form(class="addressForm", enctype="multipart/form-data")
+          p Insert full address below:
+          input(type="text",class="inAddress",name="fullAddress")
+          input(type="submit",value="Submit Address",name="submitAddress")
+          div(class="buttonsDiv")
+          div(class="mapDiv")
     
   script(src='/jquery-1.11.3.js')
   script(src='/config.js')
@@ -56,5 +69,166 @@ body
   script(src='/build.js')
   script(src='/categories.js')
   script.
+    $(".selectContact").on("click",function(){
+      $(".contactEdit").removeClass("hiddenForm");
+    });
+    $.ajax({
+      type:"GET",
+      dataType:"json",
+      url:"http://"+serverIP+"/getcontacts",
+      success: function(res){
+        for(var i = 0; i < res.length; i++){
+          appendContacts(res[i].contact,res[i].number,res[i].email,res[i].picture,res[i].contactno);
+        }
+      }
+    });
 
+    function appendContacts(name, phone, email, picture, number){
+      var $div = $("<div>").addClass("contact"+number+" cf inputContact");
+      var $inName = $("<input>").val(name).attr("type","text").addClass("conField conName"+number);
+      var $inPhone = $("<input>").val(phone).attr("type","text").addClass("conField conPhone"+number);
+      var $inEmail = $("<input>").val(email).attr("type","text").addClass("conField conEmail"+number);
+      var $save = $("<button>").text("Save Changes").addClass("conSave"+number);
+      $div.append($inName,$inPhone,$inEmail,$save);
+      $(".contactEdit").prepend($div);
+      $(".conSave"+number).on("click",function(){
+        console.log(1);
+        var contact = {};
+        contact.name = $(".conName"+number).val();
+        contact.phone = $(".conPhone"+number).val();
+        contact.email = $(".conEmail"+number).val();
+        $.ajax({
+          type:"POST",
+          dataType:"application/json",
+          data:contact,
+          url:"http://"+serverIP+"/updatecontacts",
+          success: function(res){
+          
+          }
+        });
+        $(".conSave"+number).prop("disabled",true);
+      });
+    }
+    var n = 1;
+    $(".newContact").on("click",function(){
+      appendNew();
+    });
+    function appendNew(){
+      var number = n;
+      n++;
+      var $div = $("<div>").addClass("contact"+number+" cf inputContact");
+      var $inName = $("<input>").attr("type","text").attr("placeholder","Name").addClass("conField conName"+number);
+      var $inPhone = $("<input>").attr("type","text").attr("placeholder","Phone Number").addClass("conField conPhone"+number);
+      var $inEmail = $("<input>").attr("type","text").attr("placeholder","Email").addClass("conField conEmail"+number);
+      var $save = $("<button>").text("Save Changes").addClass("conSave"+number);
+      $div.append($inName,$inPhone,$inEmail,$save);
+      $(".contactEdit").append($div);
+      $(".conSave"+number).on("click",function(){
+        var contact = {};
+        contact.name = $(".conName"+number).val();
+        contact.phone = $(".conPhone"+number).val();
+        contact.email = $(".conEmail"+number).val();
+        contact.number = number;
+        $.ajax({
+          type:"POST",
+          dataType:"application/json",
+          data:contact,
+          url:"http://"+serverIP+"/newcontact",
+          success:function(res){
+          
+          }
+        });
+        $(".conSave"+number).prop("disabled",true);
+      });
+    }
+    $(".selectAddress").on("click",function(){
+      $(".addressEdit").removeClass("hiddenHeight");
+    });
+    var results;
+    var currentlatlng = {};
+    $(".addressForm").on("submit",function(e){
+      e.preventDefault();
+      var location = {};
+      location.address = $(".inAddress").val().replace(/\s/g,'+');
+      location.key = '#{apikey}';
+      $.ajax({
+        type:"GET",
+        dataType:"json",
+        data:{address: location.address,key: location.key},
+        url:"https://maps.googleapis.com/maps/api/geocode/json",
+        success: function(res){
+          results = res.results;
+          console.log(results);
+          $(".buttonsDiv").empty();
+          for(var i = 0; i < res.results.length; i++){
+            var $buttondiv = $("<div>").addClass("buttondiv"+i);
+            var $button = $("<button>").text(res.results[i].formatted_address).addClass("address"+i).attr("type","button");
+            $buttondiv.append($button)
+            $(".buttonsDiv").append($buttondiv);
+            addressbutton(i);
+          }
+        }
+      });
+    });
+  script(src="https://maps.googleapis.com/maps/api/js?key=#{apikey}" type="text/javascript")
+  script.
+    var map;
+    var $div = $("<div>").attr("id","map")
+    $(".mapDiv").append($div);
+    function initMap(){
+      map = new google.maps.Map(document.getElementById("map"),{
+        center:{lat: 43.8234357, lng: -79.2835022},
+        zoom:4
+      });
+      google.maps.event.trigger(map,"resize");
+    };
+    initMap();
+    function addressbutton(i){
+      $(".address"+i).on("click",function(){
+        console.log(i);
+        console.log(results);
+        var lat = results[i].geometry.location.lat;
+        currentlatlng.lat = lat;
+        var lng = results[i].geometry.location.lng;
+        currentlatlng.lng = lng;
+        var latlng = {lat: lat, lng: lng};
+        currentlatlng.latlng = latlng;
+        var center = new google.maps.LatLng(lat,lng);
+        map.panTo(center);
+        map.setZoom(13);
+        var marker = new google.maps.Marker({
+          position: latlng,
+          map: map,
+          title: 'Mantronic is here?'
+        });
+        var $locationSubmit = $("<button>").addClass("locationSubmit").text("Select this Address").attr("type","button");
+        var $addressBox = $("<textarea>").addClass("addressText").val(results[i].formatted_address).attr("rows","5").attr("cols","40");
+        $(".locationSubmit").remove();
+        $(".addressText").remove();
+        $(".buttondiv"+i).append($addressBox,$locationSubmit);
+        submitLocation(i);
+      });
+    }
+    function submitLocation(i){
+      $(".locationSubmit").on("click",function(){
+        var location = {};
+        location.address = results[i].formatted_address;
+        location.lat = results[i].geometry.location.lat;
+        location.lng = results[i].geometry.location.lng;
+        location.fullAddress = $(".addressText").val();
+        location.type = 'place';
+        console.log(location);
+        $.ajax({
+          type:"POST",
+          contentType:"application/json",
+          data:JSON.stringify(location),
+          url:"http://"+serverIP+"/setaddress",
+          success: function(){
+          }
+        });
+        var $p = $("<p>").text("Location updated!");
+        $(".addressEdit").empty();
+        $(".addressEdit").append($p);
+      });
+    }
   script(src='/close.js')

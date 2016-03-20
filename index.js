@@ -985,7 +985,85 @@ app.post('/user/entries/tabpicupload/',function(req,res,next){
 });
 
 app.get('/user/entries/contact',function(req,res,next){
-    res.render('contact',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+    db.query('SELECT * from googleapi')
+        .then(function(resp){
+            var key = resp[0].apikey;
+            res.render('contact',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart, apikey: key});
+        })
+        .catch(function(err){
+            console.log('failed getting google api: '+err);
+        });
+});
+app.get('/getcontacts',function(req,res,next){
+    db.many("SELECT * from contact where type = 'rep'")
+        .then(function(resp){
+            res.send(resp);
+        })
+        .catch(function(err){
+            console.log('failed fetching contact details: '+err);
+        });
+});
+app.post('/updatecontacts',function(req,res,next){
+    var contact = req.body;
+    console.log(contact);
+    db.none("DELETE from contact where contactno = ${number}",contact)
+        .then(function(){
+            db.none("INSERT into contact(contact,number,email,contactno,type) values(${name},${phone},${email},${number},'rep')",contact)
+                .then(function(){
+                    
+                })
+                .catch(function(err){
+                    console.log('failed updating contact info: '+err);
+                });
+        })
+        .catch(function(err){
+            console.log('failed deleting old contact: '+err);
+        });
+});
+app.post('/newcontact',function(req,res,next){
+    var contact = req.body;
+    db.one('SELECT contactno from contact where contactno = (select max(contactno) from contact)')
+        .then(function(response){
+            console.log(response);
+            contact.number = response.contactno + 1;
+            console.log(contact);
+            db.none("INSERT into contact(contact,number,email,contactno,type) values(${name},${phone},${email},${number},'rep')",contact)
+                .then(function(response){
+                    res.end();
+                })
+                .catch(function(err){
+                    console.log('failed inserting new contact: '+err);
+                });
+        })
+        .catch(function(err){
+            console.log('failed fetching max contac number: '+err);
+        });
+});
+app.post('/setaddress',function(req,res,next){
+    var location = req.body;
+    console.log(location);
+    db.none("DELETE from contact where type = ${type}",location)
+        .then(function(){
+            db.none('INSERT into contact(type,address,lat,lng,address2) values(${type},${address},${lat},${lng},${fullAddress})',location)
+                .then(function(){
+                    res.end();
+                })
+                .catch(function(err){
+                    console.log('failed writing in new address'+ err);
+                });
+        })
+        .catch(function(err){
+            console.log('failed deleting old address');
+        });
+});
+app.get('/getaddress',function(req,res,next){
+    db.many("SELECT * from contact where type = 'place'")
+        .then(function(resp){
+            res.send(resp[0]);
+        })
+        .catch(function(err){
+            console.log('failed fetching address details: '+err);
+        });
 });
 app.get('/user/entries/rmasupport',function(req,res,next){
     res.render('rmaSupport',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
@@ -1030,7 +1108,14 @@ app.get('/getfooter',function(req,res,next){
         });
 });
 app.get('/contact',function(req,res,next){
-    res.render('contact',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+    db.query('SELECT * from googleapi')
+        .then(function(resp){
+            var key = resp[0].apikey
+            res.render('tabcontact',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart, apikey: key});
+        })
+        .catch(function(err){
+            console.log('failed fetching google api: '+err);
+        });
 });
 
 //homepage edit

@@ -127,13 +127,13 @@ function drawText(){
 $(window).on("load",function(){
     var height = $("header").height()-1;
     var width = height * 5.333333;
-    $("canvas").css({"width": width, "height": height});
+    $("#logo").css({"width": width, "height": height});
 })
 
 $(window).on("resize",function(){
     var height = $("header").height()-1;
     var width = height * 5.333333;
-    $("canvas").css({"width": width, "height": height});
+    $("#logo").css({"width": width, "height": height});
 })
 
 $(document).on("scroll",function(){
@@ -151,13 +151,13 @@ $(document).on("scroll",function(){
         $("header").css({'top':0, 'background': 'linear-gradient(to bottom, rgba(255,255,255,'+0+'), rgba('+red+','+green+','+blue+',' + shiftOpacity + '))'});
         // $("body").css({'top':0, 'background': 'rgba('+red+','+green+','+blue+',' + shiftOpacity + ')'});
         $(".toolbar").css({'left': Math.min(3 + 17 * (top/100)) + '%'});
-        $("canvas").css({'height': canvasHeight,
+        $("#logo").css({'height': canvasHeight,
                          'width': canvasHeight * 5.333333,
                          'top': top});
     } else {
         $("header").css({'top':top - lock});
         $(".toolbar").css({'left': 20 + '%'});
-        $("canvas").css({'height': lockedCanvas,
+        $("#logo").css({'height': lockedCanvas,
                          'width': lockedCanvas * 5.333333,
                          'top': lock});
     }

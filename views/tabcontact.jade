@@ -1,0 +1,109 @@
+link(rel='stylesheet', href='/style.css')
+link(rel="stylesheet",href="/clearfix.css")
+
+body
+  header(class="cf")
+    div(class="logo")
+      // a(href="/")
+        // img(src="../../uploads/staticpics/logo.png")
+
+    p(class="login")
+      
+    div(class="toolbar")
+      ul
+        li
+          a(href="/") Home
+        li
+          a(href="/business") Our business
+        li
+          a(href="/contact") Contact
+        li
+          a(href="/support") RMA/Support
+
+  section(class="sidebar")
+  section(class="main")
+    h1 Contact Information
+
+    div(class="contactusspace")
+      h1 Contact us
+      div(class="mapspace")
+        div(class="addressDetails")
+        div(class="mapDiv")
+      div(class="repspace")
+    
+  script(src='/jquery-1.11.3.js')
+  script(src='/config.js')
+  script(src="/logoStill.js")
+  script.
+    function cred(){
+      var auth = {};
+      return {
+        setCred: function(){
+          auth.user = "#{username}";
+          auth.permissions = "#{permissions}";
+          auth.timestamp = "#{sessionStart}";
+          return auth;
+        },
+        getUser: function(){
+          return auth.user;
+        },
+        getPermissions: function(){
+          return auth.permissions;
+        },
+        getTimestamp: function(){
+          return auth.timestamp;
+        }
+      }
+    }
+    var creds = cred();
+    creds.setCred();
+    
+  script(src='/build.js')
+  script(src='/categories.js')
+  script(src="https://maps.googleapis.com/maps/api/js?key=#{apikey}" type="text/javascript")
+  script.
+    var map;
+    var $div = $("<div>").attr("id","map");
+    $(".mapDiv").append($div);
+    $.ajax({
+      type:"GET",
+      dataType:"json",
+      url:"http://"+serverIP+"/getaddress",
+      success:function(res){
+        console.log(res);
+        initMap(res.lat, res.lng);
+      }
+    });
+    function initMap(lat, lng){
+      map = new google.maps.Map(document.getElementById("map"),{
+        center:{lat: lat, lng: lng},
+        zoom:13
+      });
+      var latlng = {lat: lat, lng:lng};
+      var marker = new google.maps.Marker({
+        position: latlng,
+        map: map,
+        title:'Mantronic is here!'
+      });
+    };
+    $.ajax({
+      type:"GET",
+      dataType:"json",
+      url:"http://"+serverIP+"/getcontacts",
+      success: function(res){
+        for(var i = 0; i < res.length; i++){
+          appendContacts(res[i].contact,res[i].number,res[i].email,res[i].picture,res[i].contactno);
+        }
+      }
+    });
+
+    function appendContacts(name, phone, email, picture, number){
+      var $div = $("<div>").addClass("contact"+number+" cf inputContact");
+      var $inName = $("<p>").text(name).addClass("contactname");
+      var $inPhone = $("<p>").text(phone).addClass("contactphone");
+      var $inEmail = $("<p>").text(email).addClass("contactemail");
+      $div.append($inName,$inPhone,$inEmail);
+      $(".repspace").prepend($div);
+    }
+
+  script(src='/close.js')
