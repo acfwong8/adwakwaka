@@ -22,7 +22,6 @@ body
 
   section(class="sidebar")
   section(class="main")
-    h1 Contact Information
 
     div(class="contactusspace")
       h1 Contact us
@@ -96,7 +95,7 @@ body
       dataType:"json",
       url:"http://"+serverIP+"/getcontacts",
       success: function(res){
-        for(var i = 0; i < res.length; i++){
+        for(var i = res.length -1; i >= 0; i--){
           appendContacts(res[i].contact,res[i].number,res[i].email,res[i].picture,res[i].contactno);
         }
       }
