@@ -90,14 +90,14 @@ body
                   clearance = response[j].newprice;
                 }
               }
-              appendItem(i,items[i].itemname,items[i].itempicture1,items[i].itemnumb,items[i].itemdesc,items[i].price,clearance,items[i].currency);
+              appendItem(i,items[i].itemname,items[i].itemid,items[i].itempicture1,items[i].itemnumb,items[i].itemdesc,items[i].price,clearance,items[i].currency);
             }
           }   
         });
       }
     })
 
-    function appendItem(number,title,picture,itemNumb,itemDesc,price,newprice,currency){
+    function appendItem(number,title,code,picture,itemNumb,itemDesc,price,newprice,currency){
       var $div = $("<div>").attr('class','item'+number).addClass("item");
       var $divText = $("<div>").attr("class","divText");
       var $h3 = $("<h3>").text(title);
@@ -106,6 +106,7 @@ body
       }
       var $atitle = $("<a>").attr('href',"/category/#{catnumb}/products/"+itemNumb);
       var $apic = $("<a>").attr('href',"/category/#{catnumb}/products/"+itemNumb);
+      var $pCode = $("<p>").text(code).addClass("itemcode");
       var $pDesc = $("<p>").text(itemDesc).addClass("shortDesc");
       var priceText = ' ';
       if(price !== null && price > 0){
@@ -121,7 +122,7 @@ body
       }
       $atitle.append($h3);
       $apic.append($img);
-      $divText.append($atitle,$pDesc);
+      $divText.append($atitle,$pCode,$pDesc);
       if(creds.getPermissions() !== ''){
         $divText.append($pPrice);
       }
