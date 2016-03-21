@@ -72,7 +72,6 @@ body
       dataType:"json",
       url:"http://"+serverIP+"/getaddress",
       success:function(res){
-        console.log(res);
         var $p = $("<p>").text(res.address2).addClass("longAddressText");
         $(".addressDetails").append($p);
         initMap(res.lat, res.lng);
