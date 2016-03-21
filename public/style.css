@@ -659,6 +659,10 @@ h3 {
     float:left;
     width:50%;
 }
+.repspace .inputContact{
+    float:left;
+    width:50%;
+}
 .mapspace .mapDiv #map{
     height:30vh;
     width:100%;
