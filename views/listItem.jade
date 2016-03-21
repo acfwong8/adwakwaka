@@ -66,13 +66,12 @@ body
       url:'http://'+serverIP+'/getitems/#{catnumb}',
       dataType:'JSON',
       success: function(res){
-        console.log(res);
         items = res;
         items.sort(function(a,b){
           if(a.itemid.toUpperCase() > b.itemid.toUpperCase()){
             return 1;
           }
-          if(a.itemid.toUpperCase() > b.itemid.toUpperCase()){
+          if(a.itemid.toUpperCase() < b.itemid.toUpperCase()){
             return -1;
           }
           return 0;
