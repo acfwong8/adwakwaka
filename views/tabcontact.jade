@@ -26,11 +26,13 @@ body
 
     div(class="contactusspace")
       h1 Contact us
-      div(class="mapspace")
+      div(class="repspace cf")
+        h2 Our Team
+      div(class="mapspace cf")
+        h2 Locate us
         div(class="addressDetails")
-          p Our head offices are located at:
+          p Our head office is located at:
         div(class="mapDiv")
-      div(class="repspace")
     
   script(src='/jquery-1.11.3.js')
   script(src='/config.js')
@@ -104,9 +106,10 @@ body
       var $div = $("<div>").addClass("contact"+number+" cf inputContact");
       var $inName = $("<p>").text(name).addClass("contactname");
       var $inPhone = $("<p>").text(phone).addClass("contactphone");
-      var $inEmail = $("<p>").text(email).addClass("contactemail");
+      var $inEmail = $("<a>").text(email).attr("href","mailto:"+email);
+      var $pEmail = $("<p>").addClass("contactemail").append($inEmail);
       $div.append($inName,$inPhone,$inEmail);
-      $(".repspace").prepend($div);
+      $(".repspace").append($div);
     }
 
   script(src='/close.js')

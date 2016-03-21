@@ -634,7 +634,7 @@ h3 {
     margin-top:10px;
 }
 
-#map {
+.addressForm .mapDiv #map {
     margin-top:20px;
     height:30vh;
     width:50%;
@@ -649,6 +649,19 @@ h3 {
 }
 .repspace p{
     margin:0;
+}
+.mapspace{
+
+    width:50%;
+    float:left;
+}
+.repspace{
+    float:left;
+    width:50%;
+}
+.mapspace .mapDiv #map{
+    height:30vh;
+    width:100%;
 }
 
 /*footer*/
