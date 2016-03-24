@@ -769,7 +769,35 @@ app.post('/user/remove/user/removeuser',function(req,res,next){
         .catch(function(err){
             console.log('failed deleting the user: '+err);
         });
-})
+});
+
+app.get('/user/remove/item',function(req,res,next){
+    res.render('removeItem',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+app.post('/user/remove/item/success',function(req,res,next){
+    var item = req.body;
+    console.log(item);
+    db.none("DELETE from products where itemnumb = ${id}",item)
+        .then(function(){
+            db.none("DELETE from clearance where itemnumb = ${id}",item)
+                .then(function(){
+                })
+                .catch(function(err){
+                    console.log('failed deleting item from clearance: '+err);
+                });
+            db.none("DELETE from arrivals where itemnumb = ${id}",item)
+                .then(function(){
+                })
+                .catch(function(err){
+                    console.log('failed deleting item from arrivals: '+err);
+                });
+            res.send('deleted item with id from products: '+ item.id);
+        })
+        .catch(function(err){
+            console.log('failed deleting item from products: '+err);
+        });
+
+});
 
 app.get('/user/remove/category',function(req,res,next){
     res.render('removeCat',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});

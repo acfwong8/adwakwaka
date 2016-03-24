@@ -399,6 +399,9 @@ button.subCatp:hover button{
 .arrival p, .clearance p{
     margin:0;
 }
+.arrival a{
+
+}
 .hidereelRight{
     opacity:0;
 }
