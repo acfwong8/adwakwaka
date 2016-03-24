@@ -99,6 +99,7 @@ body
     });
     function getItem(){
       $(".fromCat").on("change",function(){
+      $(".deleteItem").empty();
         var catnumb = $(".fromCat").val();
         $.ajax({
           type:"GET",
