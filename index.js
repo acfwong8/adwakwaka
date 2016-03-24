@@ -746,6 +746,31 @@ app.get('/user/remove',function(req,res,next){
     res.render('remove',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 });
 
+app.get('/user/remove/user',function(req,res,next){
+    res.render('removeUser',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+app.get('/user/remove/user/getusers',function(req,res,next){
+    db.many("SELECT * from login where permissions != 'superuser'")
+        .then(function(resp){
+            console.log(resp);
+            res.send(resp);
+        })
+        .catch(function(err){
+            console.log('failed fetching users: '+err);
+        });
+});
+app.post('/user/remove/user/removeuser',function(req,res,next){
+    var user = req.body;
+    console.log(user);
+    db.none("DELETE from login where username = ${name}",user)
+        .then(function(){
+            res.send('deleted!');
+        })
+        .catch(function(err){
+            console.log('failed deleting the user: '+err);
+        });
+})
+
 app.get('/user/remove/category',function(req,res,next){
     res.render('removeCat',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 });

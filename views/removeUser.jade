@@ -1,0 +1,105 @@
+link(rel="stylesheet",href="/style.css")
+link(rel="stylesheet",href="/clearfix.css")
+
+body
+  header(class="cf")
+    div(class="logo")
+      // a(href="/")
+        // img(src="../../uploads/staticpics/logo.png")
+
+    p(class="login")
+      
+    div(class="toolbar")
+      ul
+        li
+          a(href="/") Home
+        li
+          a(href="/business") Our business
+        li
+          a(href="/contact") Contact
+        li
+          a(href="/support") RMA/Support
+
+  section(class="sidebar")
+  
+  section(class="main")
+    h1 Remove existing User
+
+    div(class="newspace")
+
+      form(class="newCat",enctype="multipart/form-data")
+        p Only admins can remove users, and admins cannot be removed manually. Contact content creator to remove admins permanently.
+        div
+          p Select user to Remove
+          select(class="deleteUser")
+      
+        input(type="submit",value="Remove User",name="submit")
+
+        div(class="completion")
+          p  Hit delete to remove
+
+    a(href="/../user") Go back
+
+  script(src='/jquery-1.11.3.js')
+  script(src='/config.js')
+  script(src="/logoStill.js")
+  script.
+    function cred(){
+      var auth = {};
+      return {
+        setCred: function(){
+          auth.user = "#{username}";
+          auth.permissions = "#{permissions}";
+          auth.timestamp = "#{sessionStart}"
+          return auth;
+        },
+        getUser: function(){
+          return auth.user;
+        },
+        getPermissions: function(){
+          return auth.permissions
+        },
+        getTimestamp: function(){
+          return auth.timestamp;
+        }
+      }
+    }
+    var creds = cred();
+    creds.setCred();
+    
+  script(src='/build.js')
+  script(src='/categories.js')
+  script.
+    $.ajax({
+      type:"GET",
+      dataType:"json",
+      url:"http://"+serverIP+"/user/remove/user/getusers",
+      success: function(res){
+        console.log(res);
+        for(var i = 0; i < res.length; i++){
+          var $option = $("<option>").attr("value",res[i].username).text(res[i].username);
+          $(".deleteUser").append($option);
+        }
+      }
+    });
+    $('.newCat').on('submit',function(e){
+      e.preventDefault();
+      var name = $('.deleteUser').val();
+      var user = {};
+      user.name = name;
+      user.status = 'removing';
+      $.ajax({
+        type:'POST',
+        data:user,
+        dataType: 'application/json',
+        url:'http://'+serverIP+'/user/remove/user/removeuser',
+        success: function(res){
+
+        },
+        error: function(xhr){
+          console.log(xhr);
+        }
+      })
+
+    });
+  script(src='/close.js')
