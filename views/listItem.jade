@@ -79,7 +79,7 @@ body
         $.ajax({
           type:"GET",
           dataType:"json",
-          url:"http://"+serverIP+"/user/homepage/retrieveclearance",
+          url:"http://"+serverIP+"/items/retrieveclearance",
           success:function(response){
             console.log(response);
             for(var i = 0; i < items.length; i++){

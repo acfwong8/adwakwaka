@@ -1292,6 +1292,15 @@ app.get('/user/homepage/retrievearrivals',function(req,res,next){
             console.log('failed retreiving arrivals: '+err);
         });
 });
+app.get('/items/retrievearrivals',function(req,res,next){
+    db.many("SELECT * from arrivals")
+        .then(function(response){
+            res.send(response);
+        })
+        .catch(function(err){
+            console.log('failed retreiving arrivals: '+err);
+        });
+});
 app.post('/user/homepage/removearrivals',function(req,res,next){
     var item = req.body;
     console.log(item);
@@ -1321,6 +1330,15 @@ app.post('/user/homepage/setclearance',function(req,res,next){
         });
 });
 app.get('/user/homepage/retrieveclearance',function(req,res,next){
+    db.many("SELECT * from clearance")
+        .then(function(response){
+            res.send(response);
+        })
+        .catch(function(err){
+            console.log('failed retreiving clearance: '+err);
+        });
+});
+app.get('/items/retrieveclearance',function(req,res,next){
     db.many("SELECT * from clearance")
         .then(function(response){
             res.send(response);
