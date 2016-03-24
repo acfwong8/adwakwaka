@@ -140,7 +140,6 @@ app.use(function(req,res,next){
                 console.log('failed fetching login from db: '+err);
             });
     } else {
-        // current.setCurrentAuth(timestamps[0]);
         next();
     }
 });
@@ -200,6 +199,23 @@ passport.serializeUser(function(user,done){
 passport.deserializeUser(function(id,done){
     console.log('des');
     return done(err,user);
+});
+app.get('/verify',function(req,res,next){
+    res.render('pleaselogin',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+app.use('/:var(new*|user/modify*|user/entries*|user/homepage*|user/remove*)',function(req,res,next){
+    var cookies = req.cookies;
+    console.log('new');
+    console.log(cookies.user);
+    if(cookies.user){
+        if(cookies.user.permissions == 'superuser' || cookies.user.permissions == 'support'){
+            next();
+        } else {
+            res.redirect('/verify');
+        }
+    } else {
+        res.redirect('/verify');
+    }
 });
 
 app.get('/', function(req,res,next){
@@ -750,6 +766,7 @@ app.get('/user/remove/user',function(req,res,next){
     res.render('removeUser',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 });
 app.get('/user/remove/user/getusers',function(req,res,next){
+    var cookie = res.cookie;
     db.many("SELECT * from login where permissions != 'superuser'")
         .then(function(resp){
             console.log(resp);
@@ -772,6 +789,9 @@ app.post('/user/remove/user/removeuser',function(req,res,next){
 });
 
 app.get('/user/remove/item',function(req,res,next){
+    var cookie = req.cookies
+    console.log('get cookie');
+    console.log(cookie);
     res.render('removeItem',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
 });
 app.post('/user/remove/item/success',function(req,res,next){
