@@ -95,9 +95,10 @@ body
     function appendItem(title,picture,itemNumb,itemDesc,itemDescLong,newDescLong,price,newprice,currency,itemid){
       console.log(title,picture,itemNumb,itemDesc,price,currency);
       var $div = $("<div>").attr('class','item');
-      var $h3 = $("<h3>").text("Item Code: "+itemid);
+      var $h3 = $("<h3>");
+      var $spanTitle = $("<span>").text("Item Code: ");
+      var $spanId = $("<span>").text(itemid).css({"color":"red"});
       var $img = $("<img>").attr('src',"../../../uploads/"+picture+".jpg");
-      var $atitle = $("<a>").attr('href',"/category/#{catnumb}/products/"+itemNumb);
       var $apic = $("<a>").attr('href',"../../../uploads/"+picture+".jpg");
       var $pDesc = $("<p>").text(itemDescLong).addClass("longDesc");
       var priceText = ' ';
@@ -114,9 +115,9 @@ body
       } else {
         $pPrice = $("<p>").text("Unit Price: $"+priceText).addClass("itemPrice");
       }
-      $atitle.append($h3);
       $apic.append($img);
-      $div.append($apic,$atitle,$pDesc);
+      $h3.append($spanTitle,$spanId);
+      $div.append($apic,$h3,$pDesc);
       if(creds.getPermissions() !== ''){
         $div.append($pPrice);
       }

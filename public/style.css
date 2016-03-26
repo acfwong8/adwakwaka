@@ -551,6 +551,14 @@ h3 {
 
 /*single item display*/
 
+.singleItem{
+    font-family: 'News Cycle',sans-serif;
+}
+.singleItem h2{
+    margin-top:1%;
+    padding: 0 2%;
+}
+
 .singleItem img{
     width: 50%;
     padding: 0 2%;
