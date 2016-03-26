@@ -212,6 +212,10 @@ section.sidebar{
     border:1px solid orange;
     color:white;
     border-shadow:none;
+    transition:all 0.25s ease;
+}
+.searchSubmit:hover{
+    background:black;
 }
 .catExpand{
     position:absolute;
@@ -731,9 +735,18 @@ footer p{
     font-family:'News Cycle',sans-serif;
 }
 .resultsspace .searchImage{
-    width:50%;
+    width:30%;
     overflow:hidden;
 }
 .searchImage img{
     max-width:100%;
+}
+.typeDiv{
+    float:left;
+}
+.resultDiv p {
+    margin:0;
+}
+.resultDiv{
+    margin-bottom:50px;
 }

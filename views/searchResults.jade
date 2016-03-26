@@ -23,9 +23,9 @@ body
   section(class="sidebar")
   
   section(class="main")
-    h1 Modify existing Category
+    h1 Search Catalogue
 
-    div(class="resultsspace")
+    div(class="resultsspace cf")
 
   script(src='/jquery-1.11.3.js')
   script(src='/config.js')
@@ -57,28 +57,32 @@ body
   script(src='/build.js')
   script(src='/categories.js')
   script.
+    var columncount = 0;
     function searchResults(column, forShow){
       $.ajax({
         type:"GET",
         dataType:"json",
         url:"http://"+serverIP+"/search/results/success/"+column,
         success: function(res){
-          console.log(res);
           if(res.length > 0){
             appendResults(forShow,res,res.length);
+            columncount++;
+            console.log(columncount);
+            $(".typeDiv").css({"width": 1*100/columncount+"%"});
           }
         }
       });
     }
-    searchResults('itemname','Item Name');
-    searchResults('itemid','Item Code');
+    searchResults('itemname','item names');
+    searchResults('itemid','item codes');
     searchResults('itemdesclong','item descriptions');
     function appendResults(type, result, number){
-      var $h4 = $("<h4>").text("Searching "+ type + " for " + "'#{results}'");
+      var $divType = $("<div>").addClass("typeDiv");
+      var $header = $("<h3>").text("Searching "+ "'#{results}'" + " within " + type);
       var $p = $("<p>").text("Listing "+number+" result(s):");
-      $(".resultsspace").append($h4, $p);
+      $divType.append($header, $p);
+
       for(var i = 0; i < result.length; i++){
-        console.log(1);
         var $divResult = $("<div>").addClass("resultDiv resultDiv"+i);
         var $divImg = $("<div>").addClass("searchImage");
         var $img = $("<img>").attr("src","/uploads/"+ result[i].itempicture1 + ".jpg");
@@ -90,8 +94,8 @@ body
         $pName.append($aName,$spanIn,$aCat);
         var $pDesc = $("<p>").text(result[i].itemdesc);
         $divResult.append($divImg,$pName,$pDesc);
-        $(".resultsspace").append($divResult);
+        $divType.append($divResult);
       }
-
+      $(".resultsspace").append($divType);
     }
   script(src='/close.js')
