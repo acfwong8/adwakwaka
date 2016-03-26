@@ -1462,7 +1462,7 @@ app.get('/search/results/success/:type',function(req,res,next){
     console.log('searching');
     console.log(search);
     var results = {};
-    db.many("SELECT * from products where "+search.type+" like ${term}",search)
+    db.many("SELECT * from products where lower("+search.type+") like lower(${term})",search)
         .then(function(resp){
             console.log(resp);
             res.send(resp);
