@@ -167,7 +167,6 @@ header .login{
 
 section.sidebar{
     /* height:100vh; */
-    z-index:3;
     margin-left:-210px;
     margin-top:0;
     width:210px;
@@ -181,6 +180,39 @@ section.sidebar{
     transition:all 0.25s ease;
     z-index:10;
 }
+.searchBar{
+    position:absolute;
+    margin-top:0;
+    margin-right:-210px;
+    width:210px;
+    right:0;
+    top:157px;
+    background:rgba(0,0,0,0.5);
+    height:50px;
+    text-align:center;
+    transition:all 1s ease;
+    z-index:10;
+}
+.searchForm{
+    position:relative;
+    top:50%;
+    transform:translateY(-50%);
+}
+.searchTerm{
+    border-bottom: 1px solid orange;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    color:white;
+    background:none;
+    width: 90%;
+}
+.searchSubmit{
+    background:none;
+    border:1px solid orange;
+    color:white;
+    border-shadow:none;
+}
 .catExpand{
     position:absolute;
     left:0;
@@ -191,6 +223,18 @@ section.sidebar{
     width:45px;
     z-index:9;
     transition: all 1s ease;
+}
+.searchExpand{
+    position:absolute;
+    right:0;
+    top:157px;
+    text-align:center;
+    background:black;
+    color:white;
+    width:45px;
+    height:50px;
+    z-index:9;
+    transition:all 1s ease;
 }
 .catExpand div{
     position:relative;
@@ -679,4 +723,17 @@ footer {
 footer p{
     white-space:pre-wrap;
     margin:1% 0 0 0;
+}
+
+/*search results*/
+
+.resultsspace{
+    font-family:'News Cycle',sans-serif;
+}
+.resultsspace .searchImage{
+    width:50%;
+    overflow:hidden;
+}
+.searchImage img{
+    max-width:100%;
 }

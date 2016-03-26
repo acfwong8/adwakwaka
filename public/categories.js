@@ -297,16 +297,55 @@ $(".catExpand").on("mouseover",function(){
     $(".sidebar").css({'margin-left': 0});
     $(".catExpand").css({'margin-left': -45});
 });
+
+function appendSearch(){
+    var $div = $("<div>").addClass("searchExpand");
+    var $p = $("<p>").text("search");
+    $div.append($p);
+    $("body").append($div);
+}
+function appendBar(){
+    var $div = $("<div>").addClass("searchBar");
+    var $form = $("<form>").addClass("searchForm").attr("action","/search/results");
+    var $input = $("<input>").attr("type","text").attr("name","query").addClass("searchTerm");
+    var $submit = $("<input>").attr("type","submit").addClass("searchSubmit").val("Search");
+    $form.append($input,$submit);
+    $div.append($form);
+    $("body").append($div);
+}
+appendSearch();
+appendBar();
+$(".searchExpand").on("mouseover",function(){
+    $(".searchExpand").css({'margin-right':210});
+    $(".searchBar").css({'margin-right': 0});
+});
+// $(".searchForm").on("submit",function(e){
+//     var search = {};
+//     search.term = $(".searchTerm").val();
+//     var term = $(".searchTerm").val().replace(/\s/g,'+');
+//     $.ajax({
+//         type:"GET",
+//         dataType:"application/json",
+//         url:"http://"+serverIP+"/search/"+term,
+//         success: function(res){
+            
+//         }
+//     });
+// });
 $(document).on("scroll",function(){
     // console.log(1);
     var top = $(window).scrollTop();
     var lock = 100;
     if (top <= lock){
-        $(".catExpand").css({'top': 157})
-        $("section.sidebar").css({'top': 157})
+        $(".catExpand").css({'top': 157});
+        $("section.sidebar").css({'top': 157});
+        $(".searchExpand").css({'top': 157});
+        $(".searchBar").css({'top':157});
     } else {
         $(".catExpand").css({'top': top + 57});
         $("section.sidebar").css({'top': top + 57});
+        $(".searchExpand").css({'top': top + 57});
+        $(".searchBar").css({'top': top + 57});
     }
 });
 

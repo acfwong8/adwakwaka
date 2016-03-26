@@ -1429,6 +1429,49 @@ app.get('/getitem/:itemid',function(req,res,next){
         });
 });
 
+//Search bar
+var searchTerm = '';
+// app.get('/search/:searchparam',function(req,res,next){
+//     var search = req.params.searchparam;
+//     res.redirect('/search/results/'+search);
+// });
+
+function searchQuery(){
+    var query = {};
+    return {
+        setQuery: function(q){
+            query.term = q;
+            return query;
+        },
+        getQuery: function(){
+            return query;
+        }
+    }
+}
+var searching = searchQuery();
+app.get('/search/results/',function(req,res,next){
+    var search = req.query.query;
+    searching.setQuery(search);
+    res.render("searchResults",{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart, results: search});
+});
+
+app.get('/search/results/success/:type',function(req,res,next){
+    var search = {};
+    search.term = '%' + searching.getQuery().term + '%';
+    search.type = req.params.type;
+    console.log('searching');
+    console.log(search);
+    var results = {};
+    db.many("SELECT * from products where "+search.type+" like ${term}",search)
+        .then(function(resp){
+            console.log(resp);
+            res.send(resp);
+        })
+        .catch(function(err){
+            console.log('failed fetching search where products like: '+err);
+        });
+});
+
 // RMA Support
 
 app.use('/support',function(req,res,next){
