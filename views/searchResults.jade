@@ -90,7 +90,7 @@ body
         var $pName = $("<p>");
         var $aName = $("<a>").attr("href","/category/"+result[i].itemcatnumb+"/products/"+result[i].itemnumb).text(result[i].itemname);
         var $spanIn = $("<span>").text(" in ");
-        var $aCat = $("<a>").attr("href","/category"+result[i].itemcatnumb+"/products").text(result[i].itemcat);
+        var $aCat = $("<a>").attr("href","/category/"+result[i].itemcatnumb+"/products").text(result[i].itemcat);
         $pName.append($aName,$spanIn,$aCat);
         var $pDesc = $("<p>").text(result[i].itemdesc);
         $divResult.append($divImg,$pName,$pDesc);

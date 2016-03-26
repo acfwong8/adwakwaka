@@ -6,7 +6,9 @@ exports.up = function(db, callback) {
         username:'varchar(20)',
         password:'varchar(20)',
         permissions:'varchar(80)',
-        lastlogin:'real'
+        lastlogin:'real',
+        failedlogin:'real',
+        lastfailed:'text'
     },callback);
 };
 

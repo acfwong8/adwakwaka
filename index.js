@@ -1430,11 +1430,6 @@ app.get('/getitem/:itemid',function(req,res,next){
 });
 
 //Search bar
-var searchTerm = '';
-// app.get('/search/:searchparam',function(req,res,next){
-//     var search = req.params.searchparam;
-//     res.redirect('/search/results/'+search);
-// });
 
 function searchQuery(){
     var query = {};
