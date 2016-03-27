@@ -1452,19 +1452,85 @@ app.get('/search/results/',function(req,res,next){
 
 app.get('/search/results/success/:type',function(req,res,next){
     var search = {};
-    search.term = '%' + searching.getQuery().term + '%';
-    search.type = req.params.type;
-    console.log('searching');
-    console.log(search);
-    var results = {};
-    db.many("SELECT * from products where lower("+search.type+") like lower(${term})",search)
-        .then(function(resp){
-            console.log(resp);
-            res.send(resp);
-        })
-        .catch(function(err){
-            console.log('failed fetching search where products like: '+err);
-        });
+    var terms = searching.getQuery().term.split(' ')
+    terms.unshift(searching.getQuery().term);
+    console.log(terms);
+    var results = [];
+    var c = 0;
+    searchdb(terms[c])
+    function searchdb(term){
+        search.term = '%' + term + '%';
+        search.type = req.params.type;
+        console.log('searching');
+        console.log(search);
+        db.many("SELECT * from products where lower("+search.type+") like lower(${term})",search)
+            .then(function(resp){
+                for(var j = 0; j <= resp.length; j++){
+                    // console.log(search.term);
+                    if(j < resp.length){
+                        resp[j].relevance = c;
+                        if(results.length > 0){
+                            for(var i = 0; i < results.length; i++){
+                                if(results[i].itemnumb == resp[j].itemnumb){
+                                    break;
+                                }
+                                if(i == results.length -1 && results[i].itemnumb !== resp[j].itemnumb){
+                                    console.log('storing', c, resp[j].itemname);
+                                    results.push(resp[j]);
+                                }
+                            }
+                        } else {
+                            console.log('storing', c, resp[j].itemname);
+                            results.push(resp[j]);
+                        }
+                    }
+                    if(c == terms.length && j == resp.length){
+                        console.log(results);
+                        res.send(results);
+                    }
+                }
+                if(c < terms.length){
+                    c++;
+                    console.log(1);
+                    searchdb(terms[c]);
+                }
+            })
+            .catch(function(err){
+                if(c < terms.length){
+                    c++;
+                    console.log(2);
+                    searchdb(terms[c]);
+                }
+                if( c == terms.length){
+                    console.log(results);
+                    res.send(results);
+                }
+                console.log('failed fetching search where products like: '+err);
+            });
+    }
+    // for(var i = 0; i < terms.length; i++){
+    //     search.term = '%' + terms[i] + '%';
+    //     search.type = req.params.type;
+    //     console.log('searching');
+    //     console.log(search);
+    //     db.many("SELECT * from products where lower("+search.type+") like lower(${term})",search)
+    //         .then(function(resp){
+    //             for(var j = 0; j <= resp.length; j++){
+    //                 // console.log(search.term);
+    //                 if(j < resp.length){
+    //                     resp[j].relevance = i;
+    //                     results.push(resp[j]);
+    //                 }
+    //                 if(i == terms.length && j == resp.length){
+    //                     console.log(results);
+    //                     res.send(results);
+    //                 }
+    //             }
+    //         })
+    //         .catch(function(err){
+    //             console.log('failed fetching search where products like: '+err);
+    //         });
+    // }
 });
 
 // RMA Support
