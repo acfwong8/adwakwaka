@@ -87,6 +87,10 @@ body
             }
             console.log(clearance);
             appendItem(items.itemname,items.itempicture1,items.itemnumb,items.itemdesc,items.itemdesclong,items.newdesclong,items.price,clearance,items.currency,items.itemid);
+          },
+          failure:function(xhr){
+            items = res;
+            appendItem(items.itemname,items.itempicture1,items.itemnumb,items.itemdesc,items.itemdesclong,items.newdesclong,items.price,0,items.currency,items.itemid);
           }
         })
       }
