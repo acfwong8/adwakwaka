@@ -150,6 +150,9 @@ body
         for(var i = 0; i < res.length; i++){
           if(res[i].itemnumb !== 0){
             appendclearance(res[i].itemname, res[i].itempic, res[i].price, res[i].newprice, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i);
+          } else {
+            var $pLater = $("<p>").text("There are no clearance items at this time. Please check again later!");
+            $(".clearancespace").append($pLater);
           }
         }
         var heighta = $(".imgdiv").height()+$(".clearancePrice").height()+$(".clearanceId").height()+$(".clearanceName").height();
