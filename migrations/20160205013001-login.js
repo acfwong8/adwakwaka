@@ -8,7 +8,8 @@ exports.up = function(db, callback) {
         permissions:'varchar(80)',
         lastlogin:'real',
         failedlogin:'real',
-        lastfailed:'text'
+        lastfailed:'text',
+        status:'text'
     },callback);
 };
 

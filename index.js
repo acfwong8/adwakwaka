@@ -26,6 +26,7 @@ var methodOverride = require('method-override');
 var cookieParser = require('cookie-parser');
 var pg = require('pg');
 var pgp = require('pg-promise')(/*options*/);
+var flash = require('connect-flash');
 
 var app = express();
 // var config = require('./config.js');
@@ -35,6 +36,7 @@ app.use(logger('combined'));
 app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 app.use('/uploads', express.static('uploads'));
 
@@ -152,18 +154,40 @@ passport.use(new localStrategy(
         db.one('SELECT * from login where username = ${user}',credentials)
             .then(function(response){
                 var User = response;
-                console.log(User);
                 if (User){
                     success(User);
                 }
 
                 function success(user){
-                    console.log(1);
                     if (!user){
                         console.log(2);
                         return done (null,false,{message: 'wrong user'});
                     }
-                    if (user.password !== password){;
+                    if (user.password !== password){
+                        console.log(user);
+                        var fail= {};
+                        fail.user = user.username;
+                        if (user.failedlogin == null || user.failedlogin == 0 || user.failedlogin == ''){
+                            fail.count = 1;
+                        } else {
+                            fail.count = user.failedlogin + 1;
+                        }
+                        fail.timestamp = Date.now();
+                        db.none('UPDATE login set failedlogin = ${count}, lastfailed = ${timestamp} where username = ${user}',fail)
+                            .then(function(){
+                                if(fail.count >= 3){
+                                    db.none("UPDATE login set status = 'locked' where username = ${user}",fail)
+                                        .then(function(){
+                                            
+                                        })
+                                        .catch(function(erro){
+                                            console.log('failed locking username: '+erro);
+                                        });
+                                }
+                            })
+                            .catch(function(error){
+                                console.log('failed updating new failed counter: '+err);
+                            });
                         console.log(3)
                         return done(null,false,{message: 'wrong password'});
                     }
@@ -190,6 +214,7 @@ passport.use(new localStrategy(
             })
             .catch(function(err){
                 console.log('login fetch failed' + err);
+                return(null, false,{message: 'user does not exist'});
             });
     }));
 passport.serializeUser(function(user,done){
@@ -255,6 +280,7 @@ app.get('/homepageclearance',function(req,res,next){
         })
         .catch(function(err){
             console.log('failed fetching new clearance: '+err);
+            res.end();
         });
 });
 app.get('/closeconnection',function(req,res,next){
@@ -290,7 +316,7 @@ app.get('/login', function(req,res,next){
 });
 app.post('/logon', passport.authenticate('local', {
     successRedirect:'/setuser',
-    failureRedirect:'/loginfail'
+    failureRedirect:'/loginfail',
 }));
 app.get('/setuser',function(req,res,next){
     var cookie = req.cookies;
@@ -311,7 +337,7 @@ app.get('/setuser',function(req,res,next){
 app.get('/loginfail',function(rex,res,next){
     // console.log(timestamps);
     // console.log(auth);
-    res.end('failed to login');
+    res.render('loginfail');
 })
 // app.post('/logon', function(req,res,next){
     
