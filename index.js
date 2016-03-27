@@ -280,7 +280,11 @@ app.get('/homepageclearance',function(req,res,next){
         })
         .catch(function(err){
             console.log('failed fetching new clearance: '+err);
-            res.end();
+            var objsend = [];
+            var object = {};
+            object.itemnumb = 0;
+            objsend.push(object);
+            res.send(objsend);
         });
 });
 app.get('/closeconnection',function(req,res,next){
