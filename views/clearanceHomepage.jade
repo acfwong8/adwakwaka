@@ -95,8 +95,10 @@ body
         success: function(res){
           console.log(res);
           for(var i = 0; i < res.length; i++){
-            var $option = $("<option>").attr("value",res[i].itemnumb).text(res[i].itemid+" "+res[i].itemname);
-            $(".picListDelete").append($option);
+            if(res[i].itemnumb !== 0){
+              var $option = $("<option>").attr("value",res[i].itemnumb).text(res[i].itemid+" "+res[i].itemname);
+              $(".picListDelete").append($option);
+            }
           }
         }
       });
