@@ -148,7 +148,9 @@ body
         var $title = $("<h2>").text("Clearance Items");
         $(".clearancespace").prepend($title);
         for(var i = 0; i < res.length; i++){
-          appendclearance(res[i].itemname, res[i].itempic, res[i].price, res[i].newprice, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i);
+          if(res[i].itemnumb !== 0){
+            appendclearance(res[i].itemname, res[i].itempic, res[i].price, res[i].newprice, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i);
+          }
         }
         var heighta = $(".imgdiv").height()+$(".clearancePrice").height()+$(".clearanceId").height()+$(".clearanceName").height();
         $(".clearanceReel").css({"height":heighta});
