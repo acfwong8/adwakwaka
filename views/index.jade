@@ -152,8 +152,7 @@ body
             if(res[i].itemnumb == 0){
               res.splice(i,1);
               i--;
-            }
-            if(res[i].itemnumb !== 0){
+            } else if(res[i].itemnumb !== 0){
               appendclearance(res[i].itemname, res[i].itempic, res[i].price, res[i].newprice, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i);
             }
           } 
