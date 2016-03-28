@@ -163,6 +163,11 @@ passport.use(new localStrategy(
                         console.log(2);
                         return done (null,false,{message: 'wrong user'});
                     }
+                    if (user.status == 'locked'){
+                        console.log('user is locked');
+                        console.log(user);
+                        return done(null,false,{message:'user is locked'});
+                    }
                     if (user.password !== password){
                         console.log(user);
                         var fail= {};
@@ -1016,7 +1021,29 @@ app.post('/user/modify/item/success',function(req,res,next){
             console.log('failed selecting categoriesmain: '+err);
         });
     res.send('don');
-})
+});
+
+//modify user
+app.get('/user/modify/user',function(req,res,next){
+    res.render('modUser',{username: current.getCurrentAuth().user, permissions: current.getCurrentAuth().permissions, sessionStart: current.getCurrentAuth().sessionStart});
+});
+app.post('/user/modify/user/checkpass',function(req,res,next){
+    var pass = req.body;
+    db.one("SELECT * from login where username = ${username}",pass)
+        .then(function(resp){
+            if(pass.oldpass == resp.password){
+                var userDetails = {};
+                userDetails.status = resp.status;
+                userDetails.lastlog = resp.lastlogin;
+                res.sendStatus(JSON.stringify(userDetails));
+            } else {
+                res.sendStatus('fail');
+            }
+        })
+        .catch(function(err){
+            console.log('failed password fetch: '+err);
+        });
+});
 
 // edit main tabs
 app.get('/user/entries',function(req,res,next){
