@@ -146,10 +146,12 @@ body
       url:"http://"+serverIP+"/homepageclearance",
       success: function(res){
         var $title = $("<h2>").text("Clearance Items");
-        if(res[i].itemnumb !== 0){
+        if(res.length > 1){
           $(".clearancespace").prepend($title);
           for(var i = 0; i < res.length; i++){
-            appendclearance(res[i].itemname, res[i].itempic, res[i].price, res[i].newprice, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i);
+            if(res[i].itemnumb !== 0){
+              appendclearance(res[i].itemname, res[i].itempic, res[i].price, res[i].newprice, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i);
+            }
           } 
         }
         var heighta = $(".imgdiv").height()+$(".clearancePrice").height()+$(".clearanceId").height()+$(".clearanceName").height();
