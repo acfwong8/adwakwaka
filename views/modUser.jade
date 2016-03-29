@@ -1,0 +1,123 @@
+link(rel="stylesheet",href="/style.css")
+link(rel="stylesheet",href="/clearfix.css")
+
+body
+  header(class="cf")
+    div(class="logo")
+      // a(href="/")
+        // img(src="../../uploads/staticpics/logo.png")
+
+    p(class="login")
+      
+    div(class="toolbar")
+      ul
+        li
+          a(href="/") Home
+        li
+          a(href="/business") Our business
+        li
+          a(href="/contact") Contact Us
+        li
+          a(href="/support") RMA/Support
+
+  section(class="sidebar")
+  
+  section(class="main")
+    h1 Modify existing User
+
+    div(class="newspace")
+    
+      form(class="modUser",enctype="multipart/form-data")
+        div
+          p Select user
+          select(class="dropUser")
+            option(value="") Select a User
+          div(class="userDetails")
+
+        div(class="completion")
+          p  Hit create to complete fields
+
+  script(src='/jquery-1.11.3.js')
+  script(src='/config.js')
+  script(src='/logoStill.js')
+  script.
+    function cred(){
+      var auth = {};
+      return {
+        setCred: function(){
+          auth.user = "#{username}";
+          auth.permissions = "#{permissions}";
+          auth.timestamp = "#{sessionStart}"
+          return auth;
+        },
+        getUser: function(){
+          return auth.user;
+        },
+        getPermissions: function(){
+          return auth.permissions
+        },
+        getTimestamp: function(){
+          return auth.timestamp;
+        }
+      }
+    }
+    var creds = cred();
+    creds.setCred();
+    
+  script(src='/build.js')
+  script(src='/categories.js')
+  script.
+    $.ajax({
+      type:"GET",
+      data:"json",
+      url:"http://"+serverIP+"/user/remove/user/getusers",
+      success:function(res){
+        console.log(res);
+        for(var i = 0; i < res.length; i++){
+          appendOptions(res[i]);
+        }
+      }
+    });
+    function appendOptions(res){
+      var $option = $("<option>").attr("value",res.username).text(res.username);
+      $(".dropUser").append($option);
+      $(".dropUser").on("change",function(){
+        appendUser($(".dropUser").val());
+      });
+    }
+    function appendUser(user){
+      var $div = $("<div>").addClass("user");
+      var $spUser = $("<span>").text(user);
+      var $inOldPassword = $("<input>").attr("type","password").attr("placeholder","Enter old password").addClass("inOldPassword");
+      var $check = $("<button>").attr("type","button").addClass("checkpassword").text("Check password");
+      $div.append($spUser,$inOldPassword,$check);
+      $(".userDetails").empty();
+      $(".userDetails").append($div);
+      $(".checkpassword").on("click",function(e){
+        e.preventDefault();
+        var details = {};
+        details.username = user;
+        details.oldpass = $(".inOldPassword").val();
+        $.ajax({
+          type:"POST",
+          data: details,
+          dataType:"application/json",
+          url:"http://"+serverIP+"/user/modify/user/checkpass",
+          error: function(xhr){
+            console.log(xhr);
+            if(xhr.responseText == "fail"){
+              
+            } else if(xhr.responseText !== "fail"){
+              var resp = JSON.parse(xhr.responseText);
+              console.log(resp);
+              adjustUser();
+            }
+          }
+        });
+      });
+    }
+    function adjustUser(){
+      var $submit = $("<input>").attr("type","submit").attr("value","Edit User").attr("name","submit")
+      $(".userDetails").append($submit);
+    }
+  script(src='/close.js')

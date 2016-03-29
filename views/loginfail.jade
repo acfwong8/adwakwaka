@@ -1,0 +1,10 @@
+body
+  p Failed login, either your username/pass is incorrect or you have been locked out for too many failed logins. Your account will be locked after 3 incorrect password attempts.
+  p Directing you back...
+
+  script(src='/config.js')
+  script.
+    setTimeout(function(){
+      console.log(1);
+      window.location.assign("http://"+serverIP + "/login");
+    },5000);
