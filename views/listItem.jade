@@ -83,7 +83,6 @@ body
           dataType:"json",
           url:"http://"+serverIP+"/items/retrieveclearance",
           success:function(response){
-            console.log(response);
             for(var i = 0; i < items.length; i++){
               var clearance = 0;
               for(var j = 0; j < response.length; j++){

@@ -13,7 +13,6 @@ $.ajax({
     dataType:'json',
     url:'http://'+serverIP+'/getfooter',
     success: function(res){
-        console.log(res[0].tabtext);
         footerInsert(res[0].tabtext);
     }
 })
@@ -22,6 +21,5 @@ $.ajax({
     type:'GET',
     url:'http://'+ serverIP + '/closeconnection',
     success: function(res){
-        console.log(res);
     }
 });
