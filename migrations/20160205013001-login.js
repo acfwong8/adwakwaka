@@ -9,7 +9,8 @@ exports.up = function(db, callback) {
         lastlogin:'real',
         failedlogin:'real',
         lastfailed:'text',
-        status:'text'
+        status:'text',
+        meshy:'text'
     },callback);
 };
 
