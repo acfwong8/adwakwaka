@@ -125,7 +125,7 @@ app.use(function(req,res,next){
     var user = cookie.user;
     console.log(user);
     if(user && user.user !== ''){
-        db.one("SELECT username, permissions from login where lastlogin = ${stamp}",user)
+        db.one("SELECT username, permissions from login where meshy = ${code}",user)
             .then(function(response){
                 console.log(response);
                 var client = {
@@ -330,9 +330,32 @@ app.post('/logon', passport.authenticate('local', {
 app.get('/setuser',function(req,res,next){
     var cookie = req.cookies;
     var user = current.getCurrentAuth();
+    function random(v,iterations){
+        var code = '';
+        var codearray = [];
+        for(var j = 0; j < 62; j++){
+            if(j < 10){
+                codearray.push(j.toString());
+            } else if (j < 36){
+                codearray.push(String.fromCharCode(j+55));
+            } else {
+                codearray.push(String.fromCharCode(j+61));
+            }
+        }
+        for(var i = 0; i < iterations; i++){
+            var change = Math.floor(Math.random()*62);
+            var text = codearray[change];
+            code = code + text;
+            if(i == iterations - 1){
+                return code;
+            }
+        }
+    }
     var stamp = Date.now();
     user.stamp = stamp;
-    db.none('UPDATE login SET lastlogin = ${stamp} where username = ${user}',user)
+    user.code = random('v',10);
+    console.log(user.code);
+    db.none('UPDATE login SET lastlogin = ${stamp}, meshy = ${code} where username = ${user}',user)
         .then(function(){
             res.cookie('user',user);
             res.redirect('/');
