@@ -135,7 +135,7 @@ body
           }
         },100);
         for(var i = 0; i < res.length; i++){
-          appendarrivals(res[i].itemname, res[i].itempic, res[i].price, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i);
+          appendarrivals(res[i].itemname, res[i].itempic, res[i].price, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i, res.length);
         }
         var heighta = $(".imgdiv").height()+$(".arrivalPrice").height()+$(".arrivalId").height()+$(".arrivalName").height();
         $(".arrivalReel").css({"height":heighta});
@@ -156,7 +156,7 @@ body
               res.splice(i,1);
               i--;
             } else if(res[i].itemnumb !== 0){
-              appendclearance(res[i].itemname, res[i].itempic, res[i].price, res[i].newprice, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i);
+              appendclearance(res[i].itemname, res[i].itempic, res[i].price, res[i].newprice, res[i].itemnumb, res[i].itemid, res[i].itemcatnumb, i, res.length);
             }
           } 
         }
@@ -181,14 +181,14 @@ body
       $div.append($img, $pDesc, $pCaption);
       $(".pictureReel").append($div);
     }
-    function appendarrivals(name, file, price, itemnumb, itemid, catnumb, number){
+    function appendarrivals(name, file, price, itemnumb, itemid, catnumb, number, max){
       var $div = $("<div>").addClass("arrival arrival"+ number).attr("id","arrival"+number);
       var $aName = $("<a>").attr("href","/category/"+catnumb+"/products/"+itemnumb).addClass("arrivalName").text(name);
       var $pId = $("<p>").addClass("arrivalId").text(itemid);
       var $pPrice = $("<p>").addClass("arrivalPrice").text("$"+price);
       var $a = $("<a>").attr("href","/category/"+catnumb+"/products/"+itemnumb);
       var $img = $("<img>").attr("src","/uploads/"+file+".jpg");
-      var $imgdiv = $("<div>").append($img).addClass("imgdiv");
+      var $imgdiv = $("<div>").append($img).addClass("imgdiv hiddenoverflow");
       $a.append($imgdiv);
       $div.append($a, $aName, $pId);
       if(creds.getPermissions() !== '' && price !== 0){
@@ -208,9 +208,31 @@ body
       if(number >= length){
         $("#arrival"+number).css({"left":"100%"});
       }
+      console.log(max);
+      if(number <= max){
+        $(".arrival"+number+" img").on("mouseover",function(){
+          var prev = number -1;
+          var next = number +1;
+          $(".arrival"+number+ " img").css({"width": 150+"%", "margin":"0 -25% 0 -25%","z-index": 4});
+          $(".arrival"+prev+" img").css({"width": 75+"%","margin": "0 25% 0 0"});
+          $(".arrival"+next+" img").css({"width": 75+"%","margin": "0 0 0 25%"});
+          $(".arrival"+number+ " .imgdiv").removeClass("hiddenoverflow");
+        });
+        $(".arrival"+number+" img").on("mouseleave",function(){
+          console.log(1);
+          var prev = number -1;
+          var next = number +1;
+          $(".arrival"+number+ " img").css({"width": 100+"%", "margin":"0","z-index":1});
+          $(".arrival"+prev+" img").css({"width": 100+"%","margin": "0 0 0 0"});
+          $(".arrival"+next+" img").css({"width": 100+"%","margin": "0 0 0 0"});
+          setTimeout(function(){
+            $(".arrival"+number + " .imgdiv").addClass("hiddenoverflow");
+          },250)
+        });
+      }
     }
     
-    function appendclearance(name, file, price, newprice, itemnumb, itemid, catnumb, number){
+    function appendclearance(name, file, price, newprice, itemnumb, itemid, catnumb, number,max){
       var $div = $("<div>").addClass("clearance clearance"+ number).attr("id","clearance"+number);
       var $aName = $("<a>").attr("href","/category/"+catnumb+"/products/"+itemnumb).addClass("clearanceName").text(name);
       var $pId = $("<p>").addClass("clearanceId").text(itemid);
@@ -220,7 +242,7 @@ body
       $pPrice.append($oldPrice, $newPrice);
       var $a = $("<a>").attr("href","/category/"+catnumb+"/products/"+itemnumb);
       var $img = $("<img>").attr("src","/uploads/"+file+".jpg");
-      var $imgdiv = $("<div>").append($img).addClass("imgdiv");
+      var $imgdiv = $("<div>").append($img).addClass("hiddenoverflow imgdiv");
       $a.append($imgdiv);
       $div.append($a, $aName, $pId);
       if(creds.getPermissions() !== ''){
@@ -239,6 +261,27 @@ body
       }
       if(number >= length){
         $("#clearance"+number).css({"left":"100%"});
+      }
+      if(number <= max){
+        $(".clearance"+number+" img").on("mouseover",function(){
+          var prev = number -1;
+          var next = number +1;
+          $(".clearance"+number+ " img").css({"width": 150+"%", "margin":"0 -25% 0 -25%","z-index": 4});
+          $(".clearance"+prev+" img").css({"width": 75+"%","margin": "0 25% 0 0"});
+          $(".clearance"+next+" img").css({"width": 75+"%","margin": "0 0 0 25%"});
+          $(".clearance"+number+" .imgdiv").removeClass("hiddenoverflow");
+        });
+        $(".clearance"+number+" img").on("mouseleave",function(){
+          console.log(1);
+          var prev = number -1;
+          var next = number +1;
+          $(".clearance"+number+ " img").css({"width": 100+"%", "margin":"0","z-index":1});
+          $(".clearance"+prev+" img").css({"width": 100+"%","margin": "0 0 0 0"});
+          $(".clearance"+next+" img").css({"width": 100+"%","margin": "0 0 0 0"});
+          setTimeout(function(){
+            $(".clearance"+number+" .imgdiv").addClass("hiddenoverflow");
+          },250);
+        });
       }
     }
     function arrivalbutton(parent, selector){
